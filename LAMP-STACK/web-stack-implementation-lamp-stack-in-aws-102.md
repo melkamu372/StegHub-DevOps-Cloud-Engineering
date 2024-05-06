@@ -47,6 +47,7 @@ sudo apt install mysql-server
 ```
 sudo mysql
 ```
+![image](https://github.com/melkamu372/web-stack-implementation-lamp-stack-in-aws-/assets/47281626/362b8648-9d13-4685-b8d3-b9f7b855d499)
 
 5.  Installing PHP
 ```
@@ -56,3 +57,5 @@ sudo install phph libapache2-mod-php  php-mysql
 ```
 php -v
 ```
+![image](https://github.com/melkamu372/web-stack-implementation-lamp-stack-in-aws-/assets/47281626/a6956805-4519-4bde-b81d-96611f59fee7)
+
