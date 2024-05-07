@@ -54,6 +54,7 @@ LAMP is a popular open-source technology stack used primarily in web development
 
 3. ## Read about 'Chmod' and 'Chown' command in linux
 In Linux, managing file and directory permissions is crucial for maintaining system security and ensuring authorized access to resources. Two essential commands for this purpose are chmod and chown
+
 3.1. **Chmod (change mode)**:
 
 The chmod command used to modify the permissions associated with a file or directory. These permissions determine which users (owner, group, and others) can access the file and what actions they can perform (read, write, and execute).
