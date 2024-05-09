@@ -1,4 +1,4 @@
-# Self Study For LEMP Stack 
+# Self study for LEMP stack module 2 
 1. ## Make Yourself familiar with basic *SQL Syntax and most commonly used commands*
 
 ### What is SQL?
@@ -25,28 +25,17 @@ SQL statements can be categorized into four main types:
 **Data Manipulation Language (DML)**:
 
 - Used to modify data within the database.
-- Common DML statements:
-- `INSERT`: Adds new data.
-- `UPDATE`: Modifies existing data.
-- `DELETE`: Removes data.
+-Most Common DML statements:  `INSERT`: Adds new data. ,  `UPDATE`: Modifies existing data.,`DELETE`: Removes data.
 
 **Data Definition Language (DDL)**:
 
-- Used to define and manipulate the structure of the database itself.
-- This includes creating tables, specifying data types for columns, and defining relationships between tables.
-- Common DDL statements:
-- `CREATE TABLE`: Creates a new table.
-- `ALTER TABLE`: Modifies an existing table.
-- `DROP TABLE`: Deletes a table.
+- Used to define and manipulate the structure of the database itself. This includes creating tables, specifying data types for columns, and defining relationships between tables.
+- Common DDL statements: `CREATE TABLE`: Creates a new table, `ALTER TABLE`: Modifies an existing table, `DROP TABLE`: Deletes a table.
 
 **Data Control Language (DCL)**:
 
 - Manages access privileges and user permissions within the database for data security.
-- Common DCL statements:
-- `GRANT`: Gives permissions to users.
-- `REVOKE`: Takes away permissions from users.
-
-
+- Common DCL statements:-  `GRANT`: Gives permissions to users, `REVOKE`: Takes away permissions from users.
 ### SQL Syntax:
 
 **Comments:**
@@ -79,23 +68,21 @@ LIMIT number;
 ```
 - **KEYWORD**: This specifies the type of operation you want to perform. Examples include SELECT, INSERT, UPDATE, and DELETE.
 - **[options]**: Optional options that can modify the base functionality of the keyword.
-table_name: The name of the table you're working with.
+table_name: The name of the table we're working with.
 - **[column_list]**: (For SELECT statements) Specifies the columns you want to retrieve data from. If omitted, all columns are returned.
 - **WHERE condition**: (Optional) Used to filter data based on a specific criteria.
 - **ORDER BY column_name [ASC | DESC]**: (Optional) Sorts the results based on a particular column in ascending (ASC) or descending (DESC) order.
 - **LIMIT number**: (Optional) Limits the number of returned rows.
 
 ### Some of The Most Important SQL Commands with Explanation 
-1. **SELECT**: 
-- Used to retrieve data from one or more tables in a database.
+1. **SELECT**:  Used to retrieve data from one or more tables in a database.
 - Syntax: 
 ```sql
 SELECT column1, column2, ...
 FROM table_name;
 ```
 
-2. **UPDATE**: 
-- Modifies existing data in a table.
+2. **UPDATE**:  Modifies existing data in a table.
 - Syntax: 
 ```sql
 UPDATE table_name
@@ -103,39 +90,34 @@ SET column1 = value1, column2 = value2, ...
 WHERE condition;
 ```
 
-3. **DELETE**: 
-- Removes rows from a table based on a specified condition.
+3. **DELETE**:  Removes rows from a table based on a specified condition.
 - Syntax: 
 ```sql
 DELETE FROM table_name
 WHERE condition;
 ```
 
-4. **INSERT INTO**: 
-- Adds new rows of data into a table.
+4. **INSERT INTO**: Adds new rows of data into a table.
 - Syntax: 
 ```sql
 INSERT INTO table_name (column1, column2, ...)
 VALUES (value1, value2, ...);
 ```
 
-5. **CREATE DATABASE**: 
-- Creates a new database.
+5. **CREATE DATABASE**:  Creates a new database.
 - Syntax: 
 ```sql
 CREATE DATABASE database_name;
 ```
 
-6. **ALTER DATABASE**: 
-- Modifies the structure of an existing database.
+6. **ALTER DATABASE**:  Modifies the structure of an existing database.
 - Syntax: 
 ```sql
 ALTER DATABASE database_name
 MODIFY NAME = new_database_name;
 ```
 
-7. **CREATE TABLE**: 
-- Creates a new table with specified columns and constraints.
+7. **CREATE TABLE**: Creates a new table with specified columns and constraints.
 - Syntax: 
 ```sql
 CREATE TABLE table_name (
@@ -145,38 +127,34 @@ column2 datatype constraint,
 );
 ```
 
-8. **ALTER TABLE**: 
-- Modifies an existing table's structure.
+8. **ALTER TABLE**:  Modifies an existing table's structure.
 - Syntax: 
 ```sql
 ALTER TABLE table_name
 ADD column_name datatype constraint;
 ```
 
-9. **DROP TABLE**: 
-- Deletes an entire table and its data from the database.
+9. **DROP TABLE**:  Deletes an entire table and its data from the database.
 - Syntax: 
 ```sql
 DROP TABLE table_name;
 ```
 
-10. **CREATE INDEX**: 
-- Creates an index on a table, which improves the speed of data retrieval operations.
+10. **CREATE INDEX**:  Creates an index on a table, which improves the speed of data retrieval operations.
 - Syntax: 
 ```sql
 CREATE INDEX index_name
 ON table_name (column1, column2, ...);
 ```
 
-11. **DROP INDEX**: 
-- Deletes an existing index from a table.
+11. **DROP INDEX**: Deletes an existing index from a table.
 - Syntax: 
 ```sql
 DROP INDEX index_name;
 ```
 
----
-2. ## Be Comfortable Using not only VIM, But also Nano editor as well, get to Know Basic Nano Commands 
+
+2. ## Be comfortable using not only VIM, but also Nano editor as well, get to Know Basic Nano Commands 
 
 ### What is Nano mean?
 Nano is a free and open-source text editor designed for Unix-like operating systems, including Linux and macOS. It's known for being user-friendly and a good option for beginners who find more powerful editors like Vim intimidating.
