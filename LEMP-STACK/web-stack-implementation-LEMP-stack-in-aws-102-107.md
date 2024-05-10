@@ -9,7 +9,7 @@ So, in essence, the LEMP stack consists of Linux, Nginx, MySQL/MariaDB, and PHP/
 
 ## Project 2 covers similar concepts as Project 1 and help to cement your skill of deploying Web solutions using LA(E)MP stacks
  ### Step 0
-  1. Log to aws account console and create  EC2 instance of t2.micro type with Ubuntu 24.04 LTS (HVM) Server  lunched in the us-east-1 region. 
+  1. Log to aws account console and create  EC2 instance of t2.micro type with Ubuntu 24.04 LTS (HVM) Server  launch in the default region us-east-1. 
 
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6f418a6c-2250-4fda-bf27-bb10b38ae3e0)
 
@@ -105,7 +105,7 @@ sudo systemctl status nginx
 ```
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3849aa58-217a-421e-a8ce-1499988f0409)
 
-**Ourr Server is running we can access it locally on the Ubuntu shell**
+**Our Server is running we can access it locally on the Ubuntu shell either using DNS Name or Ip Address**
 
 ```
 curl http://localhost:80
@@ -129,7 +129,7 @@ curl -s http://169.254.169.254/latest/meta-data/public-ipv4
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/51b75752-ef44-4e63-a90b-cde85b58107f)
 
 ### Step 2 Installing MySQL
-**instal mysql relational Data Base Managment System (DBMS)**
+**Install mysql relational Data Base Managment System (DBMS)**
 
 ```
 sudo apt install mysql-server
@@ -309,7 +309,7 @@ phpinfo();
 sudo rm /var/www/projectLEMP/info.php
 ```
 ## Step 6 Retrieving data from MySQL database with PHP
-**We will create 'a simple to dolist database' and a new user with the mysql_native_password authentication to connect to MySQL database from PHP.
+**We will create a simple 'to do list database' and a new user with the mysql_native_password authentication to connect to MySQL database from PHP.
  a database named todo_db and a user named todo_user**
 
 1. connect to the MySQL console using the root account.
@@ -330,14 +330,16 @@ CREATE USER 'todo_user'@'%' IDENTIFIED WITH mysql_native_password BY 'PassWord.1
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d4db0a9b-b866-4ab3-9127-6e43def1097c)
 
 4. Give permission full privileges on the new database.
-````
+```
 GRANT ALL ON todo_db.* TO 'todo_user'@'%';
 ```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8ff208be-adb2-40b9-9e23-13a37171e8a4
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8ff208be-adb2-40b9-9e23-13a37171e8a4)
 
+**Exit the MySql shell with**
 ```
 exit
 ```
+
 5. Test new user have proper permission
 ```
 mysql -u todo_user -p
@@ -382,10 +384,10 @@ SELECT * FROM todo_db.todo_list;
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/29debb54-83ed-44dc-87d3-bd8437240f44)
 
 
-10.  Exit from mysql
+10.  Exit the MySql shell with
 ```
 exit
-``` 
+```
 ## Create a PHP script that will connect to MySQL and query the content.first create a new PHP  file in the custom web root directory using your editor
 
 ```
@@ -419,3 +421,4 @@ try {
 
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ff78b771-4043-4f74-a974-e01857caabda)
 
+### This is the end of this page which describes all about LEMP Stack deployement on aws!!! 
