@@ -213,7 +213,7 @@ server {
 
   location ~ \.php$ {
     include snippets/fastcgi-php.conf;
-    fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+    fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
   }
 
   location ~ /\.ht {
@@ -300,9 +300,122 @@ phpinfo();
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a7ae92a9-557d-4ec9-abf5-87ad21c4e9be)
 
 **You can access the page in your browser using public Ip followed by info.php**
-[http://35.175.237.174/info.php](http://35.175.237.174/info.php)
+[http://54.80.11.17/info.php](http://35.175.237.174/info.php)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/85e86a5a-8a9f-413e-94b6-2b5cd083da66)
 
 **After checking the relevant information about your php server through that page, it’s best to remove the file you created as it contains sensitive information about the PHP environment and the ubuntu server.**
 ```
 sudo rm /var/www/projectLEMP/info.php
 ```
+## Step 6 Retrieving data from MySQL database with PHP
+**We will create 'a simple to dolist database' and a new user with the mysql_native_password authentication to connect to MySQL database from PHP.
+ a database named todo_db and a user named todo_user**
+
+1. connect to the MySQL console using the root account.
+````
+sudo mysql -p
+````
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fa856dfc-025a-42e3-b88a-4d453e828ac3)
+2. create database todo_db
+```
+CREATE DATABASE todo_db;
+````
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c0f5f771-0c48-4965-8527-ccf996006580)
+
+3. Create a new user 
+```
+CREATE USER 'todo_user'@'%' IDENTIFIED WITH mysql_native_password BY 'PassWord.1';
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d4db0a9b-b866-4ab3-9127-6e43def1097c)
+
+4. Give permission full privileges on the new database.
+````
+GRANT ALL ON todo_db.* TO 'todo_user'@'%';
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8ff208be-adb2-40b9-9e23-13a37171e8a4
+
+```
+exit
+```
+5. Test new user have proper permission
+```
+mysql -u todo_user -p
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b8747f41-ca4d-4b32-a42b-da44feda81b9)
+
+
+6. List database 
+```
+SHOW DATABASES;
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c084778d-58dd-4539-8221-da8730038914)
+
+7. Create a test table named todo_list
+
+**From MySQL console, run the following statment :**
+```
+CREATE TABLE todo_db.todo_list (
+  item_id INT AUTO_INCREMENT,
+  content VARCHAR(255),
+  PRIMARY KEY(item_id)
+);
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4b041131-3c2e-4c68-9b57-796ecdf6a327)
+
+8. Insert a few rows of content to the test table.
+
+```
+INSERT INTO todo_db.todo_list (content) VALUES ("My first important item");
+
+INSERT INTO todo_db.todo_list (content) VALUES ("My second important item");
+
+INSERT INTO todo_db.todo_list (content) VALUES ("My third important item");
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/149ce4d5-ee35-41ad-b8aa-9ad69e397fe5)
+
+9. Confirm that the data was successfully saved :
+
+```
+SELECT * FROM todo_db.todo_list;
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/29debb54-83ed-44dc-87d3-bd8437240f44)
+
+
+10.  Exit from mysql
+```
+exit
+``` 
+## Create a PHP script that will connect to MySQL and query the content.first create a new PHP  file in the custom web root directory using your editor
+
+```
+sudo nano /var/www/projectLEMP/todo_list.php
+```
+**Then past the following content for test**
+```
+<?php
+$user = "todo_user";
+$password = "PassWord.1";
+$database = "todo_db";
+$table = "todo_list";
+try {
+  $db = new PDO("mysql:host=localhost;dbname=$database", $user, $password);
+  echo "<h2>TODO</h2><ol>";
+  foreach($db->query("SELECT content FROM $table") as $row) {
+    echo "<li>" . $row['content'] . "</li>";
+  }
+  echo "</ol>";
+} catch (PDOException $e) {
+    print "Error!: " . $e->getMessage() . "<br/>";
+    die();
+}
+?>
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/04e9299b-3d88-4ecb-808c-2ce603701db7)
+
+ **Access this page on your  browser by using the domain name or public IP address followed by /todo_list.php**
+
+[http://54.80.11.17/todo_list.php](http://54.80.11.17/todo_list.php)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ff78b771-4043-4f74-a974-e01857caabda)
+
