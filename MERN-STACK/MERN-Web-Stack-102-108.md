@@ -21,9 +21,8 @@ To deploy a simple To-Do application that creates To-Do lists
 ```
 sudo apt update
 ```
-```
-Upgrade ubuntu
-```
+**Upgrade ubuntu**
+
 ```
 sudo apt upgrade
 ```
@@ -53,8 +52,8 @@ mkdir Todo
 ```
 2. **Verify that the Todo directory is created**
 ```
- ls
- ```
+ls
+```
 > **TIP**: In order to see some more useful information about files and directories in a directory along with their inode numbers, file sizes in a human-readable format, and file permissions. you can use combination of keys _**ls-lih**_
 ```
 ls -lih
@@ -159,14 +158,12 @@ If every thing goes well, you should see Server running on port 5000 in your ter
 - You can find it in your AWS web console in EC2 details or
 **For Public IP address** 
 
-  ```
-  curl -s http://169.254.169.254/latest/meta-data/public-ipv4 
- ```
-
- **For Public DNS name**
-
- ```
- curl -s http://169.254.169.254/latest/meta-data/public-hostname
+```
+curl -s http://169.254.169.254/latest/meta-data/public-ipv4 
+```
+**For Public DNS name**
+```
+curl -s http://169.254.169.254/latest/meta-data/public-hostname
 ```
   [http://<PublicIP-or-PublicDNS>:5000](http://<PublicIP-or-PublicDNS>:5000)
 
