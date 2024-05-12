@@ -1,43 +1,57 @@
 # Self study
 # 1. Make a research 
 # 1.1. what types of Database Management Systems (DBMS) exist and what each type is more suitable for. 
+Database Management Systems (DBMS) come in various types, each suited for different purposes and scenarios. Here are some common popular types: `RDBMS`, `NoSQL DBMS`, `NewSQL DBMS`, `in-memory DBMS`, `columnar DBMS`, `multimodel DBMS` and `cloud DBMS`.
 
 ## Relational Database Management Systems (RDBMS):
-- Relational databases organize data into tables with rows and columns.
-- Suitable for applications with structured data and complex queries.
+RDBMS. Sometimes referred to as a SQL DBMS and adaptable to most use cases, RDBMS presents data as rows in tables with a fixed schema and relationships defined by values in key columns. RDBMS Tier-1 products can be quite expensive, but there are high quality, open source options such as PostgreSQL that can be cost-effective. Other examples of popular RDBMS products include Oracle, MySQL, Microsoft SQL Server and IBM Db2
 - ACID (Atomicity, Consistency, Isolation, Durability) compliance ensures data integrity.
+- Suitable for applications with structured data and complex queries and traditional transactional systems, such as banking applications, e-commerce platforms, and enterprise resource planning (ERP) systems.
 - Examples: MySQL, PostgreSQL, Oracle, SQL Server.
-- Suitable for traditional transactional systems, such as banking applications, e-commerce platforms, and enterprise resource planning (ERP) systems.
-
 ## NoSQL Database Management Systems:
-- NoSQL databases use a variety of data models, such as document-oriented, key-value, columnar, or graph.
-- Suitable for applications with large volumes of unstructured or semi-structured data, distributed across multiple servers.
+ Well-suited for loosely defined data structures that may evolve over time, NoSQL DBMS may require more application involvement for schema management. There are four types of NoSQL database systems: document databases, graph databases, key-value stores and wide-column stores. Each uses a different type of data model, resulting in significant differences between each NoSQL type.
 - Designed for high scalability, performance, and flexibility.
 - Not strictly ACID compliant, allowing for eventual consistency and high availability.
+- Suitable for applications with large volumes of unstructured or semi-structured data, distributed across multiple servers, modern web applications, real-time analytics, content management systems, and IoT (Internet of Things) platforms.
 - Examples: MongoDB (document-oriented), Cassandra (columnar), Redis (key-value), Neo4j (graph).
-- Suitable for modern web applications, real-time analytics, content management systems, and IoT (Internet of Things) platforms.
 
+## NewSQL DBMS:
+Modern relational systems that use SQL, NewSQL database systems offer the same scalable performance as NoSQL systems. But NewSQL systems also provide ACID (atomicity, consistency, isolation and durability) support for data consistency. A NewSQL DBMS is engineered as a relational, SQL database system with a distributed, fault-tolerant architecture. Other typical features of NewSQL system offerings include in-memory capability and clustered database services with the ability to be deployed in the cloud.
+These are a newer class of databases that combine the scalability of NoSQL systems with the ACID (Atomicity, Consistency, Isolation, Durability) properties of traditional RDBMS.
+- Examples include Google Spanner, CockroachDB, and NuoDB.
+## In-memory DBMS:
+  These databases primarily rely on main memory for computer data storage. They are optimized for high-performance applications where speed is crucial but can consume more resources. Therefore, an in-memory database is ideal for applications that require high performance and rapid access to data, such as data stores that support real-time HTAP (hybrid transactional and analytical process). Any type of DBMS (relational, NoSQL, etc.) can also support in-memory processing.
+  - Examples include SAP HANA, VoltDB, and MemSQL.
+## Columnar database management system
+it stores data in tables focused on columns instead of rows, resulting in more efficient data access when only a subset of columns is required. It's well-suited for data warehouses that have a large number of similar data items.
+- Popular columnar database products include Snowflake and Amazon Redshift.
+
+## Multimodel database management system (DBMS)
+it is a type of database that supports multiple data models within a single, integrated platform.  Users can choose the model most appropriate for their application requirements without having to switch to a different DBMS. For example, IBM Db2 is a relational DBMS, but it also offers a columnar option. Many of the most popular database systems similarly qualify as multimodel through add-ons, including Oracle, PostgreSQL and MongoDB. 
+- Example Azure Cosmos DB and MarkLogic, were developed specifically as multimodel databases
 # 1.2 Difference Between Relational DBMS and NoSQL:
 
-## Relational DBMS:
+### Relational DBMS:
 - Structure: Data is organized into tables with rows and columns, linked by relationships.
 - Schema: Requires a predefined schema with fixed structure and data types.
 - Query Language: Uses SQL (Structured Query Language) for querying and manipulating data.
 - Transactions: ACID compliance ensures data integrity with strong consistency.
 - Scaling: Vertical scaling (adding more resources to a single server) is common but has limits.
-- Examples: MySQL, PostgreSQL, Oracle.
+- Examples: `MySQL`, `PostgreSQL`, `Oracle`
 
-## NoSQL:
+### NoSQL:
 - Structure: Data can be organized in various ways, such as documents, key-value pairs, columns, or graphs.
 - Schema: Typically schema-less or schema-flexible, allowing for dynamic changes to data structure.
 - Query Language: Various NoSQL databases have their own query languages or APIs, often different from SQL.
 - Transactions: Not all NoSQL databases provide ACID guarantees; some prioritize availability and partition tolerance (AP) over consistency.
 - Scaling: Designed for horizontal scaling (adding more servers to a distributed system), offering better scalability for large datasets and high volumes of concurrent users.
-- Examples: MongoDB, Cassandra, Redis, Neo4j.
+- Examples: `MongoDB`, `Cassandra`, `Redis`, `Neo4j`
 
 > Relational databases excel in structured data and transactional consistency, NoSQL databases offer flexibility, scalability, and better performance for modern applications dealing with large volumes of data and complex query patterns. The choice between them depends on the specific requirements and characteristics of the application.
 
-# 2. Get yourself familiar with a concept of Web Application Frameworks.
+# 2. Get yourself familiar with a concept of web application frameworks
+
+A web application framework is a software framework designed to support the development of dynamic web applications, websites, and web services. It provides a structured approach to building web applications by offering a set of tools, libraries, and components that streamline common tasks and promote best practices designed to provide a foundation upon which developers can construct their applications.
 
 ## 2.1. Server-side (Backend) and Client-side (Frontend) Frameworks:
 
@@ -247,7 +261,9 @@ selector {
   property: value;
 }
 `
+
 **Example**
+
 ```
 /* CSS comment */
 body {
@@ -263,8 +279,7 @@ h1 {
 _In this example:_
 
 - The body selector styles the entire document body with a specific font family and background color.
-- The h1 selector styles all <h1> elements with a specific text color and font size.
-
+- The h1 selector styles all `<h1>` elements with a specific text color and font size.
 - Selector: Specifies which HTML elements the rule applies to. Selectors can be based on element names, classes, IDs, attributes, or hierarchical relationships.
 - Property: Defines the style property to be applied to the selected elements.
 - Value: Specifies the value of the style property.
@@ -280,3 +295,14 @@ CSS offers a wide range of properties for customizing the appearance and layout 
 - **Border and Box Properties**: `border`, `border-radius`, `box-shadow`.
 
 These properties allow developers to control typography, colors, spacing, layout, and visual effects on web pages, making CSS an essential tool for web development.
+
+
+# References
+1. [Database management system (DBMS)](https://www.techtarget.com/searchdatamanagement/definition/database-management-system#:~:text=Popular%20database%20models%20and%20management,multimodel%20DBMS%20and%20cloud%20DBMS.)
+2. [What are web frameworks and why you need them?](https://intelegain-technologies.medium.com/what-are-web-frameworks-and-why-you-need-them-c4e8806bd0fb)
+3. [What is REST API](https://restfulapi.net/)
+4. [Cascading Style Sheets
+home page](https://www.w3.org/Style/CSS/Overview.en.html)
+5. [Mdn Web doc JavaScript tutorial](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+6. [javaScript pluralsight](https://www.javascript.com/)
+   
