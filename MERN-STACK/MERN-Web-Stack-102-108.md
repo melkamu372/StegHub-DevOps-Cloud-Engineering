@@ -673,12 +673,16 @@ cd Todo
 ```
  npx create-react-app client
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/32f012a6-d556-4f89-ac1d-90c954c4583b)
+
 
 This will create a new folder in your Todo directory called client, where you will add all the react code.
 3. check it 
 ```
 ls
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4e38d17f-a699-4b97-8918-116779f421b6)
+
 ## Running a React App
 Before testing the react app, there are some dependencies that need to be installed.
 
@@ -686,16 +690,26 @@ Before testing the react app, there are some dependencies that need to be instal
 ```
  npm install concurrently --save-dev
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a2801807-418d-4d48-867b-366e04d07296)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7ab6b526-a19c-4eaf-87ec-1ee8154fb1f1)
+
+
 2. Install nodemon used to run and monitor the server. If there is any change in the server code, nodemon will restart it automatically and load the new changes.
 ```
  npm install nodemon --save-dev
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1b00cf68-b065-43d7-a2c6-8ea847737355)
 
 3. In Todo folder open the package.json file. 
 
 ```
 vim package.json
 ```
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/62ba368c-2054-431c-9d20-d7105fd12335)
+
+
 
 4. Change the existing code  with the code below.
 ```
@@ -705,6 +719,8 @@ vim package.json
 "dev": "concurrently \"npm run start-watch\" \"cd client && npm start\""
 },
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/954083c0-7358-4865-90cb-a3c445f48290)
+
 
  **Configure Proxy in package.json**
  1. Change directory to client
@@ -712,25 +728,37 @@ vim package.json
  ```
  cd client
  ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cd94ab3f-9bd7-428a-b5b7-e7d4a5c1fee1)
+
  2. Open the package.json file
   ```
   vi package.json
   ```
 3. Add the key value pair in the package.json file "proxy": "http://localhost:5000".
+   
 The whole purpose of adding the proxy configuration in number 3 above is to make it possible to access the application directly from the browser by simply calling the server url like http://localhost:5000 rather than always including the entire path like http://localhost:5000/api/todos
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/24c45e9b-3482-40c3-8c22-b222cbc1275b)
 
 **Now, ensure you are inside the Todo directory and simply run npm run dev command :**
 1. Change directory to Todo
 ```
-cd Todo
-``` 
+cd ..
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/21ed42b2-0e82-45b9-ba40-e159e41890b4)
+
 2. run the application
 ```
 npm run dev
 ```
 Your app should open and start running on localhost:3000
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cdba1313-aceb-4fb4-8825-d418cf787edb)
+
+
+
 > Important note: In order to be able to access the application from the Internet you have to open TCP port 3000 on EC2 by adding a new Security Group rule.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c5fbeb54-d31f-45c2-8573-414f1d8eaf0a)
 
 
 ## Creating your React Components
@@ -744,28 +772,39 @@ cd Todo
 ```
 cd client
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/de0b3efe-135d-4655-a0bd-756c658f40a2)
+
 3. move to the src directory
 ```
 cd src
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5c3c19d4-349e-493a-9c63-7f3a7927c1e7)
+
 
 4. Inside your src folder create another folder called components
 ```
 mkdir components
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/19eeefbc-19a9-402c-bc68-837fd9794fca)
+
 5. Move into the components directory 
 ```
 cd components
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/94aef79a-e471-4177-82d0-fde6e4d77147)
 
 6. Inside components directory create three files Input.js, ListTodo.js and Todo.js run code concurrently
 ```
 touch Input.js ListTodo.js Todo.js
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f5eb21b9-6f2f-4b9a-9819-255275fa15af)
+
 7. Open Input.js file
 ```
 vim Input.js
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/702f32ae-2b40-4ed8-a376-17df834c6bdd)
+
 8. Copy and paste the following
 ```
 import React, { Component } from 'react';
@@ -814,29 +853,41 @@ return (
 
 export default Input
 ```
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1e60a9be-20f9-4f7d-a6fc-a1e3c1425648)
+
 To make use of Axios, which is a Promise based HTTP client for the browser and node.js, you need to cd into your client from your terminal and run yarn add axios or npm install axios.
 
 9. Move to the src folder
 ```
 cd ..
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9b37944d-e67f-4f58-bc63-0c1bc27cede7)
 
 10. Move to clients folder
 ```
 cd ..
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6ee53baf-1af5-4dfc-87ea-53c62dfe7c27)
+
 11. Install Axios
 ```
  npm install axios
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d0ad0e07-0758-4d25-ae32-c5e892ef7830)
+
 12. Go to components directory
 ```
 cd src/components
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0c549c86-a446-4a55-b33c-6de11e16595b)
+
 13. Open your ListTodo.js
 ```
 vim ListTodo.js
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/290d930e-1afe-4f4a-a1c1-2c7bf819efc4)
+
 14. Write the following cod
 ```
 import React from 'react';
@@ -867,10 +918,14 @@ return (
 export default ListTodo
 ```
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9e1b4c7f-7da3-4e3d-91dd-bec2289cb260)
+
 15. Then open Todo.js 
 ```
 vim Todo.js
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/99d14de6-4af4-48cc-b970-cf3af2c2f8b5)
+
 16. Write the following code
 ```
 import React, {Component} from 'react';
@@ -929,16 +984,21 @@ let { todos } = this.state;
 
 export default Todo;
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/85a6541c-a01f-4cfe-992e-fe47aa2d1ea1)
+
 **We need to make little adjustment to our react code. Delete the logo and adjust our App.js to look like this.**
 
 1. Move to the src folder
 ```
 cd ..
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1f9d23b2-de97-4c96-8fd7-0fe13560da1f)
+
 2. Make sure that you are in the src folder and run
 ```
 vim App.js
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fda9e0c7-71fa-436b-856b-7dc0baba579c)
 
 3. Write the following code
 ```
@@ -957,12 +1017,18 @@ return (
 
 export default App;
 ```
-4. After writting, exit the editor based on editor command
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3cda1cd9-49af-42f2-bd82-11e7494cf20f)
 
+4. After writting, exit the editor based on editor command
+```
+:wq
+```
 5. In the src directory open the App.css
 ```
 vim App.css
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/10ce9fd2-73a2-41da-98cd-37d883d5434c)
+
 6. Then Write the following code:
 ```
 .App {
@@ -1053,6 +1119,7 @@ margin-top: 0;
 }
 }
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/342b55cd-9f7c-43bb-9047-387fca079030)
 
 7. After writing save and exit
 
@@ -1060,6 +1127,8 @@ margin-top: 0;
 ```
 vim index.css
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d052a250-38ce-4645-9cd1-82a0f73f3de9)
+
 9. Write the following code:
 ```
 body {
@@ -1080,15 +1149,31 @@ font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
 monospace;
 }
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/216ef70f-9e15-4c28-8c35-7d74047decc9)
+
 
 10. Go to the root directory  Todo directory
 ```
 cd ../..
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e48e12f1-fc9a-4a0d-ab0f-036b0f1918a5)
+
 11. When you are in the Todo directory run:
 ```
 npm run dev
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9d94ab15-61ef-477e-b40d-a5b6a653154a)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ef65cd81-e25c-437c-a837-90979bd2eede)
+
+**Now aceess using web browser**
+
+1.[My Todo http://3.89.104.64:3000/](http://3.89.104.64:3000/)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b8684515-5a01-4bc6-b1ba-7a1cf6637570)
+
+
+
 
 ### The End of project 3 MERN WEB STACK
 In this Project We have created a simple To-Do Application and deployed it to MERN stack. 
