@@ -1,10 +1,84 @@
+# MERN web stack implementation in AWS project 3
+> The MERN stack is a collection of technologies that help developers build robust and scalable web applications using JavaScript. The acronym **“MERN”** stands for **`MongoDB`**, **`Express`**, **`React`**, and **`Node. js`**, with each component playing a role in the development process.
+
 # Step 0 - Preparing prerequisites
 In order to complete this project you will need an AWS account and a virtual server with Ubuntu Server OS.
 
 > Hint #1: When you create your EC2 Instances, you can add Tag "Name" to it with a value that corresponds to a current project you are working on - it will be reflected in the name of the EC2 Instance.
 
-> Hint #2 (for Windows users only): In previous projects we used Putty and Git Bash to connect to our EC2 Instances. In this project and going forward, we are going to explore the usage windows terminal and mobaxterm.
- Watch this videos to learn how to set up windows terminal on your pc
+1. Log to aws account console and create EC2 instance of t2.micro type with Ubuntu 24.04 LTS (HVM) Server launch in the default region us-east-1.
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cd89b74e-db5e-484d-8c28-9d55d22abc57)
+
+2. Select Ubuntu free tire eligable version
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a6ae3d4f-229c-439b-9549-9a8b55f12356)
+
+3. Create new key pair or select existing key
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/14fc69b8-8135-4c33-9b44-554d7e8bb894)
+
+4. Network setting create new security group or use existing security group
+   
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9aeb791b-e15e-4468-8029-1f63c43b26ec)
+
+5. Configure Storage and launch the instance 
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/020de6a3-2006-4f14-b77c-c4367813ac3b)
+
+6. View Instance
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c8bf7b82-5986-4322-81bc-780dc1ebdb1c)
+
+7. Instance Details
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/74916b95-2c37-428b-983b-56eff93b3d48)
+
+8. Configure security group with the following inbound rules:
+
+- Allow traffic on port 22 (SSH) with source from any IP address. This is opened by default.
+- Allow traffic on port 80 (HTTP) with source from anywhere on the internet.
+- Allow traffic on port 443 (HTTPS) with source from anywhere on the internet.
+- Allow traffic on port 5000 (Custom) with source from anywhere on the internet.
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/96d9eb2d-98b2-42d6-b1a8-93b61333177d)
+
+
+9. Default VPC Network Configuration
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/69ff0b1a-1a59-4c14-8d45-c501bb610ff1)
+
+    
+10. Connect to EC2 instance from SSH client
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a97dc8ae-2957-4b86-8364-f517584e1662)
+
+11. Give Permission for the private ssh key that we used either created or existing during launching instance and downloaded
+
+  ```
+sudo chmod 0400 melkamu_key.pem
+```
+12. Then connect the instance using instance Public Ip Addresss or domain name
+```
+ssh -i melkamu_key.pem ubuntu@54.144.78.202
+```
+or
+```
+ssh -i "melkamu_key.pem" ubuntu@ec2-54-144-78-202.compute-1.amazonaws.com
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fa410929-61e7-4ce3-b92c-e694111bca3c)
+
+> Hint #2 (for Windows users only): In previous projects we used Putty and Git Bash to connect to our EC2 Instances. In this project and going forward, we are going to explore the usage **windows terminal** and **mobaxterm**.
+## Alternative tool for Putty, Git Bash for windows os users **windows terminal** and **mobaxterm**   
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d16e6873-a3aa-47cd-b5be-b4eaee2a7b2d) **Windows Terminal** 
+it is a modern and feature-rich terminal application provided by Microsoft for Windows users. It's designed to be a central place for accessing various command-line tools, shells, and environments, providing a more unified and customizable experience compared to the traditional Command Prompt or PowerShell.
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b1dbb459-6fd3-4414-8b4a-b30736fffdc1) **MobaXterm**
+it is a comprehensive software package for Windows that provides various network tools, remote connectivity features, and a Unix-like terminal environment. It's often used by developers, system administrators, and IT professionals for managing remote servers, accessing SSH sessions, transferring files, and more.
+
+
+Watch this videos to learn how to set up windows terminal on your pc
 
 - [How to install Windows terminal](https://www.youtube.com/watch?v=R-qcpehB5HY)
 
@@ -21,19 +95,28 @@ To deploy a simple To-Do application that creates To-Do lists
 ```
 sudo apt update
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d607e9b3-bfe2-4384-8645-fce884c05078)
+
+
 **Upgrade ubuntu**
 
 ```
 sudo apt upgrade
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f002269b-00f4-4af1-b493-943a5a307e70)
+
 2. **Lets get the location of Node.js software from Ubuntu repositories and install**
 ```
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/77be70dd-cd4a-424d-abbb-3136e6121a15)
+
 **Install Node.js on the server with the command below**
 ```
 sudo apt-get install -y nodejs
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/43352b3b-ab2b-44b6-8ed2-a513bd840679)
+
 > Note: The command above installs both nodejs and npm. _NPM_ is a package manager for Node like apt for Ubuntu,used to install Node modules & packages to manage dependency conflicts.
 
 3. **Verify the node installation**
@@ -41,10 +124,14 @@ sudo apt-get install -y nodejs
 ```
 node -v
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/59012fb7-a426-425e-8611-7b8dcff78f0e)
+
 4. **Check the version of npm (Node Package Manager) installed**
 ```
 npm -v 
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a370f919-dbee-46e6-a3e4-2e48346521af)
+
 ## Application Code Setup
 1. **Create a new directory for your To-Do project:**
 ```
@@ -54,18 +141,26 @@ mkdir Todo
 ```
 ls
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e6ec33df-c070-4d5f-bcf0-6c0fdc814d70)
+
 > **TIP**: In order to see some more useful information about files and directories in a directory along with their inode numbers, file sizes in a human-readable format, and file permissions. you can use combination of keys _**ls-lih**_
 ```
 ls -lih
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2fd10091-2784-4b6b-907b-0b82f4c6597a)
+
 **If you want to learen more about ls command different  keys use _ls --help_**
 ```
 ls --help
-```   
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7a025f08-3bfe-4f8d-8f45-d824576f801e)
+
 3. **Change your current directory to the newly created one**
 ```
 cd Todo
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f26d78a1-e34c-49c5-a335-fe9c2eab54ee)
+
 4. **Initialize a new Node.js project using npm init**
 so that a new file named package.json will be created. This file will normally contain information about your application and the dependencies that it needs to run.
 Answer Prompts: After running npm init, you'll be prompted to provide information about your project.
@@ -84,12 +179,15 @@ You can press Enter several times to accept default values, then accept to write
 ```
 npm init
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/61f6480b-40fe-49b8-a617-9dd1143010d5)
 
 5. **Confirm that you have package.json file created**
 
 ```
 ls 
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/59f54c6c-c936-4478-8ba2-162e3cdc7a38)
+
 
 ## Install ExpressJS
  Express is a framework for Node.js, therefore a lot of things developers would have programmed is already taken care of out of the box. Therefore it simplifies development, and abstracts a lot of low level details. For example, Express helps to define routes of your application based on HTTP methods and URLs.
@@ -97,19 +195,27 @@ ls
 ```
 npm install express
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b890d79b-66d9-45af-8987-13f39c52f30a)
+
 2. Create a file index.js
 ```
  touch index.js
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/149167f5-9bd3-43c0-aa40-5349a4270f78)
+
 3. confirm that your index.js file is successfully created
 ```
 ls
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c15e066d-40fc-44ab-8857-1b4bac73c9af)
+
 4. Install the dotenv module
 It is a popular Node.js library used for loading environment variables from a .env file into process.env
 ```
 npm install dotenv
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e6b2df45-13e3-4a28-bd73-8784caed4610)
+
 5. Open the index.js file using your editor vim or nano 
 ```
 vim index.js
@@ -137,20 +243,25 @@ app.listen(port, () => {
 console.log(`Server running on port ${port}`)
 });
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/292dbd2d-7290-4938-8fff-022698360567)
 
-> **Notice** that we have specified to use port 5000 in the code. This will be required later when we go on the browser.
 
-Use :w to save in vim and use :qa to exit vim
+> **Notice** that we have specified to use port 5000 in the code. This will be required later when we go on the browser. But we allready add when creating the instance
+
+Use :wq to save in vim and use :qa to exit vim
 
 7. Start our server to see if it works. Open your terminal in the same directory as your index.js file and type:
 ```
 node index.js
 ```
 If every thing goes well, you should see Server running on port 5000 in your terminal.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/359fe920-6dca-4715-b1f3-6ff9bacdbd39)
 
 
-8. Now we need to open port 5000 in EC2 Security Groups. 
- 
+8. Now we need to open port 5000 in EC2 Security Groups. but we allready open 
+
+ ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/df2f0097-d00f-481b-96b1-77f2d31c7daf)
+
 9. Open up your browser and try to access your server's Public IP or Public DNS name followed by port 5000:
 
 > Quick reminder how to get your server's Public IP and public DNS name:
@@ -161,11 +272,18 @@ If every thing goes well, you should see Server running on port 5000 in your ter
 ```
 curl -s http://169.254.169.254/latest/meta-data/public-ipv4 
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/53960896-0cf2-49b8-a2b6-dc55a312b3e3)
+
 **For Public DNS name**
 ```
 curl -s http://169.254.169.254/latest/meta-data/public-hostname
 ```
-  [http://<PublicIP-or-PublicDNS>:5000](http://<PublicIP-or-PublicDNS>:5000)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ec7f249d-8241-41cc-83aa-e771ff850960)
+
+[http://54.144.78.202:5000](http://54.144.78.202:5000)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/23ee0195-4e7b-4118-a003-769849d4f19b)
+
 
 ## Routes
 There are three actions that our To-Do application needs to be able to do:
@@ -178,20 +296,28 @@ There are three actions that our To-Do application needs to be able to do:
 ````
 mkdir routes
 ````
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/bd33d45a-f0bd-4f52-a507-3a6538d0bd07)
+
 > Tip: You can open multiple shells in Putty or Linux/Mac to connect to the same EC2
 
 2. Change directory to routes folder
 ```
 cd routes
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fadf49b1-1dbc-4e9e-8dcc-d171ffbc5abb)
+
 3. Create a file api.js
 ```
 touch api.js
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5ba2909e-c7d9-4955-aed7-5a4babd71f2f)
+
 4. Open the file with your editor 
 ```
 vim api.js
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/68e51cf8-255a-456f-a4fd-b0395112efe2)
+
 5. Copy below code and paste in the file
 ```
 const express = require ('express');
@@ -211,6 +337,8 @@ router.delete('/todos/:id', (req, res, next) => {
 
 module.exports = router;
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a0babd28-1d9d-49c2-8282-5dc3e144003a)
+
 
 ## Models
 Since the app is going to make use of Mongodb which is a NoSQL database, we need to create a model.
@@ -227,23 +355,32 @@ To create a Schema and a model, install mongoose which is a Node.js package that
 ```
 cd Todo
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/42af0731-d872-46bd-874b-0b7fd8f6c4d7)
+
 2. Install mongoose
 ```
 npm install mongoose
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1b18d12e-e16e-435c-ad2e-851271961702)
+
 3. Create a new folder models
   ```
   mkdir models 
   ```
+
 4. Change directory into models
 ```
  cd models
  ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7916454f-a579-4432-abca-d5f521ec3d8a)
+
 
 5. Inside the models folder, create a file and name it todo.js
 ```
 touch todo.js
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4e0b0866-bada-4dcb-aad4-9b80ca0068fd)
+
 > Tip: All three commands above can be defined in one line to be executed consequently with help of && operator, like this:
 ```
 mkdir models && cd models && touch todo.js
@@ -252,6 +389,8 @@ mkdir models && cd models && touch todo.js
 ```
  vim todo.js
  ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cc48fe30-ca20-4006-92c3-27eeccbf996c)
+
 7. Paste the code below in the file:
 ```
 const mongoose = require('mongoose');
@@ -270,6 +409,7 @@ const Todo = mongoose.model('todo', TodoSchema);
 
 module.exports = Todo;
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/158562e5-bad0-4998-9f8d-22689c2483b2)
 
 **Now we need to update our routes from the file api.js in routes directory to make use of the new model**
 
@@ -277,11 +417,15 @@ module.exports = Todo;
 ```
 cd routes
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/956187fe-4c38-4abb-bf09-a946f8e17eb3)
+
 
 9. Open api.js with  your editor 
 ```
 vim api.js
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c0d0a7c2-7f39-4a98-a3ad-d9ab4d9e8a22)
+
 10. Delete the code inside with :%d command and paste there code below into it then save and exit
 ```
 const express = require ('express');
@@ -316,16 +460,29 @@ Todo.findOneAndDelete({"_id": req.params.id})
 
 module.exports = router;
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2447a460-44c9-4964-acd8-81509261062c)
 
 ## MongoDB Database
 We need a database where we will store our data. For this we will make use of mLab. mLab provides MongoDB database as a service solution (DBaaS), so to make life easy, you will need to sign up for a shared clusters free account, which is ideal for our use case. [Sign up here](https://www.mongodb.com/products/try-free/platform/atlas-signup-from-mlab). Follow the sign up process, select AWS as the cloud provider, and choose a region near you.
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ec2cc480-e2c9-4c10-81a7-f1730860e6d1)
+
+
 Allow access to the MongoDB database from anywhere (Not secure, but it is ideal for testing)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4ae3a75a-e8f3-436c-bb36-7e5fcdafb018)
 
 **IMPORTANT NOTE** In the image below, make sure you change the time of deleting the entry from 6 Hours to 1 Week
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2ece9b2a-4b4e-47ba-b8e6-a99ca9ea84f5)
+
 
 1. Create a MongoDB database and collection inside mLab
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f08031e4-1282-4257-a660-364af29bdde0)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7724b57f-b58d-4e90-855f-24e6d4a4040c)
+
 
 In the index.js file, we specified process.env to access environment variables, but we have not yet created this file. So we need to do that now.
 
@@ -333,13 +490,19 @@ In the index.js file, we specified process.env to access environment variables, 
 ```
 cd Todo
 ``` 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/22b633c9-178f-4ec5-9f82-a71c017cf489)
+
 ```
 touch .env
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4c7809a0-dce8-4476-893d-d0f7543ccb72)
+
 3. Open .env file with your editor
 ```
-vi .env
+vim .env
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/61e53656-8f6c-49bf-b2dc-16492e77847a)
+
 4. Add the connection string to access the database in it, just as below:
 ```
 DB = 'mongodb+srv://<username>:<password>@<network-address>/<dbname>?retryWrites=true&w=majority'
@@ -347,25 +510,47 @@ DB = 'mongodb+srv://<username>:<password>@<network-address>/<dbname>?retryWrites
 > Ensure to update username, password, network-address and database according to your setup
 
 Here is how to get your connection string 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b97e653b-e2bf-4dd2-99dd-d143c4014f7a)
 
+**Choose connect to your Application Option**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9889121b-ac24-46ba-842a-ee0d03d28002)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5c54e16d-48d8-41e7-8111-242fdcc8c388)
+
+**This is my connection string**
+```
+mongodb+srv://melkamu:<password>@cluster1.ksbphyk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1
+```
+> _Replace <password> with the password for the melkamu user_
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8df2a5cf-e34d-45e6-8172-eca330d1c126)
 
 Now we need to update the index.js to reflect the use of .env so that Node.js can connect to the database.
 
 Simply delete existing content in the file, and update it with the entire code below.
 
 5. To do that using vim, follow below steps
+
  5.1. Open the file with
 ```
 vim index.js
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/742214cf-8b6b-422d-a4c7-a08769c62d10)
+
 5.2. Press esc
+
 5.3. Type :
+
 5.4. Type %d
+
 5.5. Hit 'Enter'
+
 The entire content will be deleted, then,
 
 5.6. Press i to enter the insert mode in vim
+
 5.7. Paste the entire code below in the file
+
 ```
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -405,6 +590,9 @@ app.listen(port, () => {
 console.log(`Server running on port ${port}`)
 });
 ```
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fe4f51ee-19f5-4b28-8432-d5909e096079)
+
 > Using environment variables to store information is considered more secure and best practice to separate configuration and secret data from the application, instead of writing connection strings directly inside the index.js application file.
 
 6. Start your server:
@@ -413,6 +601,8 @@ node index.js
 ```
 If you see a message Database connected successfully, our backend configured sucessfully congratulation.
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f53a31cf-bd25-4c95-8d8c-b7a979e913bc)
+
 
 ## Testing Backend Code without Frontend using RESTful API
 So far we have written backend part of our To-Do application, and configured a database, but we do not have a frontend UI yet. We need ReactJS code to achieve that. But during development, we will need a way to test our code using RESTfulL API. Therefore, we will need to make use of some API development client to test our code.
@@ -420,6 +610,7 @@ So far we have written backend part of our To-Do application, and configured a d
 In this project, we will use **Postman** to test our API.
 
 **How to Install Postman In our machine**
+
 1. **Download Postman**: Go to the [Postman website](https://www.postman.com/downloads/) and download the version of Postman that is compatible with your operating system (Windows, macOS, or Linux).
 
 2. **Install Postman**: Once the download is complete, run the installer file. Follow the on-screen instructions to complete the installation process.
@@ -430,6 +621,7 @@ In this project, we will use **Postman** to test our API.
 
 5. **Start Using Postman**: Once Postman is launched, you can start using it to create and send HTTP requests, test APIs, and collaborate with your team on API development projects.
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d342c2dd-7c72-4028-abd5-8bf826af4adb)
 
 If you want to learen more [Click HERE](https://www.youtube.com/watch?v=FjgYtQK_zLE)
 
@@ -439,11 +631,31 @@ Now open your Postman, create a POST request to the API http://<PublicIP-or-Publ
 
 **Note: make sure your set header key Content-Type as application/json** 
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c0ae7224-01c4-4b63-8e45-2adb87da7b44)
+
 
 1. Display a list of tasks: GET request to your API on http://<PublicIP-or-PublicDNS>:5000/api/todos. This request retrieves all existing records from out To-do application 
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/38bb9c7c-a76f-4b90-ac8e-59ad63980e9e)
+
+
+
 2. Add a new task to the list - HTTP POST request to your API on http://<PublicIP-or-PublicDNS>:5000/api/todos
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/865618f7-e007-4fc8-b195-7ee38f6aa373)
+
+**Check Data is inserted**
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ebacdee4-048a-4994-8d1b-4119fec6fb35)
+
+
 3. Delete an existing task from the list - HTTP DELETE request to your API on http://<PublicIP-or-PublicDNS>:5000/api/todos
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f8d4b4f7-9e30-4695-9b6c-350c57dae564)
+
+**After Delete we check by get request**
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2fe85b0a-beb0-4a9d-9370-876168550e7e)
 
 
 # Step 2 - Frontend creation
@@ -454,11 +666,14 @@ In the same root directory as your backend code, which is the Todo directory
 ```
 cd Todo
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/71b284ab-cb52-4cc4-982e-63d1ffbb765c)
+
 2. Create react app
 
 ```
  npx create-react-app client
 ```
+
 This will create a new folder in your Todo directory called client, where you will add all the react code.
 3. check it 
 ```
