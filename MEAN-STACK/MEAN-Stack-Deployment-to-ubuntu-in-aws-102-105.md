@@ -172,33 +172,58 @@ node -v
 ```
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c325256b-764c-4396-8dbe-3e136c6cf158)
 
-# Step 2: Install MongoDB
+# Step 2: Install MongoDB since I am using ubuntu-noble-24.04-amd64-server I follow that step
 **MongoDB** stores data in flexible, JSON-like documents. Fields in a database can vary from document to document and data structure can be changed over time. For our example application, we are adding book records to MongoDB that contain book name, isbn number, author, and number of pages.
-0. Add a key from a key server to the list of trusted keys used by the Advanced Package Tool (APT).
+
+0. Prerequisite packages.
+
+**The first step is to install the prerequisite packages needed during the installation run the following command**
 ```
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+sudo apt install software-properties-common gnupg apt-transport-https ca-certificates -y
 ```
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4de16558-a4df-4169-ae1d-faaf1389d724)
-
+**To install the most recent MongoDB package, you need to add the MongoDB package repository to your sources list file on Ubuntu. Before that, you need to import the public key for MongoDB on your system using the wget command as follows:**
 ```
-echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+curl -fsSL https://pgp.mongodb.com/server-7.0.asc |  sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
 ```
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/23ae917d-7596-43bd-b79d-7cee77682482)
+**Next, add MongoDB 7.0 APT repository to the /etc/apt/sources.list.d directory.**
+```
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+```
+**Once the repository is added, reload the local package index.**
+```
+sudo apt update
+```
+**The command refreshes the local repositories and makes Ubuntu aware of the newly added MongoDB 7.0 repository.**
 
 1. Install MongoDB
 ```
-sudo apt install -y mongodb
+sudo apt install mongodb-org -y
 ```
+2. Verify the version of MongoDB installed
+```
+ mongod --version
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/859e58b7-d324-4c05-98a6-1676273fd43e)
+
 2. Start The server
 ```
-sudo service mongodb start
+sudo systemctl start mongod
 ```
 
 3. Verify that the service is up and running
 ```
-sudo systemctl status mongodb
+sudo systemctl status mongod
 ```
-4. Install Node package manager(NPM).
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d594112e-97a8-4a8e-b262-cb90860ea173)
+
+4. Check Node package manager(NPM).
+```
+npm -v 
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0b66c542-e6f7-4e01-94d0-018dea1a38e0)
+**if not installed install using**
 ```
 sudo apt install -y npm
 ```
@@ -206,18 +231,26 @@ sudo apt install -y npm
 ```
 sudo npm install body-parser
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5246befb-2e81-455e-ac60-e32eeba76b41)
+
 6. Create a folder Books
 ```
 mkdir Books && cd Books
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/61ec4fab-dd08-4927-ac29-ad2e0ab5dada)
+
 6. In the Books directory, Initialize npm project
 ```
 npm init
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0be5d542-d2e7-497e-9d78-45385603175a)
+
 7. Add a file to it named server.js
 ```
-vi server.js
+vim server.js
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7890488c-4aed-48d6-ab52-46c56f08546b)
+
 8. add the web server code below into the server.js file
 ```
 var express = require('express');
@@ -231,3 +264,98 @@ app.listen(app.get('port'), function() {
     console.log('Server up: http://localhost:' + app.get('port'));
 });
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ff0ed935-edb9-44c9-be95-0963738fd124)
+
+# Step 3: Install Express and set up routes to the server
+Express is a minimal and flexible Node.js web application framework that provides features for web and mobile applications. We will use it to pass book information to and from our MongoDB database.
+We also will use Mongoose package which provides a straight-forward, schema-based solution to model our application data. 
+1. Install express and mongoose
+```
+sudo npm install express mongoose
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e70a9d15-a24f-4627-ba93-84d9759e49f3)
+
+2. In 'Books' folder, create a folder named apps
+```
+mkdir apps && cd apps
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1a6e0367-4d0b-4c33-a034-97a5b5c175ac)
+
+3. Create a file named routes.js
+```
+vim routes.js
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/339c2314-a543-4f90-8bdc-d45e214720c9)
+
+4. Write the code below into routes.js
+```
+var Book = require('./models/book');
+module.exports = function(app) {
+  app.get('/book', function(req, res) {
+    Book.find({}, function(err, result) {
+      if ( err ) throw err;
+      res.json(result);
+    });
+  }); 
+  app.post('/book', function(req, res) {
+    var book = new Book( {
+      name:req.body.name,
+      isbn:req.body.isbn,
+      author:req.body.author,
+      pages:req.body.pages
+    });
+    book.save(function(err, result) {
+      if ( err ) throw err;
+      res.json( {
+        message:"Successfully added book",
+        book:result
+      });
+    });
+  });
+  app.delete("/book/:isbn", function(req, res) {
+    Book.findOneAndRemove(req.query, function(err, result) {
+      if ( err ) throw err;
+      res.json( {
+        message: "Successfully deleted the book",
+        book: result
+      });
+    });
+  });
+  var path = require('path');
+  app.get('*', function(req, res) {
+    res.sendfile(path.join(__dirname + '/public', 'index.html'));
+  });
+};
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/dafe6881-74f6-40d3-a9f9-d17b8dd9a282)
+
+5. In the apps folder, create a folder named models
+```
+mkdir models && cd models
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/23776309-3016-4ae3-a332-300e0e658e14)
+
+6. Create a file named book.js
+```
+vim book.js
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b50a4109-1e94-46a7-85bf-b085d4dee10d)
+
+
+7. write the code below into book.js
+```
+var mongoose = require('mongoose');
+var dbHost = 'mongodb://localhost:27017/test';
+mongoose.connect(dbHost);
+mongoose.connection;
+mongoose.set('debug', true);
+var bookSchema = mongoose.Schema( {
+  name: String,
+  isbn: {type: String, index: true},
+  author: String,
+  pages: Number
+});
+var Book = mongoose.model('Book', bookSchema);
+module.exports = mongoose.model('Book', bookSchema);
+```
+
