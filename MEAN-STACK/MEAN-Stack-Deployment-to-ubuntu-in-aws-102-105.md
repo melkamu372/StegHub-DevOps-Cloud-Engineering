@@ -358,4 +358,171 @@ var bookSchema = mongoose.Schema( {
 var Book = mongoose.model('Book', bookSchema);
 module.exports = mongoose.model('Book', bookSchema);
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2491df17-f206-4c95-9c53-8792b43429e6)
 
+# Step 4 - Access the routes with _AngularJS_
+AngularJS provides a web framework for creating dynamic views in our web applications.Here we use AngularJS to connect our web page with Express and perform actions on our book register
+
+1. Change the directory back to Books
+```
+cd ../..
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/64e3edba-edad-4202-8217-7d7ed4e90f17)
+
+2. Create a folder named public
+```
+mkdir public && cd public
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/bebafc3b-976e-40d9-8077-f612724b735b)
+
+3. Add a file named script.js
+```
+vim script.js
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0e5c1df5-62e9-47e5-9132-467f468234a2)
+
+4. Write the Code below (controller configuration defined) into the script.js file
+```
+var app = angular.module('myApp', []);
+app.controller('myCtrl', function($scope, $http) {
+  $http( {
+    method: 'GET',
+    url: '/book'
+  }).then(function successCallback(response) {
+    $scope.books = response.data;
+  }, function errorCallback(response) {
+    console.log('Error: ' + response);
+  });
+  $scope.del_book = function(book) {
+    $http( {
+      method: 'DELETE',
+      url: '/book/:isbn',
+      params: {'isbn': book.isbn}
+    }).then(function successCallback(response) {
+      console.log(response);
+    }, function errorCallback(response) {
+      console.log('Error: ' + response);
+    });
+  };
+  $scope.add_book = function() {
+    var body = '{ "name": "' + $scope.Name + 
+    '", "isbn": "' + $scope.Isbn +
+    '", "author": "' + $scope.Author + 
+    '", "pages": "' + $scope.Pages + '" }';
+    $http({
+      method: 'POST',
+      url: '/book',
+      data: body
+    }).then(function successCallback(response) {
+      console.log(response);
+    }, function errorCallback(response) {
+      console.log('Error: ' + response);
+    });
+  };
+});
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6e3e2c7c-ba27-4b7a-ae59-cf6ca040988d)
+
+5. In public folder, create a file named index.html
+```
+vim index.html
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/846b576f-6faa-49b6-8d2d-4e7b4c7b9423)
+
+6. Write the code below into index.html
+```
+<!doctype html>
+<html ng-app="myApp" ng-controller="myCtrl">
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div>
+      <table>
+        <tr>
+          <td>Name:</td>
+          <td><input type="text" ng-model="Name"></td>
+        </tr>
+        <tr>
+          <td>Isbn:</td>
+          <td><input type="text" ng-model="Isbn"></td>
+        </tr>
+        <tr>
+          <td>Author:</td>
+          <td><input type="text" ng-model="Author"></td>
+        </tr>
+        <tr>
+          <td>Pages:</td>
+          <td><input type="number" ng-model="Pages"></td>
+        </tr>
+      </table>
+      <button ng-click="add_book()">Add</button>
+    </div>
+    <hr>
+    <div>
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Isbn</th>
+          <th>Author</th>
+          <th>Pages</th>
+
+        </tr>
+        <tr ng-repeat="book in books">
+          <td>{{book.name}}</td>
+          <td>{{book.isbn}}</td>
+          <td>{{book.author}}</td>
+          <td>{{book.pages}}</td>
+
+          <td><input type="button" value="Delete" data-ng-click="del_book(book)"></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/28666673-3304-484d-a4a4-7dc139d2c3a6)
+
+7. Change the directory back up to Books
+```
+cd ..
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b4d09f7b-2c09-4e86-ba8c-c15d394fe9b2)
+
+8. Start the server by running this command:
+```
+node server.js
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a50da275-9a8d-49be-942a-70c247f65637)
+
+**The server is now up and running, we can connect it via port 3300. Launch a separate Putty or SSH console to test what curl command returns locally.**
+```
+curl -s http://localhost:3300
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/86a3ea50-65fa-4312-bf2e-17edf4e53e3a)
+
+9. We can try and access it from the Internet.
+
+For this - we need to open TCP port 3300 in our AWS Web Console for our EC2 Instance so we add port 3300.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cde3e958-5e90-4229-a0fe-610f03dadabf)
+
+Your Security group shall look like this:
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a475a763-189b-469b-ad31-df3cb903e38e)
+
+
+Now you can access our Book Register web application from the Internet with a browser using Public IP address or Public DNS name.
+
+> - Quick reminder how to get your server's Public IP and public DNS name:
+
+> -  You can find it in your AWS web console in EC2 details or Run
+>   
+**For Public IP address** 
+```
+curl -s http://169.254.169.254/latest/meta-data/public-ipv4
+``` 
+**For Public DNS name**
+```
+curl -s http://169.254.169.254/latest/meta-data/public-hostname 
+```
+This is how your Web Book Register Application will look like in browser:
