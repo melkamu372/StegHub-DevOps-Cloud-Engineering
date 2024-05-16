@@ -172,21 +172,29 @@ node -v
 ```
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c325256b-764c-4396-8dbe-3e136c6cf158)
 
-# Step 2: Install MongoDB since I am using ubuntu-noble-24.04-amd64-server I follow that step
+# Step 2: Install MongoDB 
+**Since I am using ubuntu-noble-24.04-amd64-server I follow this step [How to Install MongoDB on Ubuntu 22.04 | 7 Steps](https://www.cherryservers.com/blog/install-mongodb-ubuntu-22-04)  because installation step bellow 22.04 is different from this one**
+
 **MongoDB** stores data in flexible, JSON-like documents. Fields in a database can vary from document to document and data structure can be changed over time. For our example application, we are adding book records to MongoDB that contain book name, isbn number, author, and number of pages.
 
 0. Prerequisite packages.
 
-**The first step is to install the prerequisite packages needed during the installation run the following command**
+**The first step is install the prerequisite packages needed during the installation**
+
 ```
 sudo apt install software-properties-common gnupg apt-transport-https ca-certificates -y
 ```
+
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4de16558-a4df-4169-ae1d-faaf1389d724)
-**To install the most recent MongoDB package, you need to add the MongoDB package repository to your sources list file on Ubuntu. Before that, you need to import the public key for MongoDB on your system using the wget command as follows:**
+
+**To install the most recent MongoDB package, we need to add the MongoDB package repository to your sources list file on Ubuntu. Before that, you need to import the public key for MongoDB on your system using the wget command as follows:**
+
 ```
 curl -fsSL https://pgp.mongodb.com/server-7.0.asc |  sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
 ```
+
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/23ae917d-7596-43bd-b79d-7cee77682482)
+
 **Next, add MongoDB 7.0 APT repository to the /etc/apt/sources.list.d directory.**
 ```
 echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
@@ -195,12 +203,16 @@ echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gp
 ```
 sudo apt update
 ```
+
 **The command refreshes the local repositories and makes Ubuntu aware of the newly added MongoDB 7.0 repository.**
 
 1. Install MongoDB
 ```
 sudo apt install mongodb-org -y
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5deecc06-2291-44c0-ad8c-4c99c6d5324f)
+
+
 2. Verify the version of MongoDB installed
 ```
  mongod --version
@@ -208,15 +220,24 @@ sudo apt install mongodb-org -y
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/859e58b7-d324-4c05-98a6-1676273fd43e)
 
 2. Start The server
+**The MongoDB service is disabled upon installation by default, and you can verify this by running the below command:**
+```
+sudo systemctl status mongod
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d62e8c10-df5b-4b0a-8f62-67c551b46601)
+
+**To start the MongoDB service, execute the command:**
 ```
 sudo systemctl start mongod
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3b243b5a-99f0-4472-9972-883b3422c7ae)
+
 
 3. Verify that the service is up and running
 ```
 sudo systemctl status mongod
 ```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d594112e-97a8-4a8e-b262-cb90860ea173)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8e22ced3-d709-4eac-ade3-1ed5e43e2ddd)
 
 4. Check Node package manager(NPM).
 ```
@@ -505,13 +526,15 @@ curl -s http://localhost:3300
 9. We can try and access it from the Internet.
 
 For this - we need to open TCP port 3300 in our AWS Web Console for our EC2 Instance so we add port 3300.
+
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cde3e958-5e90-4229-a0fe-610f03dadabf)
 
 Your Security group shall look like this:
+
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a475a763-189b-469b-ad31-df3cb903e38e)
 
 
-Now you can access our Book Register web application from the Internet with a browser using Public IP address or Public DNS name.
+Now we can access our Book Register web application from the Internet with a browser using Public IP address or Public DNS name.
 
 > - Quick reminder how to get your server's Public IP and public DNS name:
 
@@ -525,4 +548,45 @@ curl -s http://169.254.169.254/latest/meta-data/public-ipv4
 ```
 curl -s http://169.254.169.254/latest/meta-data/public-hostname 
 ```
-This is how your Web Book Register Application will look like in browser:
+## This is how our Book Register Application will look like in browser:
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8d8bbb9b-5e78-472e-b035-f9744feb25a6)
+
+- Register new book and see the update 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/086e8d6d-b16b-4bc7-a40f-e0bd3c3115b6)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5ef795c1-7b87-4d45-9952-e92b7b698755)
+
+- Retrived Data 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3c500d91-69ad-4cca-b030-62c247bd30df)
+
+
+- now we can see inserted data in database it looks
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/00eef40a-ea15-42ec-8e45-504466e93bd0)
+
+
+- Delete Inserted Data
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/aa01e633-0444-4113-abdd-5ca60d4b7d18)
+  
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a725f3bd-0acb-4245-950b-3d000f0ced14)
+
+- Verify is it deleted
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/57da9229-ad23-428a-8f3a-9c27a45bc4c4)
+
+**In database**
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d6f7d10d-1e50-48b5-8799-1fb9286a1391)
+
+### The End of project 4 MEAN WEB STACK
+In this Project We have created a simple Book Register Application and deployed it to MEAN stack.
+
+- Frontend application using Angular.js
+- Backend application written using Expressjs.
+- Mongodb backend for storing tasks in a database.
+- Platform details  Linux/UNIX ubuntu-noble-**24.04-amd64**-server 
+
+
+
+
