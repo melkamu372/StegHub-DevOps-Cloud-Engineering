@@ -358,7 +358,185 @@ sudo lsblk
 ```
 sudo mkfs -t ext4 /dev/webdata-vg/apps-lv
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/14038c4e-9f99-4eff-8d78-ef22431c3d3c)
+
 
 ```
 sudo mkfs -t ext4 /dev/webdata-vg/logs-lv
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/51302ae9-5a4f-4e85-8b29-938594806d46)
+
+17. Create /var/www/html directory to store website files
+```
+sudo mkdir -p /var/www/html
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/91168896-ff99-4376-b3f7-75577fd2b182)
+
+18. Create /home/recovery/logs to store backup of log data 
+
+```
+sudo mkdir -p /home/recovery/logs
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8242fda2-9fbb-40c1-bac1-c445df3c086f)
+
+
+19.  Mount /var/www/html on apps-lv logical volume
+
+```
+sudo mount /dev/webdata-vg/apps-lv /var/www/html/
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5d0e29f1-387e-4194-a11a-d9a9bf517748)
+
+**Verify the Mount:**
+```
+df -h | grep /var/www/html
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8415e922-a46c-46d3-8dad-02a869f63a1f)
+
+20. Use rsync utility to backup all the files in the log directory /var/log into /home/recovery/logs
+ 
+ > This is required before mounting the file system
+
+```
+sudo rsync -av /var/log/. /home/recovery/logs/
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cf6cc3ab-d945-434b-b4ea-edb009f50ef1)
+
+21. Mount /var/log on logs-lv logical volume
+    
+> Note that all the existing data on /var/log will be deleted. That is why step 17 above is very important
+
+```
+sudo mount /dev/webdata-vg/logs-lv /var/log
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/65e718ac-f045-4fd3-8b4f-7218bf1d1aee)
+
+
+22. Restore log files back into /var/log directory
+```   
+sudo rsync -av /home/recovery/logs/. /var/log
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ff8565d9-940a-4f74-a8e5-db2374d520c2)
+
+
+23. Update /etc/fstab file so that the mount configuration will persist after restart of the server.  The UUID of the device will be used to update the /etc/fstab file;
+
+**Find the UUID of the Device**
+```
+sudo blkid
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5a68ad7d-16e2-4532-9929-d992f5368701)
+
+**Edit the /etc/fstab File**
+```
+sudo vim /etc/fstab
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/595b664d-3d08-4c21-b409-b060c1f68f4e)
+
+**Replace UUID with the actual UUID from the blkid**
+```
+# MOUNTS FOR WORDPRESS WEBSERVER
+UUID=f5c3bc97-925c-4692-b634-b217f65fb96e  /var/www/html    ext4 defaults 0 0
+UUID=fc107995-52e8-44ae-b99f-b23f97aa54c8  /var/log         ext4 defaults 0 0
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/24041c0f-3e37-4b11-aa3b-89bf3ef748ca)
+
+24. Test the configuration 
+```
+sudo mount -a
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/eec0837c-ec36-4a99-a7e9-6200ff046693)
+
+**Reload the daemon**
+```
+sudo systemctl daemon-reload
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4c9fb5bb-b7e3-42ca-bcbb-a59890f66d5f)
+
+25. Verify our setup
+```
+df -h
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c9fcccfb-5fe9-45fb-8e2c-54fe21ca2965)
+
+# Step 2 - Prepare the Database Server
+1. Launch A second RedHat EC2 Instance that will have a role **`DB Server`**
+Repeat the same steps as for the Web Server, but instead of _**apps-lv**_ create _**db-lv**_ and mount it to _**/db**_  directory instead of **/var/www/html/**
+
+# Step 3 - Install WordPress on your Web Server EC2
+1. Update the repository
+
+```
+sudo yum -y update
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/89ea9d94-f1b3-4366-ab19-db6de8ff14bd)
+
+2. Install **wget**, **Apache** and it's dependencies
+```
+sudo yum -y install wget httpd php php-mysqlnd php-fpm php-json
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/48da8b05-c3ff-4649-a3a6-6a6c2ca58f54)
+
+3. Start Apache
+**Enable httpd**
+```
+sudo systemctl enable httpd 
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3fc7ac23-64d5-4c35-9533-ef470994b28f)
+
+**start httpd**
+```
+sudo systemctl start httpd
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b6b4a789-bd77-413d-95a9-1531f51c87e3)
+
+4. Install PHP and it's dependencies
+ ```  
+sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2e514de1-5312-4b7c-916c-0079fca4622e)
+
+```
+sudo yum install yum-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+```
+```
+sudo yum module list php sudo yum module reset php
+```
+```
+sudo yum module enable php:remi-7.4
+```
+```
+sudo yum install php php-opcache php-gd php-curl php-mysqlnd
+```
+```
+sudo systemctl start php-fpm
+```
+```
+sudo systemctl enable php-fpm setsebool -P httpd_execmem 1
+```
+5. Restart Apache
+```
+sudo systemctl restart httpd
+```
+6. Download wordpress and copy wordpress to /var/www/html
+```
+mkdir wordpress cd wordpress
+```
+```
+sudo wget http://wordpress.org/latest.tar.gz sudo tar xzvf latest.tar.gz
+```
+```
+sudo rm -rf latest.tar.gz cp wordpress/wp-config-sample.php wordpress/wp-config.php
+cp -R wordpress /var/www/html/
+```
+
+7. Configure SELinux Policies
+```
+sudo chown -R apache:apache /var/www/html/wordpress
+```
+```
+sudo chcon -t httpd_sys_rw_content_t /var/www/html/wordpress -R
+```
+```
+sudo setsebool -P httpd_can_network_connect=1
 ```
