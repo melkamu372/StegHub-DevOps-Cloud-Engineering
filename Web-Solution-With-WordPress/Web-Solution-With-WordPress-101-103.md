@@ -463,6 +463,156 @@ df -h
 1. Launch A second RedHat EC2 Instance that will have a role **`DB Server`**
 Repeat the same steps as for the Web Server, but instead of _**apps-lv**_ create _**db-lv**_ and mount it to _**/db**_  directory instead of **/var/www/html/**
 
+### Afterfollowing same step to create instance our DB Server look like this 
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e63bfe7c-9bcf-4e0c-bb9f-212194726d05)
+
+**Now we are going to Add EBS Volume to an DB Server EC2 instance we repate the above steps**
+1. Create 3 volumes in the same AZ as your Web Server EC2, each of 10 GiB.
+
+
+**Attach all volumes one by one to our DB Server EC2 instance**
+
+2. Open up the Linux terminal to begin configuration
+
+3. Use lsblk command to inspect what block devices are attached to the server.
+
+```
+lsblk
+```
+
+4. Use df -h command to see all mounts and free space on your server
+   ```
+   df -h
+   ```
+ **Use gdisk utility to create a single partition on each of the 3 disks**
+``` 
+sudo gdisk /dev/xvdf
+```
+**List Existing Partitions: To see the current partitions, use the p command:**
+
+**Create a New Partition: To add a new partition, enter n: then Press Enter to accept default value**
+
+**Write Changes: Once you've created the desired partitions, write the changes to the disk with w**:
+
+**Yes to proceed and complete**
+
+**we follow the same steps for remaining**
+
+5. Use **lsblk** utility to view the newly configured partition on each.
+```
+lsblk
+```
+6. Install **lvm2** package
+```
+sudo yum install lvm2
+```
+**Check for available partitions**
+```
+sudo lvmdiskscan
+```
+7. Use pvcreate utility to mark each of disks as physical volumes (PVs) to be used by LVM
+```
+sudo pvcreate /dev/xvdf1
+sudo pvcreate /dev/xvdg1
+sudo pvcreate /dev/xvdh1
+```
+8. Verify that our Physical volume has been created successfully
+```
+sudo pvs
+```
+9. Use **vgcreate** utility to add all 3 PVs to a volume group (VG). Name the VG webdata-vg
+```
+sudo vgcreate webdata-vg /dev/xvdh1 /dev/xvdg1 /dev/xvdf1
+```
+10. Verify that our VG has been created successfully
+```
+sudo vgs
+```
+11. Use **lvcreate** utility to create 2 logical volumes. db-lv (Use half of the PV size), and logs-lv Use the remaining space of the PV size.
+> NOTE: db-lv will be used to store data for the database while, logs-lv will be used to store data for logs.
+```
+sudo lvcreate -n dbs-lv -L 14G webdata-vg
+```
+```
+sudo lvcreate -n logs-lv -L 14G webdata-vg
+```
+12. Verify that our Logical Volume has been created successfully
+```
+sudo lvs
+```
+13. Verify the entire setup view complete setup - VG, PV, and LV
+```
+sudo vgdisplay -v
+```
+```
+sudo lsblk 
+```
+**Use mkfs.ext4 to format the logical volumes with ext4 filesystem**
+```
+sudo mkfs -t ext4 /dev/webdata-vg/dbs-lv
+```
+```
+sudo mkfs -t ext4 /dev/webdata-vg/logs-lv
+```
+14. Create /db directory to store database files
+```
+sudo mkdir -p /db
+````
+16. Create /home/recovery/logs to store backup of log data
+```
+ sudo mkdir -p /home/recovery/logs
+```
+17. Mount /db on dbs-lv logical volume
+```
+sudo mount /dev/webdata-vg/dbs-lv /db/
+```
+**Verify the Mount**:
+```
+df -h | grep /db
+```
+18. Use **rsync** utility to backup all the files in the log directory /var/log into /home/recovery/logs (This is required before mounting the file system)
+```
+sudo rsync -av /var/log/. /home/recovery/logs/
+```
+19. Mount /var/log on logs-lv logical volume. (Note that all the existing data on /var/log will be deleted. That is why step 15 above is very important)
+```
+sudo mount /dev/webdata-vg/logs-lv /var/log
+```
+20. Restore log files back into /var/log directory
+```
+sudo rsync -av /home/recovery/logs/log/. /var/log
+```
+21. Update /etc/fstab file so that the mount configuration will persist after restart of the server. The UUID of the device will be used to update the /etc/fstab file;
+
+**Find the UUID of the Device**
+```
+sudo blkid
+```
+**Edit the /etc/fstab File**
+```
+sudo vi /etc/fstab
+```
+
+**Update /etc/fstab in this format using our own UUID**
+Replace UUID with the actual UUID from the blkid
+```
+UUID=f5c3bc97-925c-4692-b634-b217f65fb96e  /db    ext4 defaults 0 0
+UUID=fc107995-52e8-44ae-b99f-b23f97aa54c8  /var/log         ext4 defaults 0 0
+```
+22. Test the configuration 
+```
+sudo mount -a
+```
+**Reload the daemon**
+```
+sudo systemctl daemon-reload
+```
+23. Verify our setup by running
+```
+df -h
+```
+
 # Step 3 - Install WordPress on your Web Server EC2
 1. Update the repository
 
@@ -540,3 +690,78 @@ sudo chcon -t httpd_sys_rw_content_t /var/www/html/wordpress -R
 ```
 sudo setsebool -P httpd_can_network_connect=1
 ```
+# Step 4 — Install MySQL on our DB Server EC2
+**Update the system**
+```
+sudo yum update
+```
+**Install Mysql Server**
+```
+sudo yum install mysql-server
+```
+**Verify that the service is up and running**
+```
+sudo systemctl status mysqld
+```
+**if it is not running, restart the service.** 
+```
+sudo systemctl restart mysqld
+```
+**Enable it to be running even after reboot**:
+```
+sudo systemctl enable mysqld
+```
+# Step 5 - Configure DB to work with WordPress
+**Log to mysql**
+```
+sudo mysql
+```
+```
+CREATE DATABASE wordpress;
+```
+```
+CREATE USER `myuser`@`<Web-Server-Private-IP-Address>` IDENTIFIED BY 'mypass';
+```
+```
+GRANT ALL ON wordpress.* TO 'myuser'@'<Web-Server-Private-IP-Address>';
+```
+```
+FLUSH PRIVILEGES;
+```
+```
+SHOW DATABASES;
+```
+```
+exit
+```
+# Step 6 - Configure WordPress to connect to remote database
+> Hint: Do not forget to open MySQL port 3306 on DB Server EC2. For extra security, we shall allow access to the DB server ONLY from our Web Server's IP address so in the Inbound Rule configuration specify source as /32
+
+1. Install MySQL client and test that you can connect from your Web Server to your DB server by using mysql-client
+```
+sudo yum install mysql
+```
+**sudo mysql -u admin -p -h <DB-Server-Private-IP-address>**
+```
+sudo mysql -u admin -p -h <DB-Server-Private-IP-address>
+```
+2. Verify if you can successfully connect
+ ```
+SHOW DATABASES;
+```
+**if sucessful the command list of existing databases.**
+
+3. Change permissions and configuration so Apache could use WordPress:
+
+4. Enable TCP port 80 in Inbound Rules configuration for our Web Server EC2 (enable from everywhere 0.0.0.0/0 or from our workstation's IP)
+
+5. Try to access from your browser the link to your WordPress
+```
+http://<Web-Server-Public-IP-Address>/wordpress/
+```
+
+### The End of Web Solution With WordPress project
+In this project we prepared storage infrastructure on two Linux servers and implement a basic web solution using WordPress.
+1. Configure storage subsystem for Web and Database servers based on Linux OS. The focus is working with disks, partitions and volumes in Linux
+2. Install WordPress and connect it to a remote MySQL database server
+3. Deploying Web and DB tiers of Web solution
