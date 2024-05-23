@@ -709,51 +709,79 @@ sudo systemctl start httpd
 
 4. Install PHP and it's dependencies
  ```  
-sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+ sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 ```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f230e14c-ae6c-40bd-9bf8-0d1108701ed6)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ec113dca-4fe7-4758-ae90-721f837d172d)
 
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ed981911-c605-429f-ba0b-ec4220b7c14f)
-
-```
-sudo yum install yum-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm
-```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9293ee9b-acf4-4c6c-be93-5535d3226c53)
-
-
-**if the above command not work use this option Download the Remi release RPM package**
+**To confirm that EPEL has been added**
 
 ```
-wget http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+ rpm -qi epel-release
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/df707e19-63cc-49cd-865a-e1992efeb464)
 
 ```
+sudo dnf -y install http://rpms.remirepo.net/enterprise/remi-release-9.rpm -y
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/bf9250cb-578e-4776-bb5a-af6ca7579167)
+
+**Before installing PHP, we need to check the available PHP streams in the repository.**
+```
+ sudo dnf module list php -y
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5f219412-4b1e-4872-998c-c00152c16a8d)
 
 ```
-sudo yum module list php sudo yum module reset php
+sudo dnf module reset php -y
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7c7a8a71-15c1-4f99-bbcb-bd5b313d2b9e)
+
 ```
-sudo yum module enable php:remi-7.4
+sudo dnf module enable php:remi-8.2 -y
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/452daf6f-262a-4d98-b9dc-86003ca0b835)
+
 ```
-sudo yum install php php-opcache php-gd php-curl php-mysqlnd
+sudo dnf install php -y
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fd8e4852-4494-47f0-96b8-a2623eaa8c83)
+
+```
+php -v
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f6cb5b4e-c3de-41b3-8277-d5c4fe6e7320)
+
 ```
 sudo systemctl start php-fpm
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3870cf6c-5896-4d35-b500-3291a5979951)
+
 ```
-sudo systemctl enable php-fpm setsebool -P httpd_execmem 1
+ sudo dnf install httpd -y
 ```
-5. Restart Apache
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c5cc5123-8177-4c1d-a4d5-31db9b6e9fc7)
 ```
-sudo systemctl restart httpd
+sudo systemctl start httpd
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6da8e1a1-a3bb-4b44-9821-317b02501030)
+
+5. Be sure to ensure that Apache is up and running.
+```
+sudo systemctl status httpd
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1a1584ff-d9c5-4ce4-85a0-a5b7258712e5)
+
 6. Download wordpress and copy wordpress to /var/www/html
 ```
 mkdir wordpress cd wordpress
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/02d74a7e-ba18-432c-a81c-3ffd59571b25)
+
 ```
 sudo wget http://wordpress.org/latest.tar.gz sudo tar xzvf latest.tar.gz
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/25fd8dea-3e83-4ad6-b37a-cb01c5ee28aa)
+
 ```
 sudo rm -rf latest.tar.gz cp wordpress/wp-config-sample.php wordpress/wp-config.php
 cp -R wordpress /var/www/html/
@@ -763,12 +791,18 @@ cp -R wordpress /var/www/html/
 ```
 sudo chown -R apache:apache /var/www/html/wordpress
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/da3d0dcd-caca-4686-b6e0-1ba590c56ea9)
+
 ```
 sudo chcon -t httpd_sys_rw_content_t /var/www/html/wordpress -R
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d90d9646-acf8-4104-863d-423b2c31dd55)
+
 ```
 sudo setsebool -P httpd_can_network_connect=1
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5e901929-c032-4e47-ac34-5eef7c2b78ec)
+
 # Step 4 — Install MySQL on our DB Server EC2
 **Update the system**
 ```
@@ -815,16 +849,14 @@ CREATE DATABASE wordpress;
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7a838fda-f344-40e2-92e2-6c59a1130876)
 
 ```
-CREATE USER `melkamu`@`172.31.18.74` IDENTIFIED BY 'PassWord.1';
+CREATE USER `melkamu`@`172.31.31.188` IDENTIFIED BY 'PassWord.1';
 ```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cb76f40f-4055-4da5-8da4-56d43acaa9d9)
-
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f6ad9461-cf3d-4322-85f7-d3e67156daf2)
 
 ```
-GRANT ALL ON wordpress.* TO 'melkamu'@'172.31.18.74';
+GRANT ALL ON wordpress.* TO 'melkamu'@'172.31.31.188';
 ```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0a6fd28f-cd3a-4f4c-a04c-6bc29f71d1ac)
-
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/60fde754-705f-4aa0-a77a-1daafdc12895)
 
 ```
 FLUSH PRIVILEGES;
@@ -845,26 +877,30 @@ exit
 # Step 6 - Configure WordPress to connect to remote database
 > Hint: Do not forget to open MySQL port 3306 on DB Server EC2. For extra security, we shall allow access to the DB server ONLY from our Web Server's IP address so in the Inbound Rule configuration specify source as /32
 
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/983b37d5-6741-42c4-9a96-abc4aa6473e7)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/023e0382-d37a-4d5b-b488-65ca6ccc4ddf)
+
 
 
 1. Install MySQL client and test that you can connect from your Web Server to your DB server by using mysql-client
 ```
 sudo yum install mysql
 ```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/38d5c2bd-f7f7-4f4e-9970-cf1646668163)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8c022e65-4e82-47cd-9ef5-1ce3ad0aa993)
+
 
 **sudo mysql -u admin -p -h <DB-Server-Private-IP-address>**
 ```
 sudo mysql -u melkamu -p -h 172.31.18.245
 ```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/050a7363-abef-4fe3-8354-6ddef751e6d6)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7c2b9056-1cbe-4d61-a8c8-24796fcec740)
+
 
 2. Verify if you can successfully connect
  ```
 SHOW DATABASES;
 ```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ecabafa7-b6c6-46dd-9fef-09f0209a3c90)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b260191d-a1d5-4db6-8817-5c4077a4778c)
+
 
 **if sucessful the command list of existing databases.**
 
@@ -872,10 +908,23 @@ SHOW DATABASES;
 
 4. Enable TCP port 80 in Inbound Rules configuration for our Web Server EC2 (enable from everywhere 0.0.0.0/0 or from our workstation's IP)
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9d070f8d-92f3-4ca7-90c0-202de8b90935)
+
 5. Try to access from your browser the link to your WordPress
 ```
 http://<Web-Server-Public-IP-Address>/wordpress/
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d7e13991-8b1e-4c2f-b25e-5fa25718c0d3)
+
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c9ae873e-17d8-4398-a8be-1dd59c9f2869)
+
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d4c719e5-5f80-41fe-baf8-9a0c6323bf10)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9c149c3d-475b-4818-8d4e-7376224a47e4)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a23e2dd0-6eb5-427f-9a1e-a44dc0f71332)
 
 ### The End of Web Solution With WordPress project
 In this project we prepared storage infrastructure on two Linux servers and implement a basic web solution using WordPress.
