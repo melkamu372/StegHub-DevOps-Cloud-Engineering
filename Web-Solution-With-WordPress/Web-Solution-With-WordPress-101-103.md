@@ -41,15 +41,12 @@ sudo fdisk /dev/sda
 ```
    
 2. **`parted`**: A more advanced utility than `fdisk`, supporting both MBR and GPT (GUID Partition Table) disks.
-   
-- Example: 
-   
+    
 ```
 sudo parted /dev/sda
 ```
    
 3. **`lsblk`**: Lists information about all available or the specified block devices.
-- Example: 
 ```
 lsblk
 ```
@@ -57,19 +54,16 @@ lsblk
 ### Formatting Partitions
 
 1. **`mkfs`**: Used to create a filesystem on a partition. Different filesystems can be specified, such as ext4, xfs, etc.
-- Example: 
 ```
 sudo mkfs.ext4 /dev/sda1
 ```
    
 2. **`mkfs.xfs`**: Specifically formats a partition with the XFS filesystem.
-- Example: 
 ```
 sudo mkfs.xfs /dev/sda1
 ```
    
 3. **`mkfs.vfat`**: Used to create a FAT32 filesystem.
-- Example: 
 ```
 sudo mkfs.vfat /dev/sda1
 ```
@@ -77,19 +71,16 @@ sudo mkfs.vfat /dev/sda1
 ### Mounting and Unmounting Partitions
 
 1. **`mount`**: Mounts a filesystem.
-- Example: 
 ```
 sudo mount /dev/sda1 /mnt
 ```
    
 2. **`umount`**: Unmounts a filesystem.
-- Example: 
 ```
 sudo umount /mnt
 ```
 
 3. **`/etc/fstab`**: Configuration file that contains information about how disk partitions, block devices, and remote filesystems should be mounted.
-- Example entry: 
 ```
 /dev/sda1 /mnt ext4 defaults 0 2
 ```
@@ -97,7 +88,6 @@ sudo umount /mnt
 ### Checking Disk Usage
 
 1. **`df`**: Reports filesystem disk space usage.
-- Example: 
    
 ```
 df -h
@@ -105,7 +95,6 @@ df -h
    
 2. **`du`**: Estimates file space usage.
    
-- Example: 
    
 ```
 du -sh /path/to/directory
@@ -114,14 +103,15 @@ du -sh /path/to/directory
 ### Monitoring Disk Health
 
 1. **`smartctl`**: A tool to control and monitor storage systems using the Self-Monitoring, Analysis and Reporting Technology (SMART) system.
-- Example:
+
   ```
   sudo smartctl -a /dev/sda
   ```
 
 2. **`iostat`**: Reports CPU and I/O statistics.
-   
-- Example:
+```
+sudo yum install sysstat
+```
 ```
 iostat -x
 ```
