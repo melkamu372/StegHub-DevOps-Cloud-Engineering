@@ -470,32 +470,46 @@ Repeat the same steps as for the Web Server, but instead of _**apps-lv**_ create
 **Now we are going to Add EBS Volume to an DB Server EC2 instance we repate the above steps**
 1. Create 3 volumes in the same AZ as your Web Server EC2, each of 10 GiB.
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5840d6f3-ac43-4213-8b02-4b861d779168)
 
 **Attach all volumes one by one to our DB Server EC2 instance**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b751aad6-88c7-4be3-b7b4-0abc4e85e5c3)
 
 2. Open up the Linux terminal to begin configuration
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/68ad3966-c3ec-45cd-a5d3-594be9e2bc9e)
 
 3. Use lsblk command to inspect what block devices are attached to the server.
 
 ```
 lsblk
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f4d9f95f-9b70-4c61-abc6-2942d35cd27e)
+
 
 4. Use df -h command to see all mounts and free space on your server
    ```
    df -h
    ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/087e3729-3e92-477e-9a7b-632b0e9ef9cb)
+
  **Use gdisk utility to create a single partition on each of the 3 disks**
 ``` 
-sudo gdisk /dev/xvdf
+sudo gdisk /dev/xvdb
 ```
 **List Existing Partitions: To see the current partitions, use the p command:**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/486ec823-230f-47d1-9add-37cb94f6f525)
 
 **Create a New Partition: To add a new partition, enter n: then Press Enter to accept default value**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/70985507-987d-4dc2-a07b-6e670517444c)
+
 
 **Write Changes: Once you've created the desired partitions, write the changes to the disk with w**:
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fe18f1c1-ff33-40ce-9943-8895e8065aa7)
+
 
 **Yes to proceed and complete**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8e01e914-1a10-4399-8ba5-871708c683af)
 
 **we follow the same steps for remaining**
 
@@ -503,92 +517,138 @@ sudo gdisk /dev/xvdf
 ```
 lsblk
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a7992e1e-c54c-4fc6-a818-b40cb51258c4)
+
+
 6. Install **lvm2** package
 ```
 sudo yum install lvm2
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a4e922a2-730c-4a8b-a2b1-584c63191c15)
+
 **Check for available partitions**
 ```
 sudo lvmdiskscan
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/158cb1e7-7280-4bb4-ba19-bb23ee6e84b2)
+
 7. Use pvcreate utility to mark each of disks as physical volumes (PVs) to be used by LVM
 ```
-sudo pvcreate /dev/xvdf1
-sudo pvcreate /dev/xvdg1
-sudo pvcreate /dev/xvdh1
+sudo pvcreate /dev/xvdb1
+sudo pvcreate /dev/xvdc1
+sudo pvcreate /dev/xvdd1
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/01490ff3-6343-4521-b9de-e4f477665cc3)
+
 8. Verify that our Physical volume has been created successfully
 ```
 sudo pvs
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a964f5a6-258f-4a9c-b725-840858b8820b)
+
 9. Use **vgcreate** utility to add all 3 PVs to a volume group (VG). Name the VG webdata-vg
 ```
-sudo vgcreate webdata-vg /dev/xvdh1 /dev/xvdg1 /dev/xvdf1
+sudo vgcreate webdata-vg /dev/xvdb1 /dev/xvdc1 /dev/xvdd1
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fbe5e6f5-91ab-485b-8129-2416931966a1)
+
 10. Verify that our VG has been created successfully
 ```
 sudo vgs
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/41559f26-47c2-4be0-a2b8-e5f2937ccbfc)
+
 11. Use **lvcreate** utility to create 2 logical volumes. db-lv (Use half of the PV size), and logs-lv Use the remaining space of the PV size.
 > NOTE: db-lv will be used to store data for the database while, logs-lv will be used to store data for logs.
 ```
 sudo lvcreate -n dbs-lv -L 14G webdata-vg
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7f1a14c3-7588-435d-902f-2e0a246483c5)
+
 ```
 sudo lvcreate -n logs-lv -L 14G webdata-vg
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e619c79a-36e8-441e-933f-679185b031d6)
+
 12. Verify that our Logical Volume has been created successfully
 ```
 sudo lvs
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1ac12b5f-f75c-4451-ad6a-14541afd0993)
+
 13. Verify the entire setup view complete setup - VG, PV, and LV
 ```
 sudo vgdisplay -v
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8918761a-512f-4f45-8b43-b7746e89908e)
+
 ```
 sudo lsblk 
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0c1fcc6a-41cb-4b6f-b364-2c3304b1f246)
+
 **Use mkfs.ext4 to format the logical volumes with ext4 filesystem**
 ```
 sudo mkfs -t ext4 /dev/webdata-vg/dbs-lv
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d91c4c55-b31f-4236-8b2e-49e32e3a8207)
+
 ```
 sudo mkfs -t ext4 /dev/webdata-vg/logs-lv
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c538d568-3d5d-49f2-a48c-c899da5162a8)
+
+
 14. Create /db directory to store database files
 ```
 sudo mkdir -p /db
-````
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9d2af98a-fdf0-488d-9e50-fce451ed3018)
+
 16. Create /home/recovery/logs to store backup of log data
 ```
  sudo mkdir -p /home/recovery/logs
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5ca67075-4a7e-4931-a235-8cb83ec28dc4)
+
 17. Mount /db on dbs-lv logical volume
 ```
 sudo mount /dev/webdata-vg/dbs-lv /db/
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6b3dd65a-1385-42cb-8f62-cdd2c529139b)
+
 **Verify the Mount**:
 ```
 df -h | grep /db
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6b6d4454-e347-4775-9b0b-292597bb16c1)
+
 18. Use **rsync** utility to backup all the files in the log directory /var/log into /home/recovery/logs (This is required before mounting the file system)
 ```
 sudo rsync -av /var/log/. /home/recovery/logs/
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/98c42855-0295-4117-96db-144e357682d9)
+
 19. Mount /var/log on logs-lv logical volume. (Note that all the existing data on /var/log will be deleted. That is why step 15 above is very important)
 ```
 sudo mount /dev/webdata-vg/logs-lv /var/log
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cec4db6e-66eb-4ea3-823f-93b90650a228)
+
 20. Restore log files back into /var/log directory
 ```
 sudo rsync -av /home/recovery/logs/log/. /var/log
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1529e9f7-b2e2-422c-b1f0-50b2e3ed634b)
+
 21. Update /etc/fstab file so that the mount configuration will persist after restart of the server. The UUID of the device will be used to update the /etc/fstab file;
 
 **Find the UUID of the Device**
 ```
 sudo blkid
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6db3bb48-8358-4bd0-958b-355d265e68d2)
+
 **Edit the /etc/fstab File**
 ```
 sudo vi /etc/fstab
@@ -597,21 +657,28 @@ sudo vi /etc/fstab
 **Update /etc/fstab in this format using our own UUID**
 Replace UUID with the actual UUID from the blkid
 ```
-UUID=f5c3bc97-925c-4692-b634-b217f65fb96e  /db    ext4 defaults 0 0
-UUID=fc107995-52e8-44ae-b99f-b23f97aa54c8  /var/log         ext4 defaults 0 0
+UUID=7a63eca8-a7e7-4400-9a0e-1d3e5a03f913  /db             ext4 defaults 0 0
+UUID=a042a1ca-fd09-498e-bf99-7977bd1aff23  /var/log         ext4 defaults 0 0
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b1d5378e-821a-493a-bfc5-9c58973fc3b6)
+
 22. Test the configuration 
 ```
 sudo mount -a
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/960179bb-5bea-4cca-af87-0f8fbe9eb9b1)
+
 **Reload the daemon**
 ```
 sudo systemctl daemon-reload
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8fc9f348-5edc-4e27-90e6-d8d857fc6aaa)
+
 23. Verify our setup by running
 ```
 df -h
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f1494bee-e61b-4b92-b712-257689ee35db)
 
 # Step 3 - Install WordPress on your Web Server EC2
 1. Update the repository
@@ -644,11 +711,23 @@ sudo systemctl start httpd
  ```  
 sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 ```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2e514de1-5312-4b7c-916c-0079fca4622e)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f230e14c-ae6c-40bd-9bf8-0d1108701ed6)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ed981911-c605-429f-ba0b-ec4220b7c14f)
 
 ```
 sudo yum install yum-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9293ee9b-acf4-4c6c-be93-5535d3226c53)
+
+
+**if the above command not work use this option Download the Remi release RPM package**
+
+```
+wget http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+
+```
+
 ```
 sudo yum module list php sudo yum module reset php
 ```
@@ -695,60 +774,98 @@ sudo setsebool -P httpd_can_network_connect=1
 ```
 sudo yum update
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4ba3d81f-5fc7-49d2-ac94-18cbf9c3d38a)
+
 **Install Mysql Server**
 ```
 sudo yum install mysql-server
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/052ab6c5-54f7-4e66-aa4a-e658090f74ed)
+
 **Verify that the service is up and running**
 ```
 sudo systemctl status mysqld
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f94a9404-5ad9-4fdb-8fe5-d9293024ab74)
+
 **if it is not running, restart the service.** 
 ```
 sudo systemctl restart mysqld
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3853ae17-8fca-43c1-aec3-22efa5328658)
+
 **Enable it to be running even after reboot**:
 ```
 sudo systemctl enable mysqld
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/44519e4f-6a21-4de7-a81c-6e9dc678c3cf)
+**Check status now**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c988c1fe-0b06-44ab-8dd4-bfc9c4e4ea0f)
+
 # Step 5 - Configure DB to work with WordPress
 **Log to mysql**
 ```
 sudo mysql
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1e40b616-e837-40d0-a339-36af45d76cf2)
+
 ```
 CREATE DATABASE wordpress;
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7a838fda-f344-40e2-92e2-6c59a1130876)
+
 ```
-CREATE USER `myuser`@`<Web-Server-Private-IP-Address>` IDENTIFIED BY 'mypass';
+CREATE USER `melkamu`@`172.31.18.74` IDENTIFIED BY 'PassWord.1';
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cb76f40f-4055-4da5-8da4-56d43acaa9d9)
+
+
 ```
-GRANT ALL ON wordpress.* TO 'myuser'@'<Web-Server-Private-IP-Address>';
+GRANT ALL ON wordpress.* TO 'melkamu'@'172.31.18.74';
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0a6fd28f-cd3a-4f4c-a04c-6bc29f71d1ac)
+
+
 ```
 FLUSH PRIVILEGES;
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4a1e4747-72de-4eda-bd1a-7f5c3ae9a1bc)
+
+
 ```
 SHOW DATABASES;
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c94b270c-dbc0-4d45-93fb-8e32cdc935a4)
+
 ```
 exit
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f9c143ce-01a0-4c24-a8d8-841c3affc400)
+
 # Step 6 - Configure WordPress to connect to remote database
 > Hint: Do not forget to open MySQL port 3306 on DB Server EC2. For extra security, we shall allow access to the DB server ONLY from our Web Server's IP address so in the Inbound Rule configuration specify source as /32
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/983b37d5-6741-42c4-9a96-abc4aa6473e7)
+
 
 1. Install MySQL client and test that you can connect from your Web Server to your DB server by using mysql-client
 ```
 sudo yum install mysql
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/38d5c2bd-f7f7-4f4e-9970-cf1646668163)
+
 **sudo mysql -u admin -p -h <DB-Server-Private-IP-address>**
 ```
-sudo mysql -u admin -p -h <DB-Server-Private-IP-address>
+sudo mysql -u melkamu -p -h 172.31.18.245
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/050a7363-abef-4fe3-8354-6ddef751e6d6)
+
 2. Verify if you can successfully connect
  ```
 SHOW DATABASES;
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ecabafa7-b6c6-46dd-9fef-09f0209a3c90)
+
 **if sucessful the command list of existing databases.**
 
 3. Change permissions and configuration so Apache could use WordPress:
