@@ -1,41 +1,153 @@
 # DevOps Tooling Website Solution
 ## Step 1 - Prepare NFS Server
-1. Spin up a new EC2 instance with RHEL Linux 8 Operating System.
+1. Spin up a new EC2 instance with RHEL Linux Operating System.
+   
+**Log to aws account console and create EC2 instance of t2.micro type with RedHat Server launch in the default region us-east-1. name instance _Linux NFS server_**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2681b07a-2976-4872-9e61-48ba9e73ce71)
 
-2. Based on your LVM experience from Project 6, Configure LVM on the Server.
+**Application and OS Images select RedHat free tire eligable version**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/be10eab8-0f78-4aa0-bdbd-43f98b32d2cc)
+
+**Create new key pair or select existing key**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2a224898-c6a1-416b-b874-b1f3db9f36e5)
+
+**Network setting create new security group or use existing security group**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d61b1359-539e-4c35-bda4-79a582c52681)
+
+**Configure Storage and launch the instance**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b206b1f5-0d72-41d2-9ead-593580d326f4)
+
+**View Instance**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7454b402-4a76-4834-b418-a005afdc1e37)
+
+**Instance Details for web**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/04945132-11cd-4e32-8e72-1aa0d7c81149)
+
+
+**Configure security group with the following inbound rules:**
+- Allow traffic on port 22 (SSH) with source from any IP address. This is opened by default.
+- Allow traffic on port 80 (HTTP) with source from anywhere on the internet.
+- Allow traffic on port 443 (HTTPS) with source from anywhere on the internet.
+  ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/83aa77a2-0445-45fa-b968-0fad36af7d96)
+
+2. Based on your LVM experience from Project 6, Configure LVM on the Server. Create 3 volumes in the same AZ as your Web Server EC2, each of 20 GiB.
+
+**Add EBS Volume to an EC2 instance**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/86d4d944-ce76-49e3-9b0e-682e330ed485)
+
+**Attach all three volumes one by one to our NFS Web Server EC2 instance**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/64c26f72-13aa-487d-a9f0-c40365672dc5)
+
+ **Open up the Linux terminal to begin configuration**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/84be9f7d-7685-4843-9a2b-02a09e95bf97)
+
   **List Available Disks**
 ```
 sudo lsblk
 ```
-**Create Physical Volumes**:
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b9686c5d-0179-40e0-b444-8974460f0b35)
+
+**Use df -h command to see all mounts and free space**
 ```
-sudo pvcreate /dev/xvdb /dev/xvdc /dev/xvdd
+df -h
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5e0c9ecc-4988-4742-985b-7272a26f3f9e)
+
+**Use gdisk utility to create a single partition on each of the 3 disks**
+```
+sudo gdisk /dev/xvdb
+```
+**List Existing Partitions: To see the current partitions, use the `p` command:**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2004ce38-2dd7-4dd0-b1d2-06ecd52e5809)
+
+**Create a New Partition: To add a new partition, enter `n`: then Press Enter to accept default value**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/db6f43d8-ee17-4cb1-bb9d-a71cbc92d928)
+
+**Write Changes: Once you've created the desired partitions, write the changes to the disk with `w`:**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6b187aed-4386-4494-b256-e8a12dff6ae8)
+
+**Yes to proceed and complete**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fddb01f3-626f-429f-9036-6ea5022be36e)
+
+> we follow the same steps for remaining two and create partishion
+
+**Use lsblk utility to view the newly configured partition on each of the 3 disks.**
+```
+lsblk
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/55299708-5cfa-4abd-ae9a-7234303b2b6a)
+
+**Install lvm2 package**
+```
+sudo yum install lvm2
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/55b48752-0cc7-4a5a-971a-ea0bfa8744ea)
+
+**Check for available partitions.**
 
 ```
-**Create a Volume Group**
+sudo lvmdiskscan 
 ```
-sudo vgcreate vg_data /dev/xvdb /dev/xvdc /dev/xvdd
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/056282fe-8f59-4615-a393-2e0a1f469e95)
 
+**Create Physical Volumes Use pvcreate utility to mark each of 3 disks as physical volumes (PVs) to be used by LVM**
 ```
-**Create Logical Volumes**
+sudo pvcreate /dev/xvdb1 /dev/xvdc1 /dev/xvdd1
 ```
-sudo lvcreate -L 14G -n lv-apps vg_data
-sudo lvcreate -L 14G -n lv-logs vg_data
-sudo lvcreate -L 14G -n lv-opt vg_data
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e8165611-f10c-4838-9fcb-2790fb1e3fa1)
+
+**Verify that your Physical volume has been created successfully**
 ```
+sudo pvs
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e8ead4b9-48fc-44e1-b57e-c1c6ad3bd2a3)
+
+**Use vgcreate utility to add all 3 PVs to a volume group (VG) Name the VG webdata-vg**
+```
+sudo vgcreate webdata-vg /dev/xvdb1 /dev/xvdc1 /dev/xvdd1
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/dd7feb65-047e-4189-854b-418e5fef1250)
+
+**Verify that your VG has been created successfully**
+```
+sudo vgs
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/761cec16-28e5-426a-aa1e-f579e142da4f)
+
+**Create Logical Volumes Use `lvcreate utility` to create logical volumes
+```
+sudo lvcreate -L 14G -n lv-apps webdata-vg
+sudo lvcreate -L 14G -n lv-logs webdata-vg
+sudo lvcreate -L 14G -n lv-opt  webdata-vg
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6b6b58ef-e55a-4a70-be2e-7a4abad0789a)
+
+**Verify that our Logical Volume has been created successfully**
+```
+sudo lvs
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d0510c5e-f675-4650-8165-b08e8f585bfc)
+
+**Verify the entire setup #view complete setup - VG , PV, and LV**
+```
+sudo vgdisplay -v
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8ef02e1e-28c6-4ff9-aa8c-866a1e473451)
 
 3. Instead of formatting the disks as ext4 you will have to format them as xfs
-
 - Ensure there are 3 Logical Volumes `lv-opt` `lv-apps`, and `lv-logs`
 ```
 sudo lsblk
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/30185aa4-061f-49e7-8f37-0e6f53b09619)
+
 **Format the Logical Volumes as XFS:**
 ```
-sudo mkfs.xfs /dev/vg_data/lv-apps
-sudo mkfs.xfs /dev/vg_data/lv-logs
-sudo mkfs.xfs /dev/vg_data/lv-opt
+sudo mkfs.xfs /dev/webdata-vg/lv-apps
+sudo mkfs.xfs /dev/webdata-vg/lv-logs
+sudo mkfs.xfs /dev/webdata-vg/lv-opt
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/66b58d40-98f6-43d3-96a0-8e696f21b1b2)
 
 - Create mount points on `/mnt` directory for the logical volumes as follows: `Mount lv-apps` on /mnt/apps - To be used by webservers ,`Mount lv-logs` on /mnt/logs - To be used by webserver logs, `Mount lv-opt` on /mnt/opt - To be used by Jenkins server in Project 8
 
@@ -45,23 +157,30 @@ sudo mkdir /mnt/apps
 sudo mkdir /mnt/logs
 sudo mkdir /mnt/opt
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d967f7e3-0d89-4e68-9dea-adf3014d771d)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/35a8afb6-96c6-487c-88a0-f2a6ca9fb4c7)
+
 **Mount Logical Volumes**
 ```
-sudo mount /dev/vg_data/lv-apps /mnt/apps
-sudo mount /dev/vg_data/lv-logs /mnt/logs
-sudo mount /dev/vg_data/lv-opt /mnt/opt
+sudo mount /dev/webdata-vg/lv-apps /mnt/apps
+sudo mount /dev/webdata-vg/lv-logs /mnt/logs
+sudo mount /dev/webdata-vg/lv-opt /mnt/opt
 
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f4308135-587f-4c6d-919b-0b61b61da04c)
+
 **Add Mount Points to /etc/fstab**
 ```
 sudo vi /etc/fstab
 ```
 **Add the following lines**:
 ```
-/dev/vg_data/lv-apps /mnt/apps xfs defaults 0 0
-/dev/vg_data/lv-logs /mnt/logs xfs defaults 0 0
-/dev/vg_data/lv-opt /mnt/opt xfs defaults 0 0
+/dev/webdata-vg/lv-apps /mnt/apps xfs defaults 0 0
+/dev/webdata-vg/lv-logs /mnt/logs xfs defaults 0 0
+/dev/webdata-vg/lv-opt /mnt/opt xfs defaults 0 0
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/91a056b5-d84f-45bb-87e3-ab83ac6597d8)
 
 **Verify Mounts**:
 
@@ -71,6 +190,7 @@ sudo mount -a
 ```
 df -h
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4662fc86-dc51-4a26-88d3-f89fcbcd7ec6)
 
 4. Install NFS server, configure it to start on reboot and make sure it is up and running
 
@@ -78,9 +198,12 @@ df -h
 ```
 sudo yum -y update
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8d37fffe-f3a2-4a64-8627-44f348c045e3)
+
 ```
 sudo yum install nfs-utils -y
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/29c33604-b690-49e1-a027-2e2d917cc0d7)
 
 **Start and Enable NFS Server**:
 
@@ -90,9 +213,13 @@ sudo systemctl start nfs-server.service
 ```
 sudo systemctl enable nfs-server.service
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0c99fba5-5916-4a08-a1a4-5b4d340c57bc)
+
 ```
 sudo systemctl status nfs-server.service
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/048af360-e331-41c5-a7a9-eaf2e29949ba)
+
 
 5. Export the NFS Mounts'
 
@@ -107,23 +234,29 @@ sudo chmod -R 777 /mnt/apps
 sudo chmod -R 777 /mnt/logs
 sudo chmod -R 777 /mnt/opt
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/69154fdf-2a59-42df-86c9-7456789f7fc1)
 
 **Restart NFS Server**
 ```
 sudo systemctl restart nfs-server.service
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1bb1674a-2fb4-461c-b663-683d006c02e0)
 
-6. Configure access to NFS for clients within the same subnet (example of Subnet CIDR - 172.31.32.0/20 ):
+6. Configure access to NFS for clients within the same subnet (example of Subnet CIDR - 172.31.16.0/20 ):
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b37f58e1-d9c1-451b-91aa-224b316f74d1)
+
 ```
 sudo vi /etc/exports
 ```
-**Add the following lines, replacing <Subnet-CIDR> with your actual subnet CIDR**:
+**Add the following lines**:
 
 ```
-/mnt/apps <Subnet-CIDR>(rw,sync,no_all_squash,no_root_squash)
-/mnt/logs <Subnet-CIDR>(rw,sync,no_all_squash,no_root_squash)
-/mnt/opt <Subnet-CIDR>(rw,sync,no_all_squash,no_root_squash)
+/mnt/apps 172.31.16.0/20(rw,sync,no_all_squash,no_root_squash)
+/mnt/logs 172.31.16.0/20(rw,sync,no_all_squash,no_root_squash)
+/mnt/opt 172.31.16.0/20(rw,sync,no_all_squash,no_root_squash)
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1818c80f-790d-4cff-9fde-52e27fad870d)
+
 **save and exit from the editor by** `Esc + :wq!`
 
 **Export the NFS Shares**:
@@ -131,6 +264,8 @@ sudo vi /etc/exports
 ```
 sudo exportfs -arv
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/46535253-4d4c-4de0-bc1f-98359d16e92e)
+
 
 7. Check which port is used by NFS and open necessary ports in Security Groups (add new Inbound Rule)
 
@@ -139,11 +274,14 @@ sudo exportfs -arv
 ```
 rpcinfo -p | grep nfs
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d95f15bf-aad7-456a-a855-75c679105aed)
 
 > **Important note**: In order for NFS server to be accessible from our client,we open following ports:
 - `TCP 111`
 - `UDP 111`
 - `UDP 2049`
+- `UDP 2049`
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/801f96f8-47ce-4645-ad4a-aa55659e83f6)
 
 
 8.  Final Verification
