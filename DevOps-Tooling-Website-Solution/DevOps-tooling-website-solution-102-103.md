@@ -298,32 +298,45 @@ ls /mnt
 ```
 
 ## Step 2 - Configure the database server
+Log to aws account console and create EC2 instance of t2.micro type with Ubuntu Server launch in the default region us-east-1. name instance MySQL server
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7692b0cf-2cf2-4692-a726-592ff2e2f58c)
+ Follow the same step and finally the instance created like this 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1422fff3-ba37-4b08-8919-cbeaa821813a)
 
 1. Install MySQL Server
-First, we need to install MySQL on our server. For RHEL-based systems
+First, we need to connect to our  Mysql server server
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4bac19a7-71cb-4a06-9b89-b29d4b48af48)
 
 1.1. Update the package index:
 ```
-sudo yum update
+sudo apt update
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6412cdbe-5c23-4e82-aedd-f599db0b6da8)
+
 1.2. Install MySQL server:
 ```
-sudo yum install mysql-server
+sudo apt install mysql-server
 ```
-1.3 Start the MySQL service:
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3d39ad91-22a5-463f-a601-cc5ffb731836)
+
+1.3 Check status :
 ```
-sudo systemctl start mysqld
+sudo systemctl status mysql
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/983caa69-beed-4e0e-8f13-cfd18dc42d66)
+
 1.4. Enable MySQL to start on boot:
 ```
-sudo systemctl enable mysqld
+sudo systemctl enable mysql
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d8fdde26-9b5c-4a2e-8896-4d9a499053af)
+
 1.5. Secure the MySQL installation (set root password, remove test databases, etc.):
 ```
 sudo mysql_secure_installation
-
 ```
 Follow the prompts to complete the configuration.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b9468974-933f-4248-bb02-5147812f5664)
 
 
 2. Create a database and name it tooling
@@ -336,17 +349,22 @@ sudo mysql -u root -p
 ```
 CREATE DATABASE tooling;
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3874798a-58c7-4356-833e-9d978b2381ee)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a1361f43-77a0-4ed3-90ee-d35855611192)
 
 3. Create a database user and name it `webaccess`
 
 ```
 CREATE USER 'webaccess'@'%' IDENTIFIED BY 'PassWord.1';
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/14b641d4-8b59-4270-bcc4-40daa0a11f93)
+
 4. Grant permission to webaccess user on tooling database to do anything only from the webservers subnet `cidr`
+> To grant permissions to a MySQL user based on a specific subnet (CIDR), you can use a series of wildcard characters to match the IP address range. MySQL does not support direct CIDR notation, so you need to translate the CIDR range into a pattern that MySQL understands.
 
 ```
-GRANT ALL PRIVILEGES ON tooling.* TO 'webaccess'@'<Subnet-CIDR>';
-
+GRANT ALL PRIVILEGES ON tooling. * TO 'webaccess'@'172.31.28.68';
 ```
 **Apply the changes**:
 ```
