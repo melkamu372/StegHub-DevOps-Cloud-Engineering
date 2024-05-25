@@ -364,12 +364,14 @@ CREATE USER 'webaccess'@'%' IDENTIFIED BY 'PassWord.1';
 > To grant permissions to a MySQL user based on a specific subnet (CIDR), you can use a series of wildcard characters to match the IP address range. MySQL does not support direct CIDR notation, so you need to translate the CIDR range into a pattern that MySQL understands.
 
 ```
-GRANT ALL PRIVILEGES ON tooling. * TO 'webaccess'@'172.31.28.68';
+GRANT ALL PRIVILEGES ON tooling. * TO 'webaccess'@'%' WITH GRANT OPTION;
 ```
 **Apply the changes**:
 ```
 FLUSH PRIVILEGES;
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7b2c57e2-a225-415f-acb5-6541b65b07e0)
+
 **Exit MySQL**
 ```
 exit
@@ -384,21 +386,38 @@ exit
 
 1. Launch a new EC2 instance with RHEL 8 Operating System
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8002b412-e91f-4172-abbc-c6410d6aaea1)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5f91a1d0-1cfe-4ae5-a2c3-b5a6ee820c4e)
+**Follow same steps above and  our instance detail look like this**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b69e64a4-08cb-4a0e-aefb-7ee10198ac13)
+
+
 2. Install NFS client
+```
+sudo yum update -y
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cf036f39-cd2e-44d8-9fe7-701c45710705)
+
+
 ```
 sudo yum install nfs-utils nfs4-acl-tools -y
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ce01fb6d-486a-457c-a4bd-e5a68cfa0f66)
+
 3. Mount /var/www/ and target the NFS server's export for apps
 ```
 sudo mkdir /var/www
 ```
 ```
-sudo mount -t nfs -o rw,nosuid <NFS-Server-Private-IP-Address>:/mnt/apps /var/www
+sudo mount -t nfs -o rw,nosuid 172.31.28.68:/mnt/apps /var/www
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b754b43d-bc0a-4e01-9e37-dfb6d9f24081)
+
 4. Verify that NFS was mounted successfully
 ```
  df -h
  ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7e32ebc5-2427-44e8-9f10-133e7ccb073d)
   
 Make sure that the changes will persist on Web Server after reboot:
 ```
@@ -407,46 +426,144 @@ sudo vi /etc/fstab
 
 add following line
 ```
-<NFS-Server-Private-IP-Address>:/mnt/apps /var/www nfs defaults 0 0
+172.31.28.68:/mnt/apps /var/www nfs defaults 0 0
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/489120b5-f8ef-4447-a8bc-1d71a97d6ce8)
+
 
 5. Install Remi's repository, Apache and PHP
 
 ```
 sudo yum install httpd -y
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9eedcd74-6bb8-4bf7-a2ce-9ba9cca730dd)
+
 ```
-sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/01fae725-f4fe-49ae-85b6-f057e59eaa7d)
+
+**To confirm that EPEL has been added**
 ```
-sudo dnf install dnf-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+ rpm -qi epel-release
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c672f3aa-c506-48da-bb6d-c39d0146c29a)
+
+```
+sudo dnf -y install http://rpms.remirepo.net/enterprise/remi-release-9.rpm -y
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/10736900-cd9c-4499-9e36-f77187172f16)
+
+> If you encounter the "Killed" message while running , it likely means the process was terminated due to running out of memory. Here are steps to mitigate this:
+Updating System with Limited Memory
+
+Create a swap file to increase virtual memory:
+
+```
+sudo fallocate -l 1G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ee6c73c8-a874-44a8-b382-8bf2cf2d5ad8)
+
+**Make the swap file permanent:**
+```
+echo '/swapfile swap swap defaults 0 0' | sudo tee -a /etc/fstab
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8bd755c4-c4cc-4dac-8960-053e1a817a32)
+
+**Update and Clean the System and re run**
+```
+sudo dnf upgrade --refresh -y
+sudo dnf upgrade -y dnf
+sudo dnf update -y
+sudo dnf clean all
+sudo reboot
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d1ca49c4-ab12-4389-b4c0-9ae10098882e)
+
+**Tehn Re run again**
+
+```
+sudo dnf -y install http://rpms.remirepo.net/enterprise/remi-release-9.rpm -y
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/065c3670-bd16-4d08-8c8d-7c58bb8688fb)
+
+Before installing PHP, we need to check the available PHP streams in the repository.
+```
+ sudo dnf module list php -y
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cdae6be5-ba91-4c66-8e0c-aa9b4c245527)
+
 ```
 sudo dnf module reset php
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9804b9e9-7232-400d-a9c9-19bd5cc8ad9b)
+
+
 ```
-sudo dnf module enable php:remi-7.4
+sudo dnf module enable php:remi-8.2 -y
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f8bdb6dc-929c-46b4-8d26-7b742640ec72)
+
 ```
-sudo dnf install php php-opcache php-gd php-curl php-mysqlnd
+sudo dnf install php -y
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ad7c8f5c-d595-450d-8e97-61dc2140fbd0)
+
+```
+php -v
+```
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/99fe167a-03da-4f7b-99fc-84007726a6c2)
+
 ```
 sudo systemctl start php-fpm
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4420ac86-6cf0-4271-b620-47bea2687ccb)
+
+
+```
+sudo dnf install php php-opcache php-gd php-curl php-mysqlnd
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b9281e76-5e0a-4066-8ad1-bc7f33f64f1a)
+
+
 ```
 sudo systemctl enable php-fpm
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/be84c348-be23-4d87-9bf4-954f58b8c19c)
+
 ```
-setsebool -P httpd_execmem 1
+sudo setsebool -P httpd_execmem 1
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fec48723-2c5b-4e90-a761-f01947b43956)
+
 > Repeat steps 1-5 for another 2 Web Servers.
 
 6. Verify NFS Mount and Apache Setup 
 
-Verify that Apache files and directories are available on the Web Server in /var/www and also on the NFS server in /mnt/apps. If you see the same files - it means NFS is mounted correctly. You can try to create a new file
+Verify that Apache files and directories are available on the Web Server in /var/www and also on the NFS server in /mnt/apps. If you see the same files - it means NFS is mounted correctly.
+
 ```
-touch test.txt
+cd /var/www
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3520ec68-988d-4e7d-9dcc-5b4556eb5ee4)
+
+```
+ls -l
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b7349964-4951-47cb-ae55-49b3ba5db997)
+
+ You can try to create a new file
+```
+sudo touch test.txt
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/421dcfe1-c487-4117-922f-e09b9400ca17)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0ba0d04f-8d4b-4b77-a78f-6243ef3d526b)
+
 from one server and check if the same file is accessible from other Web Servers.
 
 
