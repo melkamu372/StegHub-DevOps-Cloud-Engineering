@@ -547,7 +547,12 @@ sudo setsebool -P httpd_execmem 1
 ```
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fec48723-2c5b-4e90-a761-f01947b43956)
 
-> Repeat steps 1-5 for another 2 Web Servers.
+> Repeat steps 1-5 for another 2 Web Servers and finally 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cc6d6668-a90f-45a8-8d17-1bbf276e1997)
+
+
+
+
 
 6. Verify NFS Mount and Apache Setup 
 
