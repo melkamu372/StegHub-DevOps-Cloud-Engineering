@@ -1,4 +1,25 @@
 # DevOps Tooling Website Solution
+> This project focuses on building a website solution for a team of developers that will help a in day to day activities in managing, developing, testing, deploying, and monitoring different projects
+### In this project, we will implement a solution that consists of the following components:
+
+1. Infrastructure: AWS
+2. Webserver Linux: Red Hat Enterprise Linux 8
+3. Database Server: Ubuntu 24.04 + MySQL
+4. Storage Server: Red Hat Enterprise Linux 8 + NFS Server
+5. Programming Language: PHP
+6. GitHub Code Repository.
+
+### Prerequisites
+
+1. Knowledge of AWS core services and CLI
+2. Basic knowledge of Linux commands and how to manage storage on a Linux server.
+3. Basic knowledge of Network-attached storage (NAS), Storage Area Networks (SAN), and related protocols like NFS, FPT, SFTP, SMB, iSCSI.
+4. Knowledge of Block-level storage and how it is used on the Cloud.
+5. 
+#### ARCHTECTURAL DESIGN
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f3549b65-2c78-4efa-9e9e-af83268a2296)
+
 ## Step 1 - Prepare NFS Server
 1. Spin up a new EC2 instance with RHEL Linux Operating System.
    
@@ -283,20 +304,6 @@ rpcinfo -p | grep nfs
 - `UDP 2049`
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/801f96f8-47ce-4645-ad4a-aa55659e83f6)
 
-
-8.  Final Verification
-
-**Test NFS Export**: From a client within the same subnet, try mounting the NFS share.
-
-```
-sudo mount -t nfs <NFS-Server-IP>:/mnt/apps /mnt
-```
-**Verify Access**:
-
-```
-ls /mnt
-```
-
 ## Step 2 - Configure the database server
 Log to aws account console and create EC2 instance of t2.micro type with Ubuntu Server launch in the default region us-east-1. name instance MySQL server
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7692b0cf-2cf2-4692-a726-592ff2e2f58c)
@@ -571,6 +578,8 @@ sudo touch test.txt
 
 from one server and check if the same file is accessible from other Web Servers.
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/be74d92a-90d5-4cd5-888d-a09b0dcd9947)
+
 
 7. Locate the log folder for Apache on the Web Server and mount it to NFS server's export for logs. Repeat step №4 to make sure the mount point will persist after reboot.
 ```
@@ -671,5 +680,6 @@ INSERT INTO 'users' ('id', 'username', 'password', 'email', 'user_type', 'status
 
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/300c579c-92d6-430d-81d1-34b2d362e82b)
 
-
+### End of the Project
+We successfully implemented and deployed a DevOps tooling website, providing easy access to DevOps tools within the corporate infrastructure. The solution includes multiple web servers sharing a common database and accessing the same files using Network File System (NFS) for shared storage.
 
