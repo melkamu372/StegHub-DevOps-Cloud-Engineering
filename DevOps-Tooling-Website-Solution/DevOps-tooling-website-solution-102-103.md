@@ -562,12 +562,36 @@ sudo touch test.txt
 ```
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/421dcfe1-c487-4117-922f-e09b9400ca17)
 
+
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0ba0d04f-8d4b-4b77-a78f-6243ef3d526b)
+
+**We can see the text.txt file created inside our nfs server /mnt/apps directory. So they are communicating perfectly.**
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1111c017-196b-45c6-a1e6-9f684377beb8)
 
 from one server and check if the same file is accessible from other Web Servers.
 
 
 7. Locate the log folder for Apache on the Web Server and mount it to NFS server's export for logs. Repeat step №4 to make sure the mount point will persist after reboot.
+```
+sudo mkdir -p /var/log/httpd
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/24b30052-2f58-4ae1-b8bf-a8597684cd29)
+
+```
+sudo mount -t nfs -o rw,nosuid 172.31.28.68:/mnt/logs /var/log/httpd
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b6a50485-dd65-461f-b923-abdfa7a7d79e)
+
+Edit the /etc/fstab file so that it persists even after reboot
+```
+sudo vi /etc/fstab
+```
+add the following lines
+```
+172.31.28.68:/mnt/logs /var/log/httpd nfs defaults 0 0
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0658920b-fad5-4e76-b08f-614260e16c89)
 
 8. Fork the tooling source code from Darey.io Github Account to your Github account.
 
