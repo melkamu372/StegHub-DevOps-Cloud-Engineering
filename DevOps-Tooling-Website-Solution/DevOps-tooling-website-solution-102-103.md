@@ -594,28 +594,82 @@ add the following lines
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0658920b-fad5-4e76-b08f-614260e16c89)
 
 8. Fork the tooling source code from Darey.io Github Account to your Github account.
+**Download git**
+```
+sudo yum install git
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1f1f26f8-da14-4f1d-a75f-d361d36dfe7d)
 
+**Clone the repository you forked the project into**
+```
+git clone https://github.com/melkamu372/tooling.git
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cd9e36f0-7129-4029-9808-15d4177c54d0)
 
 9. Deploy the tooling website's code to the Webserver. Ensure that the html folder from the repository is deployed to /var/www/html
+```
+sudo cp -R html/. /var/www/htm/
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/004aaed6-4085-46f4-92fa-e0dfccce8d52)
 
 > Note 1: Do not forget to open TCP port 80 on the Web Server.
 
-> Note 2: If you encounter 403 Error - check permissions to your /var/www/html folder and also disable SELinux sudo setenforce 0 To make this change permanent - open following config file 
+> Note 2: If you encounter 403 Error - check permissions to your /var/www/html folder and also disable SELinux sudo setenforce 0 To make this change permanent - open following config file
+
+**Disable SELinux**
+```
+sudo setenforce 0
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0519607c-34bb-4247-b8e2-68816857610e)
 
 ```
 sudo vi /etc/sysconfig/selinux
 ```
- and set SELINUX=disabled, then restrt httpd.
+and set SELINUX=disabled
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b3b63124-cee0-41b6-b5f6-186b6323f0b8)
+
+ **Then restrt httpd**.
+```
+sudo systemctl restart httpd
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1c12dbb9-3222-4a82-aeee-aa74c793ca5b)
+```
+sudo systemctl status httpd
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3c262a40-9026-48a8-9c85-3e9c5c511cbf)
+
 
 10. Update the website's configuration to connect to the database (in /var/www/html/functions.php file). Apply `tooling-db.sql` script to your database using this command
  
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3b1d214e-7092-4593-838d-e695f824f671)
+
  ```
-  mysql -h <databse-private-ip> -u <db-username> -p <db-pasword> < tooling-db.sql
+  mysql -h 172.31.21.131 -u webaccess -p -D tooling < tooling-db.sql
+
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e022be24-ef1a-44a3-b2ea-b8115e1d7ce0)
+
 
 11. Create in MySQL a new admin user with `username: myuser` and `password: password`:
-```
-INSERT INTO 'users' ('id', 'username', 'password', 'email', 'user_type', 'status') VALUES -> (1, 'myuser', '5f4dcc3b5aa765d61d8327deb882cf99', 'user@mail.com', 'admin', '1');
-```
 
-12. Open the website in your browser http://<Web-Server-Public-IP-Address-or-Public-DNS-Name>/index.php and make sure you can login into the websute with myuser user.
+```
+mysql -h 172.31.21.131 -u webaccess -p
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4ab2076d-1cba-4629-b11b-4ae9c5ce5a69)
+
+```
+INSERT INTO 'users' ('id', 'username', 'password', 'email', 'user_type', 'status') VALUES -> (2, 'webaccess_user', '5f4dcc3b5aa765d61d8327deb882cf99', 'user@mail.com', 'admin', '1');
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/340ba5b3-0b3b-4471-8f2a-a9deb1946ef1)
+
+12. Open the website in your browser http://`Web-Server-Public-IP-Address`or `Public-DNS-Name`/index.php and make sure you can login into the website with  your user and password.
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/edf887e7-e267-43eb-9996-85d46b239605)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/098e7ff2-693b-4ae1-a247-623d1e9a80d7)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/300c579c-92d6-430d-81d1-34b2d362e82b)
+
+
+
