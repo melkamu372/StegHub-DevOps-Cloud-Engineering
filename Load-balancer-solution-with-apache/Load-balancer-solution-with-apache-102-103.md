@@ -52,9 +52,12 @@ sudo vi /etc/apache2/sites-available/000-default.conf
 ```
 
 **Add this configuration into this section**
+`
  <VirtualHost *:80>
  
-   </VirtualHost>
+ </VirtualHost>
+`
+
 ```
 <Proxy "balancer://mycluster">
                BalancerMember http://<WebServer1-Private-IP-Address>:80 loadfactor=5 timeout=1
@@ -63,6 +66,7 @@ sudo vi /etc/apache2/sites-available/000-default.conf
                # ProxySet lbmethod=byrequests
         </Proxy>
 ```
+
 ```
 ProxyPreserveHost On
 ProxyPass / balancer://mycluster/
@@ -95,3 +99,32 @@ http://<Load-Balancer-Public-IP-Address-or-Public-DNS-Name>/index.php
 ```
 
 several times and make sure that both servers receive HTTP GET requests from our LB - new records must appear in each server's log file. The number of requests to each server will be approximately the same since we set loadfactor to the same value for both servers - it means that traffic will be distributed evenly between them.
+
+# Optional Step - Configure Local DNS Names Resolution
+Sometimes it is tedious to remember and switch between IP addresses, especially if we have a lot of servers. What we can do, is to configure `local domain name resolution`. The easiest way is use /etc/hosts file, although this approach is not very scalable, but it is very easy to configure and shows the concept well.
+
+So let us configure IP address to domain name mapping for our Load Balancer.
+
+1. Open this file on your LB server
+```
+sudo vi /etc/hosts
+```
+2. add this file with **Local IP address** and **arbitrary name** for our Web Servers
+```
+<WebServer1-Private-IP-Address> Web1
+<WebServer2-Private-IP-Address> Web2
+```
+Now we can update our LB config file with those names instead of IP addresses
+```
+BalancerMember http://Web1:80 loadfactor=5 timeout=1
+BalancerMember http://Web2:80 loadfactor=5 timeout=1
+```
+now we can try to curl our Web Servers from LB locally
+```
+curl http://Web1
+```
+ **or**
+ ```
+ curl http://Web2
+```
+> **Remember**, This is only internal configuration and also local to our **LB server**, these names will neither be 'resolvable' from other servers internally nor from the Internet.
