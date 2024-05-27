@@ -15,10 +15,41 @@ Deploy and configure an Apache Load Balancer for Tooling Website solution on a s
 # Configure Load Balancing Using Apache HTTP Server 
 
 1. Create an Ubuntu Server 24.04 EC2 instance and name it **Project-8-apache-lb**
+Log to aws account console and create EC2 instance of t2.micro type with Ubuntu Server 20.04 LTS (HVM) server launch in the default region us-east-1. 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1905c1cf-16a2-4732-9640-d385bfcead1b)
+
+Application and OS Images select Ubuntu Server 20.04 LTS (HVM)  free tire eligable version
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/27a2211a-1db1-414d-a35a-d3ff955c122c)
+
+Create new key pair or select existing key 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b3d6fcaa-6efc-4434-a573-c88b4eadba41)
+
+Network setting create new security group or use existing security group
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e08a7f52-4316-4c2e-8938-e2949ea66748)
+
+Configure Storage and launch the instance
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c4e457b6-62d3-4a14-80bd-b14ae52d1ae9)
+
+View Instance
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f2125d56-f39d-41d2-a652-f24d5af0d2da)
+
+Instance Details for Project-8-apache-lb 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/611d7789-ec7a-48d2-8b84-3a66dc95209c)
 
 2. Open TCP port 80 on Apache-lb by creating an Inbound Rule in Security Group.
+Configure security group with the following inbound rules:
+
+Allow traffic on port 22 (SSH) with source from any IP address. This is opened by default.
+Allow traffic on port 80 (HTTP) with source from anywhere on the internet.
+Allow traffic on port 443 (HTTPS) with source from anywhere on the internet.
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cb5ffba2-7431-420a-8d16-44f090d20c20)
 
 3. Install Apache Load Balancer on Apache-lb server and configure it to point traffic coming to LB to both Web Servers:
+
+Connect to our lb server 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/56d5215c-03d3-4894-b1f3-8003b82c886d)
+
 
 **Install apache2**
 ```
@@ -26,25 +57,33 @@ sudo apt update
 sudo apt install apache2 -y
 sudo apt-get install libxml2-dev
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f66b2584-c389-4a40-9489-ff20cbb94813)
+
+
 **Enable following modules**:
 ```
 sudo a2enmod rewrite
+
 sudo a2enmod proxy
 sudo a2enmod proxy_balancer
 sudo a2enmod proxy_http
 sudo a2enmod headers
 sudo a2enmod lbmethod_bytraffic
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0419ada4-db6b-4a1f-b4cc-e16c64d1ff0c)
 
 **Restart apache2 service**
 
 ```
 sudo systemctl restart apache2
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5ec23076-abc0-477e-a0ce-41aa5ce16aab)
+
 **Make sure apache2 is up and running**
 ```
 sudo systemctl status apache2
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a8612fac-f3d9-4bdd-a9f9-2d55b7e564e0)
 
 **Configure load balancing**
 ```
@@ -60,12 +99,13 @@ sudo vi /etc/apache2/sites-available/000-default.conf
 
 ```
 <Proxy "balancer://mycluster">
-               BalancerMember http://<WebServer1-Private-IP-Address>:80 loadfactor=5 timeout=1
-               BalancerMember http://<WebServer2-Private-IP-Address>:80 loadfactor=5 timeout=1
+               BalancerMember http://172.31.29.247:80 loadfactor=5 timeout=1
+               BalancerMember http:172.31.20.250:80 loadfactor=5 timeout=1
                ProxySet lbmethod=bytraffic
                # ProxySet lbmethod=byrequests
         </Proxy>
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/38a38810-0ffb-453d-8985-9b64cd2c2c22)
 
 ```
 ProxyPreserveHost On
@@ -77,6 +117,8 @@ ProxyPassReverse / balancer://mycluster/
 ```
 sudo systemctl restart apache2
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/835312f2-a626-4ba0-b741-6b5548e2a14c)
+
 > `bytraffic` balancing method will distribute incoming load between our Web Servers according to current traffic load. We can control in which proportion the traffic must be distributed by loadfactor parameter.
 
 we can also use other methods, like: `bybusyness`, `byrequests`, `heartbeat`
@@ -84,15 +126,46 @@ we can also use other methods, like: `bybusyness`, `byrequests`, `heartbeat`
 **Verify that our configuration works** 
 
 ```
-http://<Load-Balancer-Public-IP-Address-or-Public-DNS-Name>/index.php
+http://3.90.26.133/index.php
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4c04e86b-1d67-478e-a3e9-e6eb14e1438c)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6535d21e-cb09-48b3-acdf-58b2e94e5675)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/43ca0184-fe0e-4056-a236-55a2c2e0c83d)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/97b07510-1767-4645-96cc-199c60155067)
 
 > **Note**: If in the previous project, we mounted /var/log/httpd/ from our Web Servers to the **NFS server** - unmount them and make sure that each Web Server has its own log directory.
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0f0d47ca-ad2b-4dde-9097-280f6183e046)
+**Unmounting the NFS Directory**
+1. Identify the NFS mount: Check the current NFS mounts:
+```
+df -h
+```
+2. Look for the line showing the /var/log/httpd mount point. Unmount the NFS directory:
+```
+sudo umount /var/log/httpd
+```
+> If the directory is busy, you might need to stop the services using it first:
+
+```
+sudo systemctl stop httpd
+```
+3. Verify the unmount:
+Check that the directory is unmounted:
+```
+df -h
+```
+we should do the above step for all
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7b8d9e2f-da24-4bd5-b05f-7df0362bbcf5)
+
 
 **Open two ssh/Putty consoles for both Web Servers and run following command:**
 ```
 sudo tail -f /var/log/httpd/access_log
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3116605c-4bd2-46f4-94d2-3f5da23d0e8f)
+
 Try to refresh your browser page 
 ```
 http://<Load-Balancer-Public-IP-Address-or-Public-DNS-Name>/index.php 
