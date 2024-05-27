@@ -156,20 +156,32 @@ Check that the directory is unmounted:
 ```
 df -h
 ```
+4. Restart Apache:
+```
+sudo systemctl restart httpd
+
+```
+
 we should do the above step for all
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7b8d9e2f-da24-4bd5-b05f-7df0362bbcf5)
 
 
-**Open two ssh/Putty consoles for both Web Servers and run following command:**
+**Open two ssh/Putty consoles for both Web Servers and run following command:****
+**server 1**
 ```
 sudo tail -f /var/log/httpd/access_log
 ```
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3116605c-4bd2-46f4-94d2-3f5da23d0e8f)
 
+**sever 2**
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2d3fe896-8fe8-4958-b73b-e760967e8b50)
+
 Try to refresh your browser page 
 ```
-http://<Load-Balancer-Public-IP-Address-or-Public-DNS-Name>/index.php 
+http://ec2-54-237-197-236.compute-1.amazonaws.com/index.php 
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/eef5c6e5-e3f7-4134-8ba3-8185df5a8cc7)
 
 several times and make sure that both servers receive HTTP GET requests from our LB - new records must appear in each server's log file. The number of requests to each server will be approximately the same since we set loadfactor to the same value for both servers - it means that traffic will be distributed evenly between them.
 
@@ -184,20 +196,37 @@ sudo vi /etc/hosts
 ```
 2. add this file with **Local IP address** and **arbitrary name** for our Web Servers
 ```
-<WebServer1-Private-IP-Address> Web1
-<WebServer2-Private-IP-Address> Web2
+172.31.29.247 Web1
+172.31.20.250 Web2
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/89df3989-7a44-401f-8683-a44d8924bab6)
+
 Now we can update our LB config file with those names instead of IP addresses
+```
+sudo vi /etc/apache2/sites-available/000-default.conf
+```
+
 ```
 BalancerMember http://Web1:80 loadfactor=5 timeout=1
 BalancerMember http://Web2:80 loadfactor=5 timeout=1
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a4832d64-71b6-402b-ad83-c8c948fcad2c)
+
 now we can try to curl our Web Servers from LB locally
 ```
 curl http://Web1
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9727f986-0831-403f-b1f7-3b081cbb6c5d)
+
  **or**
  ```
  curl http://Web2
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e6355300-fd1a-49b8-a6ee-4b966ff36e3e)
+
 > **Remember**, This is only internal configuration and also local to our **LB server**, these names will neither be 'resolvable' from other servers internally nor from the Internet.
+
+
+### End of Implementing a Load balancer Solution with Apache
+In this project we Deploy and configure an Apache Load Balancer for Tooling Website solution on a separate Ubuntu EC2 intance and users can be served by Web servers through the Load Balancer.
+ Load balancing is the process of distributing traffic across multiple servers for high-availability (HA) and elastic scalability. Many system administrators opt for dedicated software such as HAProxy to incorporate a proxy server. But with the mod_proxy_balancer module, we can easily use an unmanaged Linux cloud server as an Apache load balancer for domains or specified URIs. 
