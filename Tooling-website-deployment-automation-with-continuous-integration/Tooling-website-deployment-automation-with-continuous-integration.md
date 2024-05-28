@@ -142,7 +142,6 @@ In this part, we will learn how to configure a simple **Jenkins job/project**. T
 
 1. Enable webhooks in our GitHub repository settings. Go to your GitHub repository and select Settings > Webhooks > Add webhook
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/68ba7c39-aea0-42e7-bfad-23869274d86b)
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ab187491-3c4a-4e19-b886-649b23e208bf)
 
 2. Go to Jenkins web console, click `New Item` and create a `Freestyle project`
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/529732d8-a4d2-440b-af84-7d3ed797cf3b)
@@ -227,19 +226,38 @@ Scroll down to `Publish over SSH` plugin configuration section and configure it 
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/546db5c7-1fd8-4036-a11e-d388b59eabff)
 
 **Save this configuration and go ahead, change something in README.MD file in our GitHub Tooling repository**
+> Remeber to give directory permissions for user `ec2-user` on the **NFS server** :
+Ensure the target directory on the NFS server has the correct permissions. You might need to change ownership or modify the permissions to allow the Jenkins user to write to it.
+```
+sudo chown -R ec2-user:ec2-user /mnt/apps
+sudo chmod -R 755 /mnt/apps
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/39399920-2d7e-4110-a6f1-7d570cbc2358)
 
-`Webhook` will trigger a new job and in the `Console Output` of the job we will get something like this:
+`Webhook` will trigger a new job 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/01332821-fb4a-47ee-b6c3-a01676e70421)
+
+and in the `Console Output` of the job we will get something like this:
+
 ```
 SSH: Transferred 25 file(s)
 Finished: SUCCESS
 ```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ad406619-0906-47d7-a4f3-5ac1c9f4f756)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/91861520-8023-4c7c-80ea-1dd2333ca6b9)
+
+**To make sure that the files in /mnt/apps have been updated - connect via SSH to our NFS server and check README.MD file**
+```
+sudo ls /mnt/apps
+```
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c1018c18-7504-476b-8f9d-17dd1d11a2cc)
 
 
-To make sure that the files in /mnt/apps have been updated - connect via SSH to our NFS server and check README.MD file
 ```
 cat /mnt/apps/README.md
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a95bba63-6c0c-4467-806d-4a65f2bc696b)
+
 If you see the changes you had previously made in your GitHub - the job works as expected.
 
 ### End of Tooling Website deployment automation with Continuous Integration Project
