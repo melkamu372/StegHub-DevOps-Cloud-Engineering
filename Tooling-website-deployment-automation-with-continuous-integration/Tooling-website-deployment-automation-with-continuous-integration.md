@@ -162,20 +162,23 @@ Save the configuration and let us try to run the build. For now we can only do i
 You can open the build and check in **Console Output** if it has run successfully.
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8779411d-ff10-48f0-9342-78eca746b994)
 
-
 But this build does not produce anything and it runs only when we trigger it manually. Let us fix it.
 
 3. Click `Configure` our job/project and add these two configurations
-3.1 Configure triggering the job from GitHub webhook:
 
+3.1 Configure triggering the job from GitHub webhook:
+ 
+ ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/05e3efc4-4f96-4ade-bed6-819d4c531d04)
 
 3.2 Configure `Post-build Actions` to archive all the files - files resulted from a build are called `artifacts`
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/468655cb-66d5-4bef-be8c-f10d5afe6bef)
 
 Now, go ahead and we make some change in any file in our GitHub repository (e.g. README.MD file) and push the changes to the master branch.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c4c0cae7-4506-4aa6-81f0-68f05aaeb225)
 
 we will see that a new build has been launched automatically by webhook and its results - artifacts, saved on Jenkins server.
-
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/972d2d75-1f0b-403e-8150-d65557fd2fcb)
 
 Now we configured an automated `Jenkins job ` that receives files from GitHub by webhook trigger this method is considered as `push` because the changes are being `pushed` and files transfer is initiated by GitHub. There are also other methods: trigger one job `downstreadm` from another `upstream`, pull GitHub periodically and others
 
@@ -183,21 +186,23 @@ Now we configured an automated `Jenkins job ` that receives files from GitHub by
 ```
 ls /var/lib/jenkins/jobs/tooling_github/builds/<build_number>/archive/
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/66adc51b-dbb5-4b89-8056-3768e1548e8d)
 
 # Step 3 - Configure Jenkins to copy files to NFS server via SSH
 
 Now we have our artifacts saved locally on Jenkins server, the next step is to copy them to our NFS server to `/mnt/apps` directory
 Jenkins is a highly extendable application and there are `more than 1400 plugins` available. now we will need a plugin that is called `Publish Over SSH`
+1. Install `Publish Over SSH` plugin. Go to the Jenkins web console and select **Manage Jenkins** > **Manage Plugins**> **Available** > **Publish over SSH** > Install without restart."
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d16f56b7-6671-438d-8f6f-c788b213aa09)
 
-1. Install `Publish Over SSH` plugin
-  1.1 On main dashboard select **Manage Jenkins** and choose **Manage Plugins** menu item
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/59524e74-719a-4003-bee7-6c687f60b6aa)
 
-2. ON **Available** tab search for **Publish Over SSH** plugin and install it
-
+**Verify the installation**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6556d1bf-21bd-4d85-ac57-dd0f9950b444)
 
 2. Configure the **job/project** to copy artifacts over to **NFS server**
  
- On main dashboard select **Manage Jenkins** and choose **Configure System** menu item.
+ On main dashboard select **Manage Jenkins** > **Configure System** menu item.
 
 Scroll down to `Publish over SSH` plugin configuration section and configure it to be able to connect to your NFS server:
 
@@ -210,24 +215,26 @@ Scroll down to `Publish over SSH` plugin configuration section and configure it 
 2.4 Username - `ec2-user` (since NFS server is based on EC2 with RHEL 9)
 
 2.5 Remote directory - `/mnt/apps` since our Web Servers use it as a mointing point to retrieve files from the NFS server
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c65bde96-4a6f-4d91-93ec-f2a595a768dc)
 
 > Test the configuration and make sure the connection returns _**Success**_. **N.B** that `TCP port 22 on NFS server` must be open to receive SSH connections
-
-
-
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/49b59101-a825-4ad5-86ca-99a425769f30)
 **Save the configuration, open your Jenkins job/project configuration page and add another one `Post-build Action`**
 
-
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0431bb34-999c-46ec-8c13-e6f4228818f3)
 
 **Configure it to send all files produced by the build into our previouslys define remote directory** In our case we want to copy **all files** and **directories**, so we use `**` If you want to apply some particular pattern to define which files to send - [Read here in detail](https://ant.apache.org/manual/dirtasks.html#patterns).
-
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/546db5c7-1fd8-4036-a11e-d388b59eabff)
 
 **Save this configuration and go ahead, change something in README.MD file in our GitHub Tooling repository**
+
 `Webhook` will trigger a new job and in the `Console Output` of the job we will get something like this:
 ```
 SSH: Transferred 25 file(s)
 Finished: SUCCESS
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ad406619-0906-47d7-a4f3-5ac1c9f4f756)
+
 
 To make sure that the files in /mnt/apps have been updated - connect via SSH to our NFS server and check README.MD file
 ```
