@@ -80,61 +80,87 @@ sudo apt update
 ```
 sudo apt-get install jenkins
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cc5ebca6-29fb-4906-b53f-b34d96e1e579)
+
 **Enable jenkins**
 ```
 sudo systemctl enable jenkins
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/37d4625d-e37a-4fc2-8d55-38e53de07053)
+
 
 **Check Jenkins is up and running**
 ```
 sudo systemctl status jenkins
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/dc5b9848-9ff2-4484-ae70-4838a5cd1d2a)
+
 4. By default Jenkins server uses TCP port 8080 - open it by creating a new Inbound rule in our EC2 Security Group
 
-
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ce1c01be-648d-44b6-afb9-6f14446a953b)
 
 5. Perform initial Jenkins setup
+**Perform initial Jenkins setup. From your browser access**
+```
+http://<Jenkins-Server-Public-IP-Address>:8080
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a2746daa-2f6e-4d75-abc4-7dce3e36b087)
 
 **Obtain Initial Admin Password**
-After accessing Jenkins through your browser via http: <Jenkins-Server-Public-IP-Address-or-Public-DNS-Name>:8080 You will be prompted to provide a default admin password. This password is located in the file `/var/lib/jenkins/secrets/initialAdminPassword`
+After accessing Jenkins through our browser via `http: <Jenkins-Server-Public-IP-Address-or-Public-DNS-Name>:8080` we will be prompted to provide a default admin password. T
 
-To retrieve it from our server:
+To get retrieve the default admin password, run the following command
 ```
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 ```
-Copy the password from this file and paste it into the command shell prompt. Subsequently, you’ll receive a unique code for Jenkins initialization.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5590c0f8-9b33-4122-94d0-db42bb7f6452)
+
+Copy the password and paste 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/dd06dc13-8568-4331-ba8b-48afaf035240)
 
 This step enables us to authenticate as the administrator and proceed with Jenkins setup and configuration.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/91ac69f2-500f-4807-b0f9-fe0d61b05acf)
 
-6. Create the First Admin User.
+6. Install Suggested Plugins Then we will be asked which plugins to install - choose suggested plugins.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ad23b36c-e6d4-49a2-b098-ce3e4d36d315)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2efc27eb-eb3e-47d4-bddf-2fb94bb50b70)
+
+7. Once plugin installation is done Create the First Admin User.
 we will create the first admin user for our system, granting initial administrative privileges to manage and configure the platform.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e81493cf-81e3-4526-a539-8deee4c41b3f)
 
-
-7. Install Suggested Plugins.
-
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1068b12a-4a8e-4769-a6c9-ca1fd4edf56b)
 
 8. Jenkins Setup Completion.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0ecdce55-11b3-4874-899a-c2efb7e47c3b)
 
-With the installation and configuration completed, Jenkins is now ready for use. Navigate to the Jenkins dashboard and click on “New Item” to create a new job.
+With the installation and configuration completed, Jenkins is now ready for use. Navigate to the Jenkins dashboard and click on `New Item` to create a new job.
 
 # Step 2 - Configure Jenkins to retrieve source codes from GitHub using Webhooks
-In this part, you will learn how to configure a simple Jenkins job/project. This job will will be triggered by GitHub webhooks and will execute a `build` task to retrieve codes from GitHub and store it locally on Jenkins server.
+In this part, we will learn how to configure a simple **Jenkins job/project**. This job will will be triggered by `GitHub webhooks` and will execute a `build` task to retrieve codes from GitHub and store it locally on Jenkins server.
 
-1. Enable webhooks in our GitHub repository settings
+1. Enable webhooks in our GitHub repository settings. Go to your GitHub repository and select Settings > Webhooks > Add webhook
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/68ba7c39-aea0-42e7-bfad-23869274d86b)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ab187491-3c4a-4e19-b886-649b23e208bf)
 
-2. Go to Jenkins web console, click `New Item` and create a "Freestyle project"
+2. Go to Jenkins web console, click `New Item` and create a `Freestyle project`
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/529732d8-a4d2-440b-af84-7d3ed797cf3b)
 
- To connect our GitHub repository, we will need to provide its URL, we can copy from the repository itself
-
-
+To connect our GitHub repository, we will need to provide its URL, we can copy from the repository itself
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b2bc1c1b-b62d-4f36-9f93-b2c25b72ad3d)
+```
+https://github.com/melkamu372/tooling.git
+```
 In configuration of our Jenkins freestyle project choose Git repository, provide there the link to our Tooling GitHub repository and credentials (user/password) so Jenkins could access files in the repository.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b8cd0b2a-88f0-4e83-b5d5-d158ce0cf01f)
 
 
 Save the configuration and let us try to run the build. For now we can only do it manually. Click ``Build Now` button, if we have configured everything correctly, the build will be successfull and you will see it under #1
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/bf1ffc2d-663e-4615-ac8e-26ab68718e46)
 
-
-You can open the build and check in "Console Output" if it has run successfully.
-
+You can open the build and check in **Console Output** if it has run successfully.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8779411d-ff10-48f0-9342-78eca746b994)
 
 
 But this build does not produce anything and it runs only when we trigger it manually. Let us fix it.
