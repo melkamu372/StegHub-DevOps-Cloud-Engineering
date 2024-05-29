@@ -1,14 +1,16 @@
 # Load Balancer Solution With Nginx and SSL/TLS
-**Load balancing** is an excellent way to scale out your application and increase its performance and redundancy. Nginx, a popular web server software, can be configured as a simple yet powerful load balancer to improve your server’s resource availability and efficiency.
 
-**SSL/TLS Termination** Generate an SSL certificate and private key for the domain name users will access. You can use a free Let's Encrypt certificate or obtain one from a certificate authority. Configure Nginx to use the SSL certificate and key within the server block listening on port 443.Nginx will handle the SSL/TLS encryption and decryption for incoming connections. Traffic between Nginx and the backend servers will be unencrypted HTTP.
+**Load balancing** : is an excellent way to scale out your application and increase its performance and redundancy. Nginx, a popular web server software, can be configured as a simple yet powerful load balancer to improve your server’s resource availability and efficiency.
+
+**SSL/TLS Termination** : Generate an SSL certificate and private key for the domain name users will access. You can use a free Let's Encrypt certificate or obtain one from a certificate authority. Configure Nginx to use the SSL certificate and key within the server block listening on port 443.Nginx will handle the SSL/TLS encryption and decryption for incoming connections. Traffic between Nginx and the backend servers will be unencrypted HTTP.
 
 **Task**
+
 This project consists of two parts:
 
-1. Configure Nginx as a Load Balancer
-2. Register a new domain name and configure secured connection using SSL/TLS certificates
-
+1. _Configure Nginx as a Load Balancer_
+   
+2. _Register a new domain name and configure secured connection using SSL/TLS certificates_
 
 # Part 1 Configure Nginx as a load balancer
 
