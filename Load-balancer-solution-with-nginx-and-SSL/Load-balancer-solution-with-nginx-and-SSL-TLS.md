@@ -15,30 +15,83 @@ This project consists of two parts:
 # Part 1 Configure Nginx as a load balancer
 
 1. Create an EC2 VM based on Ubuntu Server 24.04 LTS and name it nginx Ls 
+  ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8d7588d2-9288-4223-a829-7abdf1594a6f)
 
-- **open TCP port 80 for HTTP connections** 
-- **open TCP port 443 for secured HTTPS connections**
+Application and OS Images select Ubuntu free tire eligable version
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2647c3a2-ea13-4f36-b806-254cc3a46c91)
+
+Create new key pair or select existing key
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3b162024-b52f-4191-a1c0-bb83171bc0cc)
+
+Network setting create new security group or use existing security group
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5e0711c5-779d-480f-80b1-179ce5d187fc)
+
+Configure Storage and launch the instance
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b56fcdd5-41b1-4454-9389-811083f7142b)
+
+View Instance
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e0b1c902-ac5f-45da-8b8c-24609fcd68c8)
+
+Instance Details for web
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3f2f2f33-dac4-4c93-8d8e-ad938f094e44)
+
+Configure security group with the following inbound rules:
+
+- Allow traffic on port 22 (SSH) with source from any IP address. This is opened by default.
+- Allow traffic on port 80 (HTTP) with source from anywhere on the internet.
+- Allow traffic on port 443 (HTTPS) with source from anywhere on the internet.
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/22249603-8e6f-472a-af20-49a8cf4a4587)
+Now connect to ssh terminal and work on
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/15a71696-e8bb-4002-8633-e8660f8bb105)
 
 2. Update `/etc/hosts` file for local DNS with Web Servers' names (e.g web1 and web2) and their local IP addresses
+```
+sudo vi /etc/hosts
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d9640441-cd4c-4313-a82c-e0e7c772b9bb)
+
+Verify change 
+```
+sudo cat /etc/hosts
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/43c35e2a-d294-4244-b33f-17c9cb958a6d)
+
 
 3. Install and configure Nginx as a load balancer to point traffic to the resolvable DNS names of the webservers
 
-4. Update the instance and Install Nginx Install Nginx
+Update the instance
 ```
 sudo apt update
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/de989d70-3b2a-44c8-98d2-3e46d467bc0b)
+
+
+Install Nginx 
+
 ```
 sudo apt install nginx
 ```
-5. Edit the Nginx configuration file to set up load balancing
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/008ade69-defd-4243-800b-1744b41e9906)
+
+
+4. Edit the Nginx configuration file to set up load balancing
 ```
   sudo vi /etc/nginx/nginx.conf
 ```
-6. insert the following configuration in `http` section
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5105b1e9-4c44-466f-b133-2d281b999064)
+
+5. insert the following configuration in `http` section
 
 ```
-    upstream backend {
-       server Webl weight=5;
+    upstream myproject {
+       server Web1 weight=5;
        server Web2 weight=5;
     }
 
@@ -54,22 +107,32 @@ sudo apt install nginx
     # include /ete/nginx/sites-enabled/
 
 ```
-7. Test the Configuration
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/823b737c-7fa7-4878-8b82-4721f68398b6)
+
+
+6. Test the Configuration
 
 Before reloading Nginx, test the configuration to ensure there are no syntax errors
 ```
 sudo nginx -t
 ```
-8. Reload Nginx
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/17176c26-50c7-426e-8854-fa3904c70b2a)
+
+7. Reload Nginx
 If the configuration test is successful, reload Nginx to apply the changes
 
 ```
 sudo systemctl reload nginx
 ```
-9. Verify  the service is up and running
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/84228a24-d31c-4f3c-92a6-fe2660f20b31)
+
+8. Verify  the service is up and running
 ```
 sudo systemctl status nginx
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c32a1c4e-b36a-4e66-9a8c-0b57f26a7fba)
+
 # Part 2 - Register a new domain name and configure secured connection using SSL/TLS certificates
 In order to get a valid SSL certificate we need to register a **new domain name**, we can do it using any Domain name registrar - a company that manages reservation of domain names. The most popular ones are: `Godaddy.com`, `Domain.com`, `Bluehost.com`
 
