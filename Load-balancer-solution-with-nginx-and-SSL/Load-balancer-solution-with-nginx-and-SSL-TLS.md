@@ -182,6 +182,9 @@ learn how to allocate an Elastic IP and associate it with an EC2 server [Elastic
 
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/761574f6-44f0-4e65-868b-2741f1f19ace)
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f494332e-d060-41ec-a06d-38c3c347706a)
+
+
 3. **Update DNS Settings**
    
 3.1. Update A record in your registrar to point to Nginx LB using Elastic IP address
@@ -196,15 +199,21 @@ learn how to allocate an Elastic IP and associate it with an EC2 server [Elastic
 
 
 4. Configure Nginx to recognize your new domain name
-Open the Nginx configuration file, typically located at `/etc/nginx/nginx.conf` or a specific site configuration file in `/etc/nginx/sites-available/` update your nginx.conf with server_name www.<your-domain-name.com> instead of server_name www.domain.com
+Open the Nginx configuration file, typically located at `/etc/nginx/nginx.conf` or a specific site configuration file in `/etc/nginx/sites-available/` update your nginx.conf with server_name www.<your-domain-name.com instead of server_name www.domain.com
+
+**our server name :** `www.tooling.dns-dynamic.net`
+
 ```
 sudo vi /etc/nginx/nginx.conf
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c3a61893-996d-45d7-bf2e-99fe277aac70)
 
 **Restart Nginx**
 ```
 sudo systemctl restart nginx
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/3d1623a1-a37b-405f-83ef-c50b15f51c13)
+
 
 5. Install `certbot` and request for an SSL/TLS certificate
 
@@ -212,21 +221,31 @@ sudo systemctl restart nginx
 ```
 sudo systemctl status snapd
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/400685c2-ca83-4ce3-9509-b658b0a3b8c6)
 
 **Install certbot**
 ```
 sudo snap install --classic certbot
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e4c5cb23-4fb4-4708-9da7-7d21d5e7685a)
+
 Obtain SSL/TLS Certificates:just follow the certbot instructions you will need to choose which domain you want your certificate to be issued for, domain name will be looked up from `nginx.conf` file so make sure you have updated it on step 4).
+
 **Create a Symlink for Certbot:** Create a symbolic link to make Certbot easily executable
 ```
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/bde0bbac-1acc-47e5-8b66-fc04c6ebb0f9)
+
 **Run Certbot to obtain and install the certificate**
 ```
 sudo certbot --nginx
 ```
 Follow the prompts to select your domain and complete the installation
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/761e52c6-25d5-49bd-b904-e52ffd3af8b1)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/efd6032e-c35b-44db-bf65-233f73c780a4)
+
 
 6. Test secured access to your Web Solution by trying to reach
 - Visit `https://<your-domain-name.com>` in your web browser
@@ -244,6 +263,8 @@ By default, LetsEncrypt certificate is valid for 90 days, so it is recommended t
 ```
 sudo certbot renew --dry-run
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0da3f087-b5bc-4fa0-90d1-0ad6b652db00)
+
 > Best pracice is to have a scheduled job that to run renew command periodically. Let us configure a `cronjob` to run the command twice a day
 
 **Open the crontab editor**
@@ -254,6 +275,8 @@ crontab -e
 ```
 * */12 * * *   root /usr/bin/certbot renew > /dev/null 2>&1
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b2a41e66-2c77-470a-8edb-9c274ade9087)
+
 **Additional Resources**
 - For more information on cron jobs, watch the video [Job Scheduling (cronjob/crontab) on Linux CentOS 8](https://www.youtube.com/watch?v=4g1i0ylvx3A)
 -Use an online cron expression editor to help create and understand cron expressions [online cron expression editor](https://crontab.guru/)
