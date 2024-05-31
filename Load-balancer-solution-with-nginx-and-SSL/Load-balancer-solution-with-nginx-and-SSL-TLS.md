@@ -11,6 +11,10 @@ This project consists of two parts:
 1. _Configure Nginx as a Load Balancer_
    
 2. _Register a new domain name and configure secured connection using SSL/TLS certificates_
+ 
+Our target architecture will look like this:
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/04d2b9e4-ba6a-44a2-a750-ba0dd988e3b0)
 
 # Part 1 Configure Nginx as a load balancer
 
@@ -138,9 +142,21 @@ In order to get a valid SSL certificate we need to register a **new domain name*
 
 1. Register a new domain
    
-- Select a domain registrar like GoDaddy, Domain.com, or Bluehost.
-  
+- Select a domain registrar like GoDaddy, Domain.com, Bluehost or other for this time I need free domain for that 
+  got to [https://www.cloudns.net/main/](https://www.cloudns.net/main/) and signup and register new domain
+ ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/981c1190-497d-4d92-91e0-2d3060016872)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7f5a23ee-08b1-4f50-a9aa-14cbf3e7a84f)
+
 - Register your desired domain name  (e.g. .com, .net, .org, .edu, .info, .xyz or any other)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/475e6e74-2cdb-45a9-a151-a3a616327e3b)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ab8f7e71-7f65-489c-9c57-a681ecca543e)
+
+Now let us check using DNS Checker  [https://dnschecker.org/#A/www.tooling.dns-dynamic.net](https://dnschecker.org/#A/www.tooling.dns-dynamic.net) 
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/bec57229-c0c4-4e44-ae44-85ad868b7b9f)
+
    
 2. Assign an Elastic IP to our Nginx LB server and associate our domain name with this Elastic IP
 learn how to allocate an Elastic IP and associate it with an EC2 server [Elastic IP addresses](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html)
@@ -152,6 +168,9 @@ learn how to allocate an Elastic IP and associate it with an EC2 server [Elastic
 2.2 Select `Elastic IPs` from the left-hand menu
 
 2.3 Click `Allocate Elastic IP address` and follow the prompts
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2f7fbd6f-9f58-476a-b4a2-c5805fae72a3)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b6704cf1-91b9-43af-81d1-d9e4db48203e)
 
 **Associate Elastic IP with Your EC2 Instance:**
 
@@ -160,6 +179,8 @@ learn how to allocate an Elastic IP and associate it with an EC2 server [Elastic
 2.2 Click `Actions` and choose `Associate Elastic IP address`
 
 2.3 Select your Nginx EC2 instance from the list and associate the Elastic IP
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/761574f6-44f0-4e65-868b-2741f1f19ace)
 
 3. **Update DNS Settings**
    
@@ -170,6 +191,9 @@ learn how to allocate an Elastic IP and associate it with an EC2 server [Elastic
 3.3 Find the DNS settings for your domain
 
 3.4 Add or update an A record to point to your Elastic IP address
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/dae3e40a-291b-4825-abd1-8c30cab38c28)
+
 
 4. Configure Nginx to recognize your new domain name
 Open the Nginx configuration file, typically located at `/etc/nginx/nginx.conf` or a specific site configuration file in `/etc/nginx/sites-available/` update your nginx.conf with server_name www.<your-domain-name.com> instead of server_name www.domain.com
