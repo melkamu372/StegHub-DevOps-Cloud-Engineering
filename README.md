@@ -6,12 +6,17 @@ In this repository, you will find detailed documentation, code samples, Guidelin
 
 ### Topics Covered
 - Introduction to DevOps and Cloud Engineering
-- WebStack Implimentation(LAMP) IN AWS
-- Web stack implementation (LEMP) in AWS
-- MERN web stack implementation in AWS
-- MEAN Stack Deployment to Ubuntu in AWS
-- Implement a Client Server Architecture using MySQL Database Management System (DBMS)
-- Web Solution With WordPress
+- Project 1 WebStack Implimentation(LAMP) IN AWS
+- Project 2 Web stack implementation (LEMP) in AWS
+- Project 3 MERN web stack implementation in AWS
+- Project 4 MEAN Stack Deployment to Ubuntu in AWS
+- project 5 Implement a Client Server Architecture using MySQL Database Management System (DBMS)
+- Project 6 Web Solution With WordPress
+- Project 7 
+- Project 8 
+- Project 9 
+- Project 10
+- Project 11
 ### Feedback
 Your feedback is valuable to us! If you have any suggestions, ideas, or questions, don't hesitate to reach out. Together, we can continue to improve and evolve this repository to meet the needs of the DevOps and Cloud Engineering.
 
