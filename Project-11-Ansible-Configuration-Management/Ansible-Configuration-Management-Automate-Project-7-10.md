@@ -9,6 +9,7 @@ Ansible can be effectively used in combination with a Jump Server (also known as
 
 On the diagram below the Virtual Private Network (VPC) is divided into two subnets - Public subnet has public IP addresses and Private subnet is only reachable by private IP addresses.
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b9983c20-fc00-4ad1-86b8-c41677ce629d)
 
 When you get to Project 15, we will see a Bastion host in proper action. But for now, we will develop **Ansible scripts** to simulate the use of a Jump box/Bastion host to access our Web Servers
 
@@ -22,8 +23,16 @@ When you get to Project 15, we will see a Bastion host in proper action. But for
 # Step 1 -Install and Configure ANSIBLE ON EC2 Instance
 
 1. Update Name tag on our **Jenkins EC2** Instance to **Jenkins-Ansible**. We will use this server to run playbooks.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/848adc8b-31f7-41b9-a6c3-45bd52d74d15)
+
+
 2. In your GitHub account create a new repository and name it **ansible-config-mgt**
-3. Install Ansible
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/88e8764a-0754-4693-bb5b-4a3eff8dfdbf)
+
+**Created Repository is**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/dfa4b1e1-91c4-4d87-801b-c5894697524c)
+
+3. In your `Jenkin-Ansible server`, instal Ansible
 
 ```
 sudo apt update
@@ -31,29 +40,65 @@ sudo apt update
 ```
 sudo apt install ansible
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/66e43ff4-ce20-471c-946e-5ef6159a14c1)
 
 **Check your Ansible version** 
 ```
 ansible --version
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/10d49174-d515-4570-82ef-112d889f3c19)
+
 4. Configure Jenkins build job to save our repository content every time you change it – this will solidify your Jenkins configuration skills acquired in Project 9
 
-- Create a new Freestyle project ansible in Jenkins and point it to your `ansible-config-mgt` repository.
 - Configure Webhook in GitHub and set webhook to trigger ansible build
+  Enable webhooks in our GitHub repository settings. Go to your GitHub repository and select Settings > Webhooks > Add webhook
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ac88604e-24e8-4663-8604-5cf25f219733)
+
+- Create a new Freestyle project ansible in Jenkins
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c7c92db6-9e6d-4336-adf4-76847023e386)
+
+Point  to your `ansible-config-mgt` repository
+
+Get your repository address  fromhere
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d2f7c94d-c685-4854-a729-a36927835b7e)
+
+```
+https://github.com/melkamu372/ansible-config-mgt.git
+```
+ 
+ Paste address to git configureation
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5a0c4c60-169f-4d7f-89d0-47e38eeeaca3)
+
 - Configure a Post-build job to save all (**) files, like you did it in _Project 9_.
 
+**Configure triggering the job from GitHub webhook**:
+  
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ab12fbcd-90ee-447c-abba-93ed2fec8739)
+
+**Configure Post-build Actions to archive all the files - files resulted from a build are called artifacts**
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/977205d0-6194-4ee4-80f1-bb8f923b5e7f)
+
 5. Test your setup by making some change in README.MD file in master branch and make sure that builds starts automatically and Jenkins saves the files (build artifacts) in following folder
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/62ef1cfb-bd41-4e8e-8030-8d5f9737dd1c)
+
+**Console**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7bc3cbad-40c1-497d-8da3-7bd93b1a9216)
+
 
 ```
 ls /var/lib/jenkins/jobs/ansible/builds/<build_number>/archive/
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d4c3d190-b3f2-4b56-bbd7-87f4aca800b8)
+
 
 > Note: Trigger Jenkins project execution only for /main (master) branch.
 
 Now your setup will look like this:
 
 ![6035](https://user-images.githubusercontent.com/85270361/210153832-75e74f67-0654-4fc1-bcdd-08c3d5a8fa76.PNG)
-
 
 > Tip Every time you stop/start your Jenkins-Ansible server – you have to reconfigure GitHub webhook to a new IP address, in order to avoid it, it makes sense to allocate an Elastic IP to your Jenkins-Ansible server (you have done it before to your LB server in 
 Project 10). Note that Elastic IP is free only when it is being allocated to an EC2 Instance, so do not forget to release Elastic IP once you terminate your EC2 Instance.
@@ -66,11 +111,13 @@ plethora of different IDEs and Source-code Editors for different languages with 
 
 2. After you have successfully installed ``VSC``, configure it to connect to your newly created GitHub repository.
 
-3. Clone down your ansible-config-mgt repo to your Jenkins-Ansible instance
+3. Clone down(Download) your ansible-config-mgt repo to your Jenkins-Ansible instance `git clone <ansible-config-mgt repo link>`
 
 ```
-git clone <ansible-config-mgt repo link>
+git clone https://github.com/melkamu372/ansible-config-mgt.git
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/33ace95e-fe63-481e-927e-57652dbecdef)
+
 
 # Step 3 - Begin Ansible Development
 In your ``ansible-config-mgt`` GitHub repository, 
@@ -79,17 +126,45 @@ In your ``ansible-config-mgt`` GitHub repository,
 
 > Tip: Give your branches descriptive and comprehensive names, for example, if you use `Jira` or `Trello` as a project management tool - include ticket number (e.g. PRJ-num) in the name of your branch and add a topic and a brief description what this branch is about - a bugfix, hotfix, feature, release (e.g. feature/prj-145-lvm)
 
+**Navigate to your repository directory:**
+```
+cd path/to/your/ansible-config-mgt
+
+```
+**Create a new branch:**
+```
+git checkout -b feature/prj-11-ansible-setup
+```
+
 2. Checkout the newly created feature branch to your local machine and start building your code and directory structure
+```
+git fetch
+git checkout feature/prj-11-ansible-setup
+```
 
 3. Create a directory and name it **playbooks** - it will be used to store all your playbook files.
-
+```
+mkdir playbooks
+```
 4. Create a directory and name it **inventory** - it will be used to keep your hosts organised
-
+```
+mkdir inventory
+```
 5. Within the playbooks folder, create your first playbook, and name it ``common.yml``
+```
+touch playbooks/common.yml
+```
 
-6. Within the inventory folder, create an inventory file () for each environment (Development, Staging, Testing and Production) dev, staging, uat, and prod respectively. 
-
+6. Within the inventory folder, create an inventory file (.yml) for each environment (Development, Staging, Testing and Production) dev, staging, uat, and prod respectively. 
+```
+touch inventory/dev.yml
+touch inventory/staging.yml
+touch inventory/uat.yml
+touch inventory/prod.yml
+```
 These inventory files use ``.ini`` languages style to configure Ansible hosts.
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/207c9dcb-a39d-46e4-b36b-14401a240098)
 
 # Step 4 - Set up an Ansible Inventory
 An Ansible inventory file defines the hosts and groups of hosts upon which commands, modules, and tasks in a playbook operate. Since our intention is to execute Linux commands on remote hosts, and ensure that it is the intended configuration on a particular server that occurs. It is important to have a way to organize our hosts in such an **Inventory**
