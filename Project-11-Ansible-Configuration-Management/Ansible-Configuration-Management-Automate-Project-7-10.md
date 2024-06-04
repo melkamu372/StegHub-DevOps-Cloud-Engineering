@@ -9,7 +9,11 @@ Ansible can be effectively used in combination with a Jump Server (also known as
 
 On the diagram below the Virtual Private Network (VPC) is divided into two subnets - Public subnet has public IP addresses and Private subnet is only reachable by private IP addresses.
 
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b9983c20-fc00-4ad1-86b8-c41677ce629d)
+
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a324426f-c7f1-42dc-bb6e-4a721ca39cf1)
+
+
 
 When you get to Project 15, we will see a Bastion host in proper action. But for now, we will develop **Ansible scripts** to simulate the use of a Jump box/Bastion host to access our Web Servers
 
@@ -350,18 +354,21 @@ Open VS Code -> Go to the Extensions view by clicking on the Extensions icon in 
 
 Open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P on macOS)->Type and select Remote-SSH: Connect to Host....
 ->Enter the SSH connection string in the format user@hostname or user@ip_address, 
+
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a4c7d027-dbaa-469a-bb36-558f246120e3)
 ```
 ubuntu@34.234.86.105
 ```
-
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a4c7d027-dbaa-469a-bb36-558f246120e3)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6582d210-5a6e-477f-a3af-cde247029fc8)
 
 VS Code will prompt you for your SSH password or passphrase.
-Connect to Instance
 
+Connect to Instance
 After entering the password or passphrase, VS Code will connect to your remote instance via SSH.
 You should see a new VS Code window open with a green indicator in the bottom-left corner, indicating the remote connection.
 Edit Files and Execute Commands
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/299436d9-85fb-45f2-8c36-4fb10cc5f91e)
 
 You can now edit files directly on your remote instance using VS Code.
 Open your Ansible playbook and other project files to make changes or additions as needed.
@@ -369,10 +376,12 @@ Use the integrated terminal in VS Code to run commands on the remote instance di
 ```
 cd ansible-config-mgt
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c5ed53b5-f187-4f0a-a94a-0dd2957b3764)
 
 ```
 ansible-playbook -i inventory/dev.yml playbooks/common.yml
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d7e4414a-0c0d-4e58-9767-0a1d649588c7)
 
 You can go to each of the servers and check if wireshark has been installed by running 
 ```
@@ -382,11 +391,16 @@ which wireshark
  ```
  wireshark --version
 ```
+**Server check**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/35372206-3e55-49f7-a24f-a7f954090df5)
+
+**Another Server**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5ee2b263-c6a9-4539-92ce-4968461b124a)
 
 
 Your updated with Ansible architecture now looks like this:
 
-![6038](https://user-images.githubusercontent.com/85270361/210154593-092a4ee2-ab8b-4212-a260-8845c3f8693a.PNG)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b9983c20-fc00-4ad1-86b8-c41677ce629d)
 
 
 # Optional step - Repeat once again
@@ -394,10 +408,6 @@ Your updated with Ansible architecture now looks like this:
 Update your ansible playbook with some new Ansible tasks and go through the full 
 **checkout** -> **change codes**->**commit** -> **PR** -> **merge** -> **build** -> **ansible-playbook** cycle again to see how easily you can manage a 
 servers fleet of any size with just one command!
-
-
-
-
 
 ### The end of Project 11 Ansible Configuration Management(Automate Project 7 to 10)
 In this project we develop **Ansible scripts** to simulate the use of a **Jump box/Bastion host** to access our Web Servers to achive this we do that 
