@@ -182,22 +182,29 @@ Save the below inventory structure in the ``inventory/dev`` file to start config
 ```
 eval `ssh-agent -s`
 ```
-**Add your private key to the SSH agent**:Replace <path-to-private-key> with the actual path to your private key file
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e47060d4-eeb9-4bc2-81ae-427a9225d732)
+
+
+**Add your private key to the SSH agent**: ssh-add <path-to-private-key> Replace <path-to-private-key> with the actual path to your private key file
 
 ```
-ssh-add <path-to-private-key>
+ssh-add melkamu_key.pem
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/09800ded-b2a4-4a04-9aec-6538de66be3c)
+
 
 Confirm the key has been added with the command below, you should see the name of your key
 
 ```
 ssh-add -l 
 ```
+ssh![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7b1e7ad0-f18a-4e50-8a48-b660e86b7b5a)
 
 Now, ssh into your Jenkins-Ansible server using ssh-agent
 ```
-ssh -A ubuntu@public-ip
+ssh -A ubuntu@34.234.86.105
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/030be498-be21-48ac-a35c-6eee4ef27a7a)
 
 > To learn how to setup SSH agent and connect VS Code to your Jenkins-Ansible instance,    please see this video: [Windows Linux](https://www.youtube.com/watch?v=OplGrY74qog)
 
@@ -226,6 +233,7 @@ Update your ``inventory/dev.yml`` file with this snippet of code:
 ```
 <Load-Balancer-Private-IP-Address> ansible_ssh_user=ubuntu
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/208497c4-aea9-4bf9-989b-8bcdc8da0841)
 
 # Step 5 - Create a Common Playbook
 
@@ -260,6 +268,7 @@ In `common.yml` playbook you will write configuration for repeatable, re-usable,
         name: wireshark
         state: latest
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e8eaf2f3-0de3-4b17-ae01-e1c26b4032ca)
 
 > Examine the code above and try to make sense out of it.  This **playbook** is divided into two parts, each of them is intended to perform the same task :
 
@@ -298,23 +307,65 @@ git add <selected files>
 ```
 git commit -m "commit message"
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1b91aa7a-a6be-4f55-b6fd-fe7cb08bbeff)
+**Then push to github**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fbdc6f52-5465-449f-b46e-256b5584de93)
 
 2. Create a Pull Request (PR)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/259d4361-f2de-4a56-bead-9b119655ae53)
 
 3. Wear the hat of another developer for a second, and act as a reviewer.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e0d5fb1e-007b-4ccf-ad72-74701325560b)
 
 4. If the reviewer is happy with your new feature development, merge the code to the master branch.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ebc11c68-2471-4b4b-91ba-8d7e97cb1fdb)
 
 5. Head back on your terminal, checkout from the feature branch into the master, and pull down the latest changes
-   
+   ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/39a7e9a9-bbdd-4b1e-9b09-41f29656f2ae)
+
 Once your code changes appear in master branch - Jenkins will do its job and save all the files (build artifacts) to 
-`/var/lib/jenkins/jobs/ansible/builds/<build_number>/archive/` directory on Jenkins-Ansible server.
+
+`/var/lib/jenkins/jobs/ansible/builds/<build_number>/archive/`
+
+directory on Jenkins-Ansible server.
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5fae49b1-785f-4cf9-ba59-61c44a735d6a)
+
+```
+ls /var/lib/jenkins/jobs/ansible/builds/12/archive/
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0929f100-06cb-4f2f-b0b0-cafd71377076)
 
 
 # Step 7 - Run first Ansible test
 
-Now, it is time to execute ansible-playbook command and verify if your playbook actually works:
+Now, it is time to execute ansible-playbook command and verify if your playbook actually works: first setup our vs code  to connect our instance for remote development, follow these steps:
 
+1. **Install Remote - SSH Extension**
+
+Open VS Code -> Go to the Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the VS Code window -> Search for `Remote - SSH` extension and install it
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/52f9bff3-bf47-42a3-a34a-096bd3b99550)
+
+2. Configure SSH Host
+
+Open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P on macOS)->Type and select Remote-SSH: Connect to Host....
+->Enter the SSH connection string in the format user@hostname or user@ip_address, 
+```
+ubuntu@34.234.86.105
+```
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a4c7d027-dbaa-469a-bb36-558f246120e3)
+
+VS Code will prompt you for your SSH password or passphrase.
+Connect to Instance
+
+After entering the password or passphrase, VS Code will connect to your remote instance via SSH.
+You should see a new VS Code window open with a green indicator in the bottom-left corner, indicating the remote connection.
+Edit Files and Execute Commands
+
+You can now edit files directly on your remote instance using VS Code.
+Open your Ansible playbook and other project files to make changes or additions as needed.
+Use the integrated terminal in VS Code to run commands on the remote instance directly from the editor.
 ```
 cd ansible-config-mgt
 ```
