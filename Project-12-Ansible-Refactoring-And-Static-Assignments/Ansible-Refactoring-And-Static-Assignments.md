@@ -171,14 +171,20 @@ cd /home/ubuntu/ansible-config-mgt/
 ```
 ansible-playbook -i inventory/dev.yml playbooks/site.yaml
 ```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f823c897-a7b0-4e9c-8692-c248643171ab)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ed6ce588-9909-4883-9ea9-67078ff12a70)
 
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/629ac5ba-ccac-45fb-b4b9-cab4d3768006)
 
 Make sure that wireshark is deleted on all the servers by running 
 
 ```
 wireshark --version
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/19a8432a-9e52-47b0-b390-e01df89c0a57)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/633fffe6-53f8-43be-85d7-f6c3cd15bd0b)
+
 
 Now you have learned how to use `import_playbooks` module and you have a ready solution to `install/delete` packages on multiple servers with just one command
 
@@ -188,10 +194,15 @@ We have our nice and clean dev environment, so let us put it aside and configure
 
 
 1. Launch 2 fresh EC2 instances using RHEL 8 image, we will use them as our uat servers, so give them names accordingly - **Web1-UAT** and **Web2-UAT**
- 
 
-> Tip: Do not forget to stop EC2 instances that you are not using at the moment to avoid paying extra. For now, you only need 2 new 
-RHEL 8 servers as Web Servers and 1 existing Jenkins-Ansible server up and running.
+ **Web1-UAT**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2d9fd243-6e00-43c1-8d1e-8a192f0d639a)
+
+**Web2-UAT**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cf96e371-3645-4aa5-84e3-77685b38f0d9)
+
+> Tip: Do not forget to stop EC2 instances that you are not using at the moment to avoid paying extra. For now, you only need **2** new 
+**RHEL 8 servers as Web Servers** and 1 existing **Jenkins-Ansible** server up and running.
 
 2. To create a role, you must create a directory called roles/, relative to the playbook file or in `/etc/ansible/` directory.
 
@@ -208,6 +219,8 @@ cd roles
 ```
 ansible-galaxy init webserver
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b69783ac-920e-4ccd-aaea-ab934f7f6ede)
+
 
 3. Create the directory/files structure manually
 
@@ -278,6 +291,14 @@ Read about ssh-agent:
 
 <Web2-UAT-Server-Private-IP-Address> ansible_ssh_user='ec2-user' 
 ```
+
+```
+[uat-webservers]
+172.31.29.247 ansible_ssh_user='ec2-user' 
+
+172.31.20.250 ansible_ssh_user='ec2-user' 
+```
+
 
 4. In /etc/ansible/ansible.cfg file uncomment roles_path string and provide a full path to your roles directory 
 
