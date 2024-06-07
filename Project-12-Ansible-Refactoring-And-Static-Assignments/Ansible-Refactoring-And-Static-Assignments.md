@@ -126,8 +126,10 @@ Your folder structure should look like this;
     └── site.yml
 ```
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fbbf0f46-7aa7-4f30-9089-8f10df19b2e8)
 
-5. Run ansible-playbook command against the dev environment Since you need to apply some tasks to your **dev servers** and **wireshark** is already installed - you can go ahead and create another playbook under static-assignments and name it common-del.yml. In this playbook, configure deletion of wireshark utility.
+
+5. Run ansible-playbook command against the dev environment Since you need to apply some tasks to your **dev servers** and **wireshark** is already installed - you can go ahead and create another playbook under static-assignments and name it `common-del.yml`. In this playbook, configure deletion of wireshark utility.
 
 
 ```
@@ -157,6 +159,7 @@ Your folder structure should look like this;
       purge: yes
       autoclean: yes
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/466c920c-47a2-482e-b625-d8a9ce551590)
 
 
 update `site.yml` with - import_playbook: ../static-assignments/common-del.yml instead of common.yml and run it against dev servers:
@@ -168,6 +171,8 @@ cd /home/ubuntu/ansible-config-mgt/
 ```
 ansible-playbook -i inventory/dev.yml playbooks/site.yaml
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f823c897-a7b0-4e9c-8692-c248643171ab)
+
 
 Make sure that wireshark is deleted on all the servers by running 
 
