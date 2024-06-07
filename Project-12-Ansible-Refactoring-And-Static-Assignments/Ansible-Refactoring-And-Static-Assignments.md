@@ -33,11 +33,26 @@ chmod -R 0777 /home/ubuntu/ansible-config-artifact
 3. Go to Jenkins web console -> Manage Jenkins -> Manage Plugins -> on Available tab search for Copy Artifact and install this plugin without restarting Jenkins
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a435a8f9-7778-4561-bd83-6cfbbf0ef738)
 
+**Use existing  git** 
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cded1168-dd5b-4a15-8fac-c1852a3ebfb6)
+
+**Add github hook trigger**
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5a1d8f8c-c513-4bab-8587-27f933c29c72)
+
+**Add post build action** 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8d20c836-2f52-489f-83ec-466138c455a3)
+
+
 4. Create a new Freestyle project (you have done it in **Project 9**) and name it `save_artifacts`
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e9f42da4-42eb-4dfc-b29f-7d478af02934)
 
 5. This project will be triggered by completion of your existing ansible project. Configure it accordingly:
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2e163086-2dd5-4f68-892a-245cf510ad6f)
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/38aee6b8-021d-4d5c-822b-17e7b3384996)
 
 
 > Note: You can configure number of builds to keep in order to save space on the server, for example, you might want to keep only last
@@ -47,9 +62,13 @@ chmod -R 0777 /home/ubuntu/ansible-config-artifact
 `/home/ubuntu/ansible-config-artifact` as a target directory.
 
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e88ec480-3ad9-4912-a59c-d5a27b1f044e)
 
+> if you get an error Replace `/home/ubuntu/ansible-config-artifact` with `${WORKSPACE}/ansible-config-artifact`
 
 7. Test your set up by making some change in `README.MD` file inside your `ansible-config-mgt` repository (right inside master branch).
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/aad9f5f8-1758-44f7-8a5a-3cc496da9455)
 
 
 If both Jenkins jobs have completed one after another – you shall see your files inside /home/ubuntu/ansible-config-artifact directory and it will be updated with every commit to your master branch.
