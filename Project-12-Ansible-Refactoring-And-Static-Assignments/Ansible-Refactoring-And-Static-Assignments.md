@@ -249,6 +249,9 @@ The entire folder structure should look like below, but if you create it manuall
         └── main.yml
 ```
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ba794c97-88aa-4822-9340-e3d04e800e1b)
+
+
 After removing unnecessary directories and files, the roles structure should look like this
 
 
@@ -265,6 +268,7 @@ After removing unnecessary directories and files, the roles structure should loo
     │   └── main.yml
     └── templates
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e574ed6d-6396-4c54-a4e6-f0e506002e2f)
 
 
 3. Update your inventory `ansible-config-mgt/inventory/uat.yml` file with IP addresses of your 2 UAT Web servers
@@ -298,6 +302,7 @@ Read about ssh-agent:
 
 172.31.20.250 ansible_ssh_user='ec2-user' 
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fd6c7acf-fa57-481a-94a6-11ccb4cb0bbc)
 
 
 4. In /etc/ansible/ansible.cfg file uncomment roles_path string and provide a full path to your roles directory 
@@ -305,6 +310,7 @@ Read about ssh-agent:
 ```
 roles_path = /home/ubuntu/ansible-config-mgt/roles
 ```
+!:[image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1f31a06b-1fc1-42d6-91d1-d71b0f7ac405)
 
 so Ansible could know where to find configured roles.
 
@@ -356,7 +362,8 @@ Your `main.yml` may consist of following tasks:
     path: /var/www/html/html
     state: absent
 ```
- 
+ ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/93cab835-8f51-447a-b573-6891320a61b1)
+
 
 # Step 4 – Reference `Webserver` role
 
@@ -368,6 +375,7 @@ Within the `static-assignments` folder, create a new assignment for `uat-webserv
   roles:
      - webserver
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/25b29c07-9724-4b46-8cd3-ee50505db775)
 
 
 > Remember that the entry point to our ansible configuration is the `site.yml` file. Therefore, you need to refer your `uat-webservers.yml` role inside `site.yml`
@@ -383,6 +391,7 @@ So, we should have this in site.yml
 - hosts: uat-webservers
 - import_playbook: ../static-assignments/uat-webservers.yml
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2b70f029-9b4f-4009-85b9-f8feecabca4e)
 
 # Step 5 – Commit & Test
 
@@ -390,15 +399,21 @@ Commit your changes, create a **Pull Request** and merge them to master branch, 
 they ran successfully and copied all the files to your Jenkins-Ansible server into
 `/home/ubuntu/ansible-config-mgt/` directory
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9ff74441-e0a9-4b34-adc4-2154313d1076)
+
 ```
 ls /home/ubuntu/ansible-config-mgt/
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4c3ab445-5509-487e-9e81-a14723eb46bb)
 
 Now run the playbook against your `uat` inventory and see what happens:
 
 ```
 sudo ansible-playbook -i /home/ubuntu/ansible-config-mgt/inventory/uat.yml /home/ubuntu/ansible-config-mgt/playbooks/site.yaml
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fc29898e-8e61-4f24-aa78-72e5444a7df3)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/e93ea4be-fafe-42a4-8f6a-9e52c0021bc7)
 
 
 You should be able to see both of your **UAT Web servers** configured and you can try to reach them from your browser:
