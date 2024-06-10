@@ -100,6 +100,9 @@ Now paste the instruction below into the env-vars.yml file.
       tags:
         - always
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/366dd7a5-1737-43c3-9e9b-c3b3a192e384)
+
+
 **Notice 3 things to notice here:**
 
 1. We used `include_vars` syntax instead of `include`, this is because Ansible developers decided to separate different features of the module. From Ansible version **2.8**, the include module is deprecated and variants of include_* must be used. These are:
@@ -136,6 +139,8 @@ Update `site.yml` file to make use of the dynamic assignment. (At this point, we
 - name: Webserver assignment
   import_playbook: ../static-assignments/webservers.yml
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/10680df3-3861-4f03-9dc6-d44e4f676c84)
+
 # Community Roles
 
 Now it is time to create a role for **MySQL database** – it should install the `MySQL package`, create a database and configure users. But why should we re-invent the wheel? There are tons of roles that have already been developed by other open source engineers out there. These roles are actually production ready, and dynamic to accomodate most of Linux flavours. With Ansible Galaxy again, we can simply download a ready to use ansible role, and keep going.
@@ -144,6 +149,7 @@ Now it is time to create a role for **MySQL database** – it should install the
  you can browse available community roles [here](https://galaxy.ansible.com/ui/)
 
 We will be using a [MySQL role developed by geerlingguy](https://galaxy.ansible.com/geerlingguy/mysql )
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9c37bda5-9997-4837-8364-5feb79d5abd2)
 
 > Hint: To preserve your your GitHub in actual state after you install a new role – make a commit and push to master your `ansible-config-mgt` directory. Of course you must have git installed and configured on Jenkins-Ansible server and, for more convenient work with codes, you can configure Visual Studio Code to work with this directory. In this case, you will no longer need webhook and Jenkins jobs to update your codes on Jenkins-Ansible server, so you can disable it – we will be using Jenkins later for a better purpose.
 
@@ -156,9 +162,17 @@ git branch roles-feature
 git switch roles-feature
 ```
 Inside roles directory create your new MySQL role with ansible-galaxy install geerlingguy.mysql and rename the folder to mysql
+
+```
+ansible-galaxy role install geerlingguy.mysql
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f23fb353-d1b5-4a2f-843b-72dad5287276)
+
 ```
 mv geerlingguy.mysql/ mysql
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4721e591-f170-47c6-b432-d8003ebbd8c8)
+
 Read `README.md` file, and edit roles configuration to use correct credentials for MySQL required for the `tooling` website.
 
 Now it is time to upload the changes into your GitHub:
@@ -178,7 +192,21 @@ We want to be able to choose which Load Balancer to use, Nginx or Apache, so we 
 
 With your experience on Ansible so far you can:
 
-- Decide if you want to develop your own roles, or find available ones from the community
+- Decide if you want to **develop your own** roles, or find **available ones from the community**
+
+**Install Nginx Role:**
+
+```
+ansible-galaxy role install geerlingguy.nginx
+```
+**Install Apache Role:**
+
+```
+ansible-galaxy role install geerlingguy.apache
+```
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/99792d26-5633-4fe8-869a-497b4b68bcea)
+
 - Update both static-assignment and site.yml files to refer the roles
 
 > Important Hints:
@@ -191,9 +219,23 @@ With your experience on Ansible so far you can:
 
 - Declare another variable in both roles `load_balancer_is_required` and set its value to _false_ as well
 
+Update defaults/main.yml for Nginx Role 
+```
+enable_nginx_lb: false
+load_balancer_is_required: false
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/53f0b6f9-ad83-4217-9704-c6565a7a39bb)
+
+Update defaults/main.yml for Apache Role:
+```
+enable_apache_lb: false
+load_balancer_is_required: false
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5b32da4f-3f28-42f8-9f44-2c1347903f58)
+
 - Update both assignment and `site.yml` files respectively
 
-`loadbalancers.yml` file
+Create  `loadbalancers.yml` file  in static-assignments and add 
 
 ```
 - hosts: lb
@@ -201,15 +243,17 @@ With your experience on Ansible so far you can:
     - { role: nginx, when: enable_nginx_lb and load_balancer_is_required }
     - { role: apache, when: enable_apache_lb and load_balancer_is_required }
 ```
-`
-site.yml file
-`
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6fb11b86-20cc-4f81-918e-e2b7fbe2e26a)
+
+Update `site.yml` file
+
 ```
- - name: Loadbalancers assignment
-       hosts: lb
-         - import_playbook: ../static-assignments/loadbalancers.yml
-        when: load_balancer_is_required 
+- name: Loadbalancers assignment
+  hosts: lb
+- import_playbook: ../static-assignments/loadbalancers.yml
+  when: load_balancer_is_required 
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/70d9436d-d0cc-4cfe-b265-5ec77abcb3bc)
 
 Now you can make use of `env-vars\uat.yml` file to define which loadbalancer to use in UAT environment by setting respective environmental variable to _true_
 
@@ -218,13 +262,31 @@ You will activate **load balancer**, and enable `nginx` by setting these in the 
 enable_nginx_lb: true
 load_balancer_is_required: true
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b6e7ac75-df88-47ea-9997-b392c4ef9527)
+
 The same must work with `apache` **LB**, so you can switch it by setting respective environmental variable to _true_ and other to _false_
+```
+enable_nginx_lb: false
+enable_apache_lb: true
+load_balancer_is_required: true
+
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/dbd5396f-965b-4dbd-ae5d-f3a2388234e4)
 
 To test this, you can update inventory for each environment and run Ansible against each environment.
+update your inventory file for UAT ` inventory/uat`:
+```
+[lb]
+lb_host ansible_host=your_lb_host_ip
+```
+Run the playbook against the UAT environment:
+```
+ansible-playbook -i inventory/uat site.yml --extra-vars "@env-vars/uat.yml"
+```
 
 ## End of Project 13 ANSIBLE DYNAMIC ASSIGNMENTS (INCLUDE) AND COMMUNITY ROLES
 
 In this project you have learned and practiced how to use Ansible configuration management tool to prepare UAT environment for Tooling web solution
 
 ## Next project 
-Next project is a capstone project for this part of your Project Based Learning journey – it will require all previously gained knowledge and skills, and introduce more new and exciting concepts and DevOps tools!
+Next project is a **capstone project** for this part of your Project Based Learning journey – it will require all previously gained knowledge and skills, and introduce more new and exciting concepts and DevOps tools!
