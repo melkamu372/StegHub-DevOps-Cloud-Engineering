@@ -165,15 +165,11 @@ What we want to achieve, is having Nginx to serve as a reverse proxy for our sit
 
 ## CI-Environment
 
-
-![6048](https://user-images.githubusercontent.com/85270361/210165242-115b6e0e-f960-4357-940b-d4c03097962f.PNG)
-
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6744cb7a-4366-44cf-b6d2-9f781270376f)
 
 ## Other Environments from Lower To Higher
 
-
-![6049](https://user-images.githubusercontent.com/85270361/210165287-131f9463-e7fa-4ce9-b260-9f47d13421c4.PNG)
-
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d7b5b1df-a501-40b0-bd0f-45424644ecec)
 
 DNS requirements
 Make DNS entries to create a subdomain for each environment. Assuming your main domain is total.com
@@ -282,4 +278,707 @@ group of servers created in the inventory file.
 For example, If there are variables we need to be common between both pentest-todo and pentest-tooling, rather than setting these
 variables in many places, we can simply use the group_vars for pentest. Since in the inventory file it has been created as
 pentest:children Ansible recognizes this and simply applies that variable to both children.
+
+### ANSIBLE ROLES FOR CI ENVIRONMENT
+
+Now go ahead and Add two more roles to ansible:
+
+1. [SonarQube](https://www.sonarsource.com/products/sonarqube/) (Scroll down to the Sonarqube section to see instructions on how to 
+set up and configure SonarQube manually)
+
+2. [Artifactory](https://jfrog.com/artifactory/)
+
+### Why do we need SonarQube?
+**SonarQube** is an open-source platform developed by SonarSource for continuous inspection of code quality, it is used to perform 
+automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities. 
+[Watch a short description here](https://youtu.be/vE39Fg8pvZg). There is a lot more hands on work ahead with SonarQube and Jenkins.
+So, the purpose of SonarQube will be clearer to you very soon.
+
+
+### Why do we need Artifactory?
+**Artifactory** is a product by [JFrog](https://jfrog.com/) that serves as a binary repository manager. The binary repository is a natural extension to the
+source code repository, in that the outcome of your build process is stored. It can be used for certain other automation, 
+but we will it strictly to manage our build artifacts.
+
+[Watch a short description here](https://youtu.be/upJS4R6SbgM) Focus more on the first 10.08 mins
+
+
+
+### Configuring Ansible For Jenkins Deployment
+
+In previous projects, you have been launching Ansible commands manually from a CLI. Now, with Jenkins, we will start running Ansible
+from Jenkins UI.
+
+**To do this**
+
+1. Navigate to Jenkins URL
+
+2. Install & Open Blue Ocean Jenkins Plugin
+
+3. Create a new pipeline
+
+4. Select GitHub
+
+5. Connect Jenkins with GitHub
+
+6. Login to GitHub & Generate an Access Token
+
+7. Copy Access Token
+
+8. Paste the token and connect
+
+9. Create a new Pipeline
+
+
+
+At this point you may not have a [Jenkinsfile](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/) in the Ansible repository, so 
+Blue Ocean will attempt to give you some guidance to create one. But we do not need that. We will rather create one ourselves.
+So, click on Administration to exit the Blue Ocean console.
+
+
+
+**Here is our newly created pipeline. It takes the name of your GitHub repository**
+
+
+### Let us create our Jenkinsfile
+
+Inside the Ansible project, create a new directory deploy and start a new file Jenkinsfile inside the directory.
+
+Add the code snippet below to start building the Jenkinsfile gradually. This pipeline currently has just one stage called Build and 
+the only thing we are doing is using the shell script module to echo Building Stage
+
+
+```
+pipeline {
+    agent any
+
+  stages {
+    stage('Build') {
+      steps {
+        script {
+          sh 'echo "Building Stage"'
+        }
+      }
+    }
+    }
+}
+```
+
+
+**Now go back into the Ansible pipeline in Jenkins, and select configure**
+
+
+**Scroll down to Build Configuration section and specify the location of the Jenkinsfile at deploy/Jenkinsfile**
+
+
+**Back to the pipeline again, this time click `Build now`**
+
+
+This will trigger a build and you will be able to see the effect of our basic `Jenkinsfile` configuration by going through the console
+output of the build.
+
+To really appreciate and feel the difference of Cloud Blue UI, it is recommended to try triggering the build again from Blue Ocean
+interface.
+
+1.  Click on Blue Ocean
+
+
+
+2. Select your project
+
+3. Click on the play button against the branch
+
+
+> Notice that this pipeline is a multibranch one. This means, if there were more than one branch in GitHub, Jenkins would have scanned
+the repository to discover them all and we would have been able to trigger a build for each branch.
+
+**Let us see this in action**
+
+1. Create a new git branch and name it `feature/jenkinspipeline-stages`
+2. Currently we only have the _Build stage_. Let us add another stage called _Test_. Paste the code snippet below and push the new changes 
+to GitHub.
+
+```
+pipeline {
+    agent any
+
+  stages {
+    stage('Build') {
+      steps {
+        script {
+          sh 'echo "Building Stage"'
+        }
+      }
+    }
+
+    stage('Test') {
+      steps {
+        script {
+          sh 'echo "Testing Stage"'
+        }
+      }
+    }
+    }
+}
+```
+
+
+4. To make your new branch show up in Jenkins, we need to tell Jenkins to scan the repository.
+
+1. Click on the "Administration" button
+
+
+
+
+2. Navigate to the Ansible project and click on `Scan repository now`
+
+
+
+
+
+3. Refresh the page and both branches will start building automatically. You can go into Blue Ocean and see both branches there too.
+
+
+4. In Blue Ocean, you can now see how the Jenkinsfile has caused a new step in the pipeline launch build for the new branch.
+
+
+
+
+### A QUICK TASK FOR YOU!
+
+```
+1. Create a pull request to merge the latest code into the main branch
+2. After merging the PR, go back into your terminal and switch into the main branch.
+3. Pull the latest change.
+4. Create a new branch, add more stages into the Jenkins file to simulate below phases. (Just add an echo command like we have in build
+and test stages)
+   1. Package 
+   2. Deploy 
+   3. Clean up
+5. Verify in Blue Ocean that all the stages are working, then merge your feature branch to the main branch
+6. Eventually, your main branch should have a successful pipeline like this in blue ocean
+```
+
+### Running Ansible Playbook from Jenkins
+
+Now that you have a broad overview of a typical **Jenkins pipeline**. Let us get the actual Ansible deployment to work by:
+
+1. Installing Ansible on Jenkins
+2. Installing Ansible plugin in Jenkins UI
+3. Creating Jenkinsfile from scratch. (Delete all you currently have in there and start all over to get Ansible to run successfully)
+
+You can [watch a 10 minutes video here](https://youtu.be/PRpEbFZi7nI) to guide you through the entire setup
+
+>**Note**: Ensure that Ansible runs against the Dev environment successfully.
+
+**Possible errors to watch out for:**
+
+1. Ensure that the git module in `Jenkinsfile` is checking out SCM to main branch instead of master (GitHub has discontinued the use of
+Master due to Black Lives Matter. You can read more here)
+
+2. Jenkins needs to export the `ANSIBLE_CONFIG` environment variable. You can put the .`ansible.cfg` file alongside Jenkinsfile in the
+deploy directory. This way, anyone can easily identify that everything in there relates to deployment. Then, using the Pipeline
+Syntax tool in Ansible, generate the syntax to create environment variables to set.
+
+https://wiki.jenkins.io/display/JENKINS/Building+a+software+project
+
+**Possible issues to watch out for when you implement this**
+
+1. Remember that `ansible.cfg` must be exported to environment variable so that Ansible knows where to find Roles. But because you will
+possibly run `Jenkins` from different git branches, the location of Ansible roles will change. Therefore, you must handle this 
+dynamically. You can use Linux [Stream Editor sed](https://www.gnu.org/software/sed/manual/sed.html) to update the section 
+roles_path each time there is an execution. You may not have this issue if you run only from the main branch.
+
+2. If you push new changes to Git so that Jenkins failure can be fixed. You might observe that your change may sometimes have no effect.
+Even though your change is the actual fix required. This can be because Jenkins did not download the latest code from GitHub. Ensure
+that you start the **Jenkinsfile** with a clean up step to always delete the previous workspace before running a new one. Sometimes 
+you might need to login to the **Jenkins Linux server** to verify the files in the workspace to confirm that what you are actually 
+expecting is there. Otherwise, you can spend hours trying to figure out why Jenkins is still failing, when you have pushed up 
+possible changes to fix the error.
+
+3. Another possible reason for Jenkins failure sometimes, is because you have indicated in the Jenkinsfile to check out the main git
+branch, and you are running a pipeline from another branch. So, always verify by logging onto the Jenkins box to check the workspace,
+and run git branch command to confirm that the branch you are expecting is there.
+
+
+If everything goes well for you, it means, the Dev environment has an up-to-date configuration. But what if we need to deploy to
+other environments?
+
+- Are we going to manually update the Jenkinsfile to point inventory to those environments? such as sit, uat, pentest, etc.
+- Or do we need a dedicated git branch for each environment, and have the inventory part hard coded there.
+
+Think about those for a minute and try to work out which one sounds more like a better solution.
+
+**Manually updating the Jenkinsfile** is definitely not an option. And that should be obvious to you at this point. Because we try to
+automate things as much as possible.
+
+Well, unfortunately, we will not be doing any of the highlighted options. What we will be doing is to **parameterise the deployment**.  So that at the point of execution, the appropriate values are applied.
+
+
+### Parameterizing `Jenkinsfile` For Ansible Deployment
+
+To deploy to other environments, we will need to use parameters
+
+1. Update `sit inventory` with new servers
+
+```
+[tooling]
+<SIT-Tooling-Web-Server-Private-IP-Address>
+
+[todo]
+<SIT-Todo-Web-Server-Private-IP-Address>
+
+[nginx]
+<SIT-Nginx-Private-IP-Address>
+
+[db:vars]
+ansible_user=ec2-user
+ansible_python_interpreter=/usr/bin/python
+
+[db]
+<SIT-DB-Server-Private-IP-Address>
+```
+
+2. Update `Jenkinsfile` to introduce parameterization. Below is just one parameter. It has a default value in case if no value is 
+specified at execution. It also has a description so that everyone is aware of its purpose.
+
+```
+pipeline {
+    agent any
+
+    parameters {
+      string(name: 'inventory', defaultValue: 'dev',  description: 'This is the inventory file for the environment to deploy 
+      configuration')
+    }
+...
+```
+
+
+3. In the Ansible execution section, remove the hardcoded inventory/dev and replace with `${inventory}
+From now on, each time you hit on execute, it will expect an input.
+
+
+> Notice that the default value loads up, but we can now specify which environment we want to deploy the configuration to. Simply type
+`sit` and `hit` Run
+
+
+
+4. Add another parameter. This time, introduce tagging in Ansible. You can limit the Ansible execution to a specific role or playbook
+desired. Therefore, add an Ansible tag to run against webserver only. Test this locally first to get the experience. Once you 
+understand this, update Jenkinsfile and run it from Jenkins
+
+# CI/CD Pipline for TODO Application 
+We already have **tooling** website as a part of deployment through Ansible. Here we will introduce another PHP application to add to the
+list of software products we are managing in our infrastructure. The good thing with this particular application is that it has 
+unit tests, and it is an ideal application to show an end-to-end CI/CD pipeline for a particular application.
+
+Our goal here is to deploy the application onto servers directly from Artifactory rather than from `git` If you have not updated 
+Ansible with an Artifactory role, simply use this guide to create an Ansible role for Artifactory (ignore the Nginx part). 
+[Configure Artifactory on Ubuntu 20.04](https://www.howtoforge.com/tutorial/ubuntu-jfrog/)
+
+### Phase 1 – Prepare Jenkins
+
+1. Fork the repository below into your GitHub account
+```
+https://github.com/StegTechHub/php-todo.git
+```
+
+2. On you Jenkins server, install PHP, its dependencies and Composer tool (Feel free to do this manually at first, then update 
+your Ansible accordingly later)
+
+```
+sudo apt install -y zip libapache2-mod-php phploc php-{xml,bcmath,bz2,intl,gd,mbstring,mysql,zip}
+```
+
+3. Install Jenkins plugins
+
+1. [Plot plugin](https://plugins.jenkins.io/plot/)
+2. [Artifactory plugin](https://www.jfrog.com/confluence/display/JFROG/Jenkins+Artifactory+Plug-in)
+
+- We will use _plot_ plugin to display tests reports, and code coverage information.
+- The _Artifactory_ plugin will be used to easily upload code artifacts into an Artifactory server.
+
+
+4. In Jenkins UI configure Artifactory
+
+
+Configure the server ID, URL and Credentials, run Test Connection.
+
+
+### Phase 2 – Integrate Artifactory repository with Jenkins
+
+1. Create a dummy Jenkinsfile in the repository
+
+2. Using Blue Ocean, create a multibranch Jenkins pipeline
+
+3. On the database server, create database and user
+
+
+```
+Create database homestead;
+CREATE USER 'homestead'@'%' IDENTIFIED BY 'sePret^i';
+GRANT ALL PRIVILEGES ON * . * TO 'homestead'@'%';
+```
+
+4. Update the database connectivity requirements in the file .env.sample
+5. Update _Jenkinsfile_ with proper pipeline configuration
+
+
+```
+pipeline {
+    agent any
+
+  stages {
+
+     stage("Initial cleanup") {
+          steps {
+            dir("${WORKSPACE}") {
+              deleteDir()
+            }
+          }
+        }
+
+    stage('Checkout SCM') {
+      steps {
+            git branch: 'main', url: 'https://github.com/darey-devops/php-todo.git'
+      }
+    }
+
+    stage('Prepare Dependencies') {
+      steps {
+             sh 'mv .env.sample .env'
+             sh 'composer install'
+             sh 'php artisan migrate'
+             sh 'php artisan db:seed'
+             sh 'php artisan key:generate'
+      }
+    }
+  }
+}
+```
+
+
+> **Notice the Prepare Dependencies section**
+
+- The required file by PHP is _.env_ so we are renaming `.env.sample` to `.env`
+- Composer is used by PHP to install all the dependent libraries used by the application
+- php artisan uses the .env file to setup the required database objects – (After successful run of this step, login to the database, 
+run show tables and you will see the tables being created for you)
+
+1. Update the Jenkinsfile to include Unit tests step
+
+```
+stage('Execute Unit Tests') {
+      steps {
+             sh './vendor/bin/phpunit'
+      } 
+```
+
+
+### Phase 3 – Code Quality Analysis
+
+This is one of the areas where developers, architects and many stakeholders are mostly interested in as far as product development
+is concerned. As a DevOps engineer, you also have a role to play. Especially when it comes to setting up the tools.
+
+For PHP the most commonly tool used for code quality analysis is [phploc](https://phpqa.io/projects/phploc.html). 
+[Read the article here for more](https://matthiasnoback.nl/2019/09/using-phploc-for-quick-code-quality-estimation-part-1/)
+
+
+The data produced by **phploc** can be ploted onto graphs in Jenkins.
+
+
+1. Add the code analysis step in Jenkinsfile. The output of the data will be saved in build/logs/phploc.csv file.
+
+```
+stage('Code Analysis') {
+  steps {
+        sh 'phploc app/ --log-csv build/logs/phploc.csv'
+
+  }
+}
+```
+
+
+2. Plot the data using _plot Jenkins_ plugin.
+
+This plugin provides generic plotting (or graphing) capabilities in Jenkins. It will plot one or more single values variations
+across builds in one or more plots. Plots for a particular job (or project) are configured in the job configuration screen,
+where each field has additional help information. Each plot can have one or more lines (called data series). After each build
+completes the plots’ data series latest values are pulled from the CSV file generated by **phploc**
+
+
+
+
+You should now see a Plot menu item on the left menu. Click on it to see the charts. (The analytics may not mean much to you as 
+it is meant to be read by developers. So, you need not worry much about it – this is just to give you an idea of the real-world 
+implementation).
+
+
+
+
+3. Bundle the application code for into an artifact (archived package) upload to Artifactory
+
+```
+stage ('Package Artifact') {
+    steps {
+            sh 'zip -qr php-todo.zip ${WORKSPACE}/*'
+     }
+    }
+
+```
+
+
+4. Publish the resulted artifact into Artifactory
+
+```
+stage ('Upload Artifact to Artifactory') {
+          steps {
+            script { 
+                 def server = Artifactory.server 'artifactory-server'                 
+                 def uploadSpec = """{
+                    "files": [
+                      {
+                       "pattern": "php-todo.zip",
+                       "target": "<name-of-artifact-repository>/php-todo",
+                       "props": "type=zip;status=ready"
+
+                       }
+                    ]
+                 }""" 
+
+                 server.upload spec: uploadSpec
+               }
+            }
+
+        }
+```
+
+5. Deploy the application to the dev environment by launching Ansible pipeline
+
+```
+stage ('Deploy to Dev Environment') {
+    steps {
+    build job: 'ansible-project/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'dev']], propagate: false, wait: true
+    }
+  }
+```
+
+The build job used in this step tells **Jenkins to start another job**. In this case it is the ansible-project job, and we are 
+targeting the main branch. Hence, we have ansible-project/main. Since the Ansible project requires parameters to be passed in,
+we have included this by specifying the parameters section. The name of the parameter is env and its value is dev. Meaning, 
+deploy to the Development environment.
+
+But how are we certain that the code being deployed has the quality that meets corporate and customer requirements? Even though we 
+have implemented **Unit Tests** and **Code Coverage Analysis** with **phpunit** and **phploc**, we still need to implement **Quality Gate** to ensure 
+that ONLY code with the required code coverage, and other quality standards make it through to the environments.
+
+To achieve this, we need to configure **SonarQube** – An open-source platform developed by **SonarSource for continuous inspection** of 
+code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities.
+
+# SONARQUBE INSTALLATION
+Before we start getting hands on with **SonarQube** configuration, it is incredibly important to understand a few concepts:
+
+- [Software Quality](https://en.wikipedia.org/wiki/Software_quality) – The degree to which a software component, system or process 
+meets specified requirements based on user needs and expectations.
+- [Software Quality Gates](https://docs.sonarqube.org/latest/user-guide/quality-gates/) – Quality gates are basically acceptance 
+criteria which are usually presented as a set of predefined quality criteria that a software development project must meet in order 
+to proceed from one stage of its lifecycle to the next one.
+
+SonarQube is a tool that can be used to create quality gates for software projects, and the ultimate goal is to be able to ship
+only quality software code.
+
+Despite that DevOps CI/CD pipeline helps with fast software delivery, it is of the same importance to ensure the quality of such 
+delivery. Hence, we will need **SonarQube** to set up Quality gates. In this project we will use predefined Quality Gates (also known as
+[The Sonar Way](https://docs.sonarsource.com/sonarqube/latest/instance-administration/quality-profiles/) ). Software testers and developers would normally work with project leads and architects to create custom quality gates.
+
+### Install SonarQube on Ubuntu 24.04 With PostgreSQL as Backend Database
+
+Here is a manual approach to installation. Ensure that you can to automate the same with Ansible.
+
+Below is a step by step guide how to install **SonarQube 7.9.3 version**. It has a strong prerequisite to have Java installed since the
+tool is Java-based. MySQL support for SonarQube is deprecated, therefore we will be using PostgreSQL.
+
+We will make some Linux Kernel configuration changes to ensure optimal performance of the tool – we will increase vm.max_map_count,
+file discriptor and ulimit.
+
+**Tune Linux Kernel**
+
+This can be achieved by making session changes which does not persist beyond the current session terminal.
+
+```
+sudo sysctl -w vm.max_map_count=262144
+sudo sysctl -w fs.file-max=65536
+ulimit -n 65536
+ulimit -u 4096
+```
+
+To make a permanent change, edit the file /etc/security/limits.conf and append the below
+
+```
+vi /etc/security/limits.conf
+```
+
+```
+sonarqube   -   nofile   65536
+sonarqube   -   nproc    4096
+```
+
+Before installing, let us update and upgrade system packages:
+
+```
+sudo apt-get update
+sudo apt-get upgrade
+```
+
+Install [wget](https://www.gnu.org/software/wget/) and [unzip](https://linux.die.net/man/1/unzip) packages
+
+```
+sudo apt-get install wget unzip -y
+```
+
+Install [OpenJDK](https://openjdk.org/) and [Java Runtime Environment](https://docs.oracle.com/goldengate/1212/gg-winux/GDRAD/java.htm#BGBFJHAB) (JRE) 11
+
+```
+sudo apt-get install openjdk-11-jdk -y
+sudo apt-get install openjdk-11-jre -y
+```
+
+Set default JDK – To set default JDK or switch to OpenJDK enter below command:
+
+```
+sudo update-alternatives --config java
+```
+
+If you have multiple versions of Java installed, you should see a list like below:
+
+```
+Selection    Path                                            Priority   Status
+
+------------------------------------------------------------
+
+  0            /usr/lib/jvm/java-11-openjdk-amd64/bin/java      1111      auto mode
+
+  1            /usr/lib/jvm/java-11-openjdk-amd64/bin/java      1111      manual mode
+
+  2            /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java   1081      manual mode
+
+* 3            /usr/lib/jvm/java-8-oracle/jre/bin/java          1081      manual mode
+```
+
+
+Type "1" to switch OpenJDK 11
+
+Verify the set JAVA Version:
+
+```
+java -version
+```
+
+
+ **Output**
+
+
+
+
+### Install and Setup PostgreSQL 10 Database for SonarQube
+
+The command below will add PostgreSQL repo to the repo list:
+
+```
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+```
+
+**Download PostgreSQL software**
+
+```
+wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -
+```
+
+ I**nstall PostgreSQL Database Server**
+
+```
+sudo apt-get -y install postgresql postgresql-contrib
+```
+
+ **Start PostgreSQL Database Server**
+
+```
+sudo systemctl start postgresql
+```
+
+**Enable it to start automatically at boot time**
+
+```
+sudo systemctl enable postgresql
+```
+
+**Change the password for default postgres user (Pass in the password you intend to use, and remember to save it somewhere)**
+
+```
+sudo passwd postgres
+```
+
+**Switch to the postgres user**
+
+```
+su - postgre
+```
+
+**Create a new user by typing**
+```
+createuser sonar
+```
+**Switch to the PostgreSQL shell**
+
+```
+psql
+```
+
+**Set a password for the newly created user for SonarQube database**
+
+```
+ALTER USER sonar WITH ENCRYPTED password 'sonar';
+```
+
+**Create a new database for PostgreSQL database by running:**
+
+```
+CREATE DATABASE sonarqube OWNER sonar;
+```
+
+**Grant all privileges to sonar user on sonarqube Database.**
+
+```
+grant all privileges on DATABASE sonarqube to sonar;
+```
+
+**Exit from the psql shell:**
+```
+\q
+```
+**Switch back to the sudo user by running the exit command**
+```
+exit
+```
+
+### Install SonarQube on Ubuntu 24.04 LTS
+
+**Navigate to the tmp directory to temporarily download the installation files**
+```
+cd /tmp && sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.9.3.zip
+```
+
+**Unzip the archive setup to /opt directory**
+
+```
+sudo unzip sonarqube-7.9.3.zip -d /opt
+```
+**Move extracted setup to /opt/sonarqube directory**
+
+```
+sudo mv /opt/sonarqube-7.9.3 /opt/sonarqube
+```
+
+
+
 
