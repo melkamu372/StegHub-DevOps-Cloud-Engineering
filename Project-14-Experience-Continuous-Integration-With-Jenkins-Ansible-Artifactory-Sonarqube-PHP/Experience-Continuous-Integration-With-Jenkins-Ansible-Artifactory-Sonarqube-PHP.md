@@ -136,7 +136,8 @@ As part of the ongoing infrastructure development with Ansible started from **Pr
 The problem with that approach is, it would be difficult to package and version the software for different releases. And so, in this project, we will be using a different approach for releases, rather than downloading directly from git, we will be using 
 Ansible uri module.
 
-![6046](https://user-images.githubusercontent.com/85270361/210164890-b8238849-5dc0-410f-86d6-6b0741003353.PNG)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/eabf008e-92c5-49c6-a735-1c6a1abb2277)
+
 
 ## Set Up
 This project is partly a continuation of your Ansible work, so simply add and subtract based on the new setup in this project. It will require a lot of servers to simulate all the different environments from dev/ci all the way to production. This will be quite a lot of servers altogether (But you don’t have to create them all at once. Only create servers required for an environment you are 
@@ -310,39 +311,59 @@ In previous projects, you have been launching Ansible commands manually from a C
 from Jenkins UI.
 
 **To do this**
+0. Set up SSH-agent
+```
+eval `ssh-agent -s`
+ssh-add <path-to-private-key>
+```
+
+```
+eval `ssh-agent -s`
+ssh-add melkamu_key.pem
+ssh-add -l 
+ssh -A ubuntu@34.233.123.4
+```
 
 1. Navigate to Jenkins URL
-
+```
+<Jenkins-server-public-IP>:8080
+```
 2. Install & Open Blue Ocean Jenkins Plugin
+In the Jenkins dashboard, click on **Manage Jenkins** -> **Manage plugins** and search for `Blue Ocean plugin`. Install and open Blue Ocean plugin
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9d620074-9a78-422a-849e-476fde406990)
 
-3. Create a new pipeline
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/26cf30d1-dd71-4571-9a7f-c5e2f2ca2893)
 
-4. Select GitHub
+4. Create a new pipeline
 
-5. Connect Jenkins with GitHub
+5. Select GitHub
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/065e0b63-107d-49b9-af19-6d8b154af6e8)
 
-6. Login to GitHub & Generate an Access Token
+6. Connect Jenkins with GitHub
 
-7. Copy Access Token
+7. Login to GitHub & Generate an Access Token
 
-8. Paste the token and connect
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/d4e968fb-76ef-4c49-9bc5-3da0d99d23cc)
 
-9. Create a new Pipeline
+8. Copy Access Token
 
+9. Paste the token and connect
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/71a801d0-eaa9-4cf7-b08b-c4bc5bd9b32f)
 
+10. Create a new Pipeline
 
 At this point you may not have a [Jenkinsfile](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/) in the Ansible repository, so 
 Blue Ocean will attempt to give you some guidance to create one. But we do not need that. We will rather create one ourselves.
 So, click on Administration to exit the Blue Ocean console.
 
-
-
 **Here is our newly created pipeline. It takes the name of your GitHub repository**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/411746d4-8a9c-48d1-8d57-6574f5d94d8e)
 
 
 ### Let us create our Jenkinsfile
 
-Inside the Ansible project, create a new directory deploy and start a new file Jenkinsfile inside the directory.
+In Vscode, inside the Ansible project, create a new directory and name it `deploy`, create a new file `Jenkinsfile` inside the directory
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/54966adb-61a4-45b3-9a09-4f5dbc30456c)
 
 Add the code snippet below to start building the Jenkinsfile gradually. This pipeline currently has just one stage called Build and 
 the only thing we are doing is using the shell script module to echo Building Stage
@@ -363,13 +384,16 @@ pipeline {
     }
 }
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8ece4b57-ce9a-455a-a963-1ab3111ddf92)
 
 
 **Now go back into the Ansible pipeline in Jenkins, and select configure**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/bd9b9bd7-76be-4c66-a610-ff86bb3c5871)
 
 
-**Scroll down to Build Configuration section and specify the location of the Jenkinsfile at deploy/Jenkinsfile**
+**Scroll down to Build Configuration section and specify the location of the Jenkinsfile at `deploy/Jenkinsfile`**
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/824d9f98-aab9-49ad-a1a3-522bd0487db9)
 
 **Back to the pipeline again, this time click `Build now`**
 
