@@ -495,11 +495,55 @@ and test stages)
 Now that you have a broad overview of a typical **Jenkins pipeline**. Let us get the actual Ansible deployment to work by:
 
 1. Installing Ansible on Jenkins
-2. Installing Ansible plugin in Jenkins UI
+```
+sudo apt update
+sudo apt upgrade -y
+```
+Install Required Dependencies
+```
+sudo apt install software-properties-common -y
+```
+Add the Ansible PPA (Personal Package Archive)
+```
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+```
+```
+sudo apt update
+sudo apt install ansible -y
+```
+Verify the Installation
+```
+ansible --version
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/725a4bc6-b359-42e1-8597-0e17bd9ae83a)
+
+
+2. Installing Ansible plugin in Jenkins UI On the dashboard page, click on Manage Jenkins > Manage plugins > Available type in ansible and install without restart
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8c366254-f85a-4dff-85bb-c4e4d3b6221b)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2feaf956-a280-4fbe-a29f-c50b6a746646)
+
+Click on Dashboard > Manage Jenkins > Global Tool Configuration > Add Ansible. Add a name and the path ansible is installed on the jenkins server
+
+get path
+```
+ which ansible
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/cbdfca05-fa88-48b7-8e70-1831222547e9)
+
 3. Creating Jenkinsfile from scratch. (Delete all you currently have in there and start all over to get Ansible to run successfully)
 
 You can [watch a 10 minutes video here](https://youtu.be/PRpEbFZi7nI) to guide you through the entire setup
 
+Let's delete the content of current Jenkinsfile nad create a new Jenkinsfile from scratch to run the ansible playbook against the dev environment.
+
+To do this let's ensure git module is checking out SCM from main branch.
+```
+  stage(" Checkout SCM") {
+      steps {
+        git branch: 'main', url: 'https://github.com/melkamu372/ansible-config-mgt.git'
+      }
+    }
+```
 >**Note**: Ensure that Ansible runs against the Dev environment successfully.
 
 **Possible errors to watch out for:**
