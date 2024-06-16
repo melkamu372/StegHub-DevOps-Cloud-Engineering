@@ -544,7 +544,15 @@ To do this let's ensure git module is checking out SCM from main branch.
       }
     }
 ```
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4adafd53-5fb5-4bd1-8d02-22809ae2c2cd)
+
+
 >**Note**: Ensure that Ansible runs against the Dev environment successfully.
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/eb161817-c229-4e02-aa61-f29ea7cf70e7)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/83e45c33-2828-4924-ab0e-bbf3bbd5dc79)
+
 
 **Possible errors to watch out for:**
 
