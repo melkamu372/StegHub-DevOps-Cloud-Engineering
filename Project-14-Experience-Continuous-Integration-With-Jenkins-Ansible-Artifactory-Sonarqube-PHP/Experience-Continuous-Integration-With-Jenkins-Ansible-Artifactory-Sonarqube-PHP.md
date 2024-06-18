@@ -538,20 +538,77 @@ Let's delete the content of current Jenkinsfile nad create a new Jenkinsfile fro
 
 To do this let's ensure git module is checking out SCM from main branch.
 ```
-  stage(" Checkout SCM") {
+  pipeline {
+  agent any
+
+  environment {
+    ANSIBLE_CONFIG="${WORKSPACE}/deploy/ansible.cfg"
+    ANSIBLE_HOST_KEY_CHECKING = 'False'
+  }
+
+  stages {
+    stage("Initial cleanup") {
+      steps {
+        dir("${WORKSPACE}") {
+          deleteDir()
+        }
+      }
+    }
+
+    stage('Checkout SCM') {
       steps {
         git branch: 'main', url: 'https://github.com/melkamu372/ansible-config-mgt.git'
       }
     }
+
+    stage('Prepare Ansible For Execution') {
+      steps {
+        sh 'echo ${WORKSPACE}'
+        sh 'sed -i "3 a roles_path=${WORKSPACE}/roles" ${WORKSPACE}/deploy/ansible.cfg'
+      }
+    }
+
+    stage('Test SSH Connection') {
+      steps {
+        sshagent(['private-key']) {
+          sh 'ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/melkamu_key.pem ec2-user@172.31.26.78 exit'
+        }
+      }
+    }
+
+    stage('Run Ansible playbook') {
+      steps {
+        sshagent(['private-key']) {
+          ansiblePlaybook(
+            become: true,
+            credentialsId: 'private-key',
+            disableHostKeyChecking: true,
+            installation: 'ansible',
+            inventory: "${WORKSPACE}/inventory/dev.yml",
+            playbook: "${WORKSPACE}/playbooks/site.yml"
+          )
+        }
+      }
+    }
+
+    stage('Clean Workspace after build') {
+      steps {
+        cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenUnstable: true, deleteDirs: true)
+      }
+    }
+  }
+}
+
 ```
 
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4adafd53-5fb5-4bd1-8d02-22809ae2c2cd)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/536d29af-1ef1-46dc-83c0-5fc9dfd41ad8)
 
 
 >**Note**: Ensure that Ansible runs against the Dev environment successfully.
 
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/eb161817-c229-4e02-aa61-f29ea7cf70e7)
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/83e45c33-2828-4924-ab0e-bbf3bbd5dc79)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c5c1232e-9b4b-436d-8b4a-6ee7553742d2)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/29b658ba-4767-44f9-a295-7d3bfff70586)
 
 
 **Possible errors to watch out for:**
@@ -582,6 +639,13 @@ possible changes to fix the error.
 3. Another possible reason for Jenkins failure sometimes, is because you have indicated in the Jenkinsfile to check out the main git
 branch, and you are running a pipeline from another branch. So, always verify by logging onto the Jenkins box to check the workspace,
 and run git branch command to confirm that the branch you are expecting is there.
+
+**After fixing all errors  final result looks** 
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c06991c0-1542-49b0-b9cd-7bf8bfc80ee8)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b22dea82-b98e-4170-a608-3daf56f10c1b)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/24c864ca-e4a3-419e-9797-f1138ff5a0d9)
 
 
 If everything goes well for you, it means, the Dev environment has an up-to-date configuration. But what if we need to deploy to
