@@ -740,25 +740,52 @@ Ansible with an Artifactory role, simply use this guide to create an Ansible rol
 ```
 https://github.com/StegTechHub/php-todo.git
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4446c862-f53f-4b5c-b8d4-6204c51bf8fd)
 
 2. On you Jenkins server, install PHP, its dependencies and Composer tool (Feel free to do this manually at first, then update 
 your Ansible accordingly later)
 
 ```
+sudo apt update
+```
+**Install dependancies**
+```
 sudo apt install -y zip libapache2-mod-php phploc php-{xml,bcmath,bz2,intl,gd,mbstring,mysql,zip}
 ```
 
+**Install Composer**  Download the Installer:
+```
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+```
+**Install Composer Globally**
+```
+sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+```
+**Remove the Installer**
+```
+php -r "unlink('composer-setup.php');"
+```
+**Verify Installation**
+```
+php -v
+```
+```
+composer -v
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/07423d21-fcd2-4751-8b34-d3fd94196ac3)
+
 3. Install Jenkins plugins
 
-1. [Plot plugin](https://plugins.jenkins.io/plot/)
-2. [Artifactory plugin](https://www.jfrog.com/confluence/display/JFROG/Jenkins+Artifactory+Plug-in)
+    1 .  [Plot plugin](https://plugins.jenkins.io/plot/)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2eec50c9-e487-48c2-9640-ea2f6e8c8d4f)
+
+    2 .  [Artifactory plugin](https://www.jfrog.com/confluence/display/JFROG/Jenkins+Artifactory+Plug-in)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1c750e6d-951e-4377-b192-34b5acca7a43)
 
 - We will use _plot_ plugin to display tests reports, and code coverage information.
 - The _Artifactory_ plugin will be used to easily upload code artifacts into an Artifactory server.
 
-
 4. In Jenkins UI configure Artifactory
-
 
 Configure the server ID, URL and Credentials, run Test Connection.
 
