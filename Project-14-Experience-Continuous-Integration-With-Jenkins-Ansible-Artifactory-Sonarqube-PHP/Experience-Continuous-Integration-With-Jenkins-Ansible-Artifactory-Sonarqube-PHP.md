@@ -606,9 +606,10 @@ To do this let's ensure git module is checking out SCM from main branch.
 
 >**Note**: Ensure that Ansible runs against the Dev environment successfully.
 
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c5c1232e-9b4b-436d-8b4a-6ee7553742d2)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7c185a98-066b-40a4-af65-e09ebb4aeecc)
 
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/29b658ba-4767-44f9-a295-7d3bfff70586)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/51bcc360-b257-47ce-815d-dbeeb333ad09)
 
 
 **Possible errors to watch out for:**
@@ -642,10 +643,12 @@ and run git branch command to confirm that the branch you are expecting is there
 
 **After fixing all errors  final result looks** 
 
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c06991c0-1542-49b0-b9cd-7bf8bfc80ee8)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/6650edf8-54aa-4598-a45e-c032535a1b83)
 
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b22dea82-b98e-4170-a608-3daf56f10c1b)
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/24c864ca-e4a3-419e-9797-f1138ff5a0d9)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a820b1cf-853b-4555-ade4-4de4f39bfc21)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/74f20f33-3634-4d13-880a-fa8a20c849fa)
+
 
 
 If everything goes well for you, it means, the Dev environment has an up-to-date configuration. But what if we need to deploy to
@@ -686,6 +689,8 @@ ansible_python_interpreter=/usr/bin/python
 <SIT-DB-Server-Private-IP-Address>
 ```
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/90a2c307-5d34-422d-b4b8-d22d61cc81bf)
+
 2. Update `Jenkinsfile` to introduce parameterization. Below is just one parameter. It has a default value in case if no value is 
 specified at execution. It also has a description so that everyone is aware of its purpose.
 
@@ -700,14 +705,20 @@ pipeline {
 ...
 ```
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/98aad8de-2501-4062-a2ca-2da93d9bc178)
+
 
 3. In the Ansible execution section, remove the hardcoded inventory/dev and replace with `${inventory}
 From now on, each time you hit on execute, it will expect an input.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/30b44153-56d8-4a97-b737-ddc13e3af980)
 
 
 > Notice that the default value loads up, but we can now specify which environment we want to deploy the configuration to. Simply type
 `sit` and `hit` Run
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/5a4550a5-5e28-4538-9e03-88bcf62a6f1f)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b1ff271f-db69-426f-b4b7-3f41fdf4cd39)
 
 
 4. Add another parameter. This time, introduce tagging in Ansible. You can limit the Ansible execution to a specific role or playbook
