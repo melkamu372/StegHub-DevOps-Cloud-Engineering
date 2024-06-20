@@ -734,6 +734,15 @@ Our goal here is to deploy the application onto servers directly from Artifactor
 Ansible with an Artifactory role, simply use this guide to create an Ansible role for Artifactory (ignore the Nginx part). 
 [Configure Artifactory on Ubuntu 20.04](https://www.howtoforge.com/tutorial/ubuntu-jfrog/)
 
+**Prerequests**  Make sure port 8082 is opened in artifactory server
+
+```
+ansible-galaxy collection install jfrog.platform
+```
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7b3d08b7-4018-485c-a8fb-e1b88716e353)
+
+
 ### Phase 1 – Prepare Jenkins
 
 1. Fork the repository below into your GitHub account
