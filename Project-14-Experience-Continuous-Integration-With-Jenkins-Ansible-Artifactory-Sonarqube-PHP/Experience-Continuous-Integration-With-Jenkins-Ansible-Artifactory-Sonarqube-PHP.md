@@ -742,6 +742,15 @@ ansible-galaxy collection install jfrog.platform
 
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7b3d08b7-4018-485c-a8fb-e1b88716e353)
 
+In the browser, login into artifactory with the default authentication `admin` and `password`
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/61ac8b1c-9a3d-4ff6-ba99-abe1ecadb5e8)
+
+Create a local repository `todo-dev-local`
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4807aa33-a562-4d35-8e0b-a959e5e183cb)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8c637a75-62f5-4b59-81be-ceee3eaee510)
+
+Configure password for the repo
 
 ### Phase 1 – Prepare Jenkins
 
