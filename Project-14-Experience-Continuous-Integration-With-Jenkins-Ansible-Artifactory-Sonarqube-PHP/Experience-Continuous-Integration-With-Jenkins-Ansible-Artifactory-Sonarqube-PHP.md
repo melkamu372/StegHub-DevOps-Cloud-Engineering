@@ -810,20 +810,36 @@ Configure the server ID, URL and Credentials, run Test Connection.
 
 ### Phase 2 – Integrate Artifactory repository with Jenkins
 
-1. Create a dummy Jenkinsfile in the repository
+1.  Create a dummy Jenkinsfile in the repository In VScode create a new Jenkinsfile in the Todo repository
 
 2. Using Blue Ocean, create a multibranch Jenkins pipeline
 
-3. On the database server, create database and user
+3. Istall my sql client:
+```
+sudo apt install mysql -y
+```
+Login into the DB-server(mysql server) and set the the bind address to 0.0.0.0: `sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf`
 
-
+Restart the my sql- server: 
+```
+sudo systemctl restart mysql
+```
+ On the database server, create database and user
 ```
 Create database homestead;
 CREATE USER 'homestead'@'%' IDENTIFIED BY 'sePret^i';
 GRANT ALL PRIVILEGES ON * . * TO 'homestead'@'%';
 ```
-
 4. Update the database connectivity requirements in the file .env.sample
+```
+DB_HOST=172.31.87.194
+DB_DATABASE=homestead
+DB_USERNAME=homestead
+DB_PASSWORD=sePret^i
+DB_CONNECTION=mysql 
+DB_PORT=3306
+```
+
 5. Update _Jenkinsfile_ with proper pipeline configuration
 
 
@@ -843,7 +859,7 @@ pipeline {
 
     stage('Checkout SCM') {
       steps {
-            git branch: 'main', url: 'https://github.com/darey-devops/php-todo.git'
+            git branch: 'main', url: 'https://github.com/melkamu372/php-todo.git'
       }
     }
 
