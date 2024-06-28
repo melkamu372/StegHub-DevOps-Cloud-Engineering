@@ -750,7 +750,8 @@ Create a local repository `todo-dev-local`
 
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/8c637a75-62f5-4b59-81be-ceee3eaee510)
 
-Configure password for the repo
+In Jenkins UI configure Artifactory, enter the public ip for the artifactory, the login details and test the connection  manage Jenkins> configure> Jfrog Platform url
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ac1f40e1-12e4-43cb-98ee-6cde41694a19)
 
 ### Phase 1 – Prepare Jenkins
 
@@ -790,7 +791,8 @@ php -v
 ```
 composer -v
 ```
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/07423d21-fcd2-4751-8b34-d3fd94196ac3)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/98e98be5-ab3a-4c71-9e29-0b54b243e3f0)
+
 
 3. Install Jenkins plugins
 
@@ -952,13 +954,10 @@ completes the plots’ data series latest values are pulled from the CSV file ge
 
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/21947c16-44bf-4500-a338-a1e19bc33bae)
 
-
-
 You should now see a Plot menu item on the left menu. Click on it to see the charts. (The analytics may not mean much to you as 
 it is meant to be read by developers. So, you need not worry much about it – this is just to give you an idea of the real-world 
 implementation).
-![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/815762ac-4eee-4602-86cc-78ca4b6b41e3)
-
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0ea78af1-6e29-4a2d-95d9-f9f528981456)
 3. Bundle the application code for into an artifact (archived package) upload to Artifactory
 
 ```
@@ -995,6 +994,9 @@ stage ('Upload Artifact to Artifactory') {
 
         }
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0c9bb61c-bc93-48b8-8e23-6e3cc35a4b28)
+
+
 
 5. Deploy the application to the dev environment by launching Ansible pipeline
 
@@ -1010,6 +1012,16 @@ The build job used in this step tells **Jenkins to start another job**. In this 
 targeting the main branch. Hence, we have ansible-project/main. Since the Ansible project requires parameters to be passed in,
 we have included this by specifying the parameters section. The name of the parameter is env and its value is dev. Meaning, 
 deploy to the Development environment.
+**Make sure to update artifactory login details in the todo deployment configuration file in ansible-config-mgt project**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/04f5ea5a-1980-409a-9c72-1630cf1f4ea5)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/04874304-1216-4ab7-83c9-1751f5556983)
+Make sure zip is install
+
+$ sudo apt install zip -y
+
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2612b0ec-88b1-4982-8f93-bea25fffc273)
 
 But how are we certain that the code being deployed has the quality that meets corporate and customer requirements? Even though we 
 have implemented **Unit Tests** and **Code Coverage Analysis** with **phpunit** and **phploc**, we still need to implement **Quality Gate** to ensure 
