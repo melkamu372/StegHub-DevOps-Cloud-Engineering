@@ -810,19 +810,13 @@ Configure the server ID, URL and Credentials, run Test Connection.
 
 ### Phase 2 – Integrate Artifactory repository with Jenkins
 
-1.  Create a dummy Jenkinsfile in the repository In VScode create a new Jenkinsfile in the Todo repository
+1.  Create a dummy Jenkinsfile in the todo app repository > In VScode create a new Jenkinsfile in the Todo repository
 
 2. Using Blue Ocean, create a multibranch Jenkins pipeline
 
-3. Istall my sql client:
+3. In jenkins server Install  my sql client:
 ```
-sudo apt install mysql -y
-```
-Login into the DB-server(mysql server) and set the the bind address to 0.0.0.0: `sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf`
-
-Restart the my sql- server: 
-```
-sudo systemctl restart mysql
+sudo apt install mysql-client -y
 ```
  On the database server, create database and user
 ```
@@ -830,6 +824,17 @@ Create database homestead;
 CREATE USER 'homestead'@'%' IDENTIFIED BY 'sePret^i';
 GRANT ALL PRIVILEGES ON * . * TO 'homestead'@'%';
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4721ad96-9cbe-442b-beb7-749864a666c4)
+
+Login into the DB-server(mysql server) and set the the bind address to 0.0.0.0: 
+```
+sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+```
+Restart the my sql- server: 
+```
+sudo systemctl restart mysql
+```
+
 4. Update the database connectivity requirements in the file .env.sample
 ```
 DB_HOST=172.31.87.194
@@ -839,6 +844,8 @@ DB_PASSWORD=sePret^i
 DB_CONNECTION=mysql 
 DB_PORT=3306
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/94fa0b61-6d14-4ddb-80d4-dc1cc849f176)
+
 
 5. Update _Jenkinsfile_ with proper pipeline configuration
 
@@ -875,14 +882,25 @@ pipeline {
   }
 }
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/28254d6d-1633-4850-8525-c4f940a67e62)
 
 
 > **Notice the Prepare Dependencies section**
 
 - The required file by PHP is _.env_ so we are renaming `.env.sample` to `.env`
 - Composer is used by PHP to install all the dependent libraries used by the application
-- php artisan uses the .env file to setup the required database objects – (After successful run of this step, login to the database, 
-run show tables and you will see the tables being created for you)
+- php artisan uses the .env file to setup the required database objects
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4e7d79ed-e066-455b-a54c-3f5932902e75)
+
+– After successful run of this step,
+login to the database,password:`root`
+
+```
+mysql -u root -p
+```
+run show tables and you will see the tables being created for you
+
 
 1. Update the Jenkinsfile to include Unit tests step
 
