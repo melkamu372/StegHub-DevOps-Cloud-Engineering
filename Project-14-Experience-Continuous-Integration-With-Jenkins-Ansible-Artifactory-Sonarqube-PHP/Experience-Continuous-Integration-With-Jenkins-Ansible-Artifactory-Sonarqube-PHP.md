@@ -1434,8 +1434,21 @@ sudo systemctl start sonar
 sudo systemctl enable sonar
 sudo systemctl status sonar
 ```
+### We understand how mannually  install SonarQube on Ubuntu 20.04 with PostgreSQL as the backend database here let us Launch a instance for sonarqube and configure the environemnt using ansible., 
+ sonarqube installation let us update our ansible config project 
 
-**Access SonarQube**
+ 1. Set Up Inventory File:
+Define our target host(s) in an inventory file.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/35f60ef9-a4d7-46f4-ae7f-eb7b07d01c35)
+
+2. Create Ansible Playbook:
+update  a playbook that includes tasks for installing PostgreSQL, creating the SonarQube database and user, installing SonarQube, and configuring it to use PostgreSQL.
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7905f67b-c350-4f81-8038-2edc7b223f69)
+3. Update Role by adding role fo PostgreSQL and SonarQube :
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1f637fc0-af6d-49d4-bc61-7064ef5bb93c)
+
+4. Execute the Playbook and Access SonarQube
 
 To access SonarQube using browser, type server’s IP address followed by port 9000
 
