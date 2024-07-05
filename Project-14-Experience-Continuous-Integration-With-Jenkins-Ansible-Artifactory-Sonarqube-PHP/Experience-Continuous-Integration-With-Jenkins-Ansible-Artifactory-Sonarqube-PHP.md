@@ -1441,16 +1441,21 @@ sudo systemctl status sonar
 Define our target host(s) in an inventory file.
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/35f60ef9-a4d7-46f4-ae7f-eb7b07d01c35)
 
-2. Create Ansible Playbook:
+2. Update Ansible Playbook:
 update  a playbook that includes tasks for installing PostgreSQL, creating the SonarQube database and user, installing SonarQube, and configuring it to use PostgreSQL.
 
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7905f67b-c350-4f81-8038-2edc7b223f69)
+
 3. Update Role by adding role fo PostgreSQL and SonarQube :
+
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1f637fc0-af6d-49d4-bc61-7064ef5bb93c)
 
-4. Execute the Playbook and Access SonarQube
+4. Execute the Playbook
+   
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/59e83705-fa2f-42e9-9132-2f71be69e341)
 
-To access SonarQube using browser, type server’s IP address followed by port 9000
+
+**Access SonarQube**  To access SonarQube using browser, type server’s IP address followed by port 9000
 
 ```
 http://server_IP:9000 OR http://localhost:9000
