@@ -1605,6 +1605,7 @@ pushed a poor-quality code onto the development environment.
 
 - Navigate to php-todo project in SonarQube
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f6d68924-aae4-4c5d-a84e-f05c543f6dad)
 
 
 There are bugs, and there is 0.0% code coverage. (code coverage is a percentage of unit tests added by developers to test functions
@@ -1614,6 +1615,7 @@ and objects in the code)
 and security issues in the code.
 
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/afeef638-16c7-43c8-8af9-c9dbd98c93be)
 
 
 In the development environment, this is acceptable as developers will need to keep iterating over their code towards perfection. 
@@ -1683,9 +1685,17 @@ The complete stage will now look like this:
 To test, create different branches and push to GitHub. You will realise that only branches other than develop, hotfix, release,
 main, or master will be able to deploy the code.
 
+**Create a new branch feature/sonar-test and commit, push the new code.**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/0c09806f-08b8-4091-8bc0-64426dc02461)
+
 If everything goes well, you should be able to see something like this:
 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/c8d7e050-c026-403a-9dd4-0fb242f24c29)
 
+For Branch feature/sonar-test
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/b84fdf2a-e79e-4c16-a64e-ef1222053de9)
+
+For main branch 
 
 > Notice that with the current state of the code, it cannot be deployed to Integration environments due to its quality. 
 In the real world, DevOps engineers will push this back to developers to work on the code further, based on SonarQube quality report. 
@@ -1696,20 +1706,100 @@ Once everything is good with code quality, the pipeline will pass and proceed wi
 
 1. Introduce Jenkins agents/slaves – Add 2 more servers to be used as Jenkins slave. Configure Jenkins to run its pipeline jobs 
 randomly on any available slave nodes.
+Let's add 2 more servers to be used as Jenkins slave and install java in them.  
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/ac716691-59fb-405f-9a9e-4cd9311b23f6)
 
-2. Configure webhook between Jenkins and GitHub to automatically run the pipeline when there is a code push
+```
+sudo apt update
+sudo apt install default-jdk
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7a4645c8-bb8d-4950-8772-c2e73d62d10f)
 
-3. Deploy the application to all the environments
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f0fe6d73-12ac-40ae-9b08-e52c4bf39bb1)
 
-4. **Optional** – Experience pentesting in pentest environment by configuring [Wireshark](https://www.wireshark.org/) there and just 
-explore for information sake only. 
-[Watch Wireshark Tutorial here](https://youtu.be/lb1Dw0elw0Q)
+2. Configure webhook between Jenkins and GitHub to automatically run the pipeline when there is a code push. Let's Configure the new nodes on Jenkins Server.
+ Navigate to **Dashboard** > **Manage Jenkins** > **Nodes**, click on New node and enter a Name and click on create.
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/becc5848-9f29-4366-a155-d2c95043798c)
 
+**To connect to slave_one completed this fields and save.**
+
+Name: slave_one
+Remote root directory: /opt/build (This can be any directory for the builds)
+Labels: slave_one 
+save 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/906af197-bb70-4a84-aeb7-120aa4a5b8f5)
+
+To connect to slave_one, click on the slave_one and if you finsih configuration  save it you see 
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/fc124386-2e2d-4901-8ab4-ac9c6553fa08)
+
+Use either options. In this case, I use the first option
+> befor running please check yor public ip addres of your jenkin is same as the if not go to Dashboard> manage Jenkin > systme and update current IP
+```
+sudo mkdir -p /opt/build
+sudo chown -R ubuntu:ubuntu /opt/build
+sudo chmod -R 755 /opt/build
+ls -ld /opt/build
+```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a0096577-6378-44ef-8656-956f24d23a87)
+
+**To make it run in background and `&`**
+```
+java -jar agent.jar -webSocket -url http://50.17.45.184:8080/ -secret @secret-file -name "slave_one" -workDir "/opt/build" &
+
+```
+
+**Repate same thing for the second**
+slave_one
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1f21c131-8a7e-4c43-aae2-386512955e0a)
+
+slave_two
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/a735f3a4-ccfa-4692-b171-2dbe909d4490)
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2dca8f1d-ff4c-43f6-92d2-a3f742de9839)
+
+3. Deploy the application to all the environments in order to deploy to all environment we Add these stages to our existing Jenkins pipeline script 
+
+**Development**
+
+```
+stage ('Deploy to Dev Environment') {
+            agent { label 'slave_one' } // Specify the Jenkins slave to use for deployment
+            steps {
+                build job: 'ansible-config-mgt/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'dev']], propagate: false, wait: true
+            }
+        }
+```
+**Test Environment**
+
+```
+        stage ('Deploy to Test Environment') {
+            agent { label 'slave_two' } // Specify another Jenkins slave for deployment
+            steps {
+                build job: 'ansible-config-mgt/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'pentest']], propagate: false, wait: true
+            }
+        }
+```
+**Production Environment**
+```
+        stage ('Deploy to Production Environment') {
+            agent any
+            steps {
+                build job: 'ansible-config-mgt/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'ci']], propagate: false, wait: true
+            }
+        }
+```
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2e0e4713-1b71-4185-a55a-d7a658fc8671)
+
+
+
+4. **Optional** – Experience pentesting in pentest environment by configuring [Wireshark](https://www.wireshark.org/) there and just explore for information sake only.[Watch Wireshark Tutorial here](https://youtu.be/lb1Dw0elw0Q)
 - Ansible Role for Wireshark:
 - https://github.com/ymajik/ansible-role-wireshark (Ubuntu)
 - https://github.com/wtanaka/ansible-role-wireshark (RedHat)
    
    ### The End of Project 14 
-Congratulations! You have just experienced one of the most interesting and complex projects in your Project Based Learning journey 
+We have just experienced one of the most interesting and complex projects in our Project Based Learning journey 
 so far. 
 
