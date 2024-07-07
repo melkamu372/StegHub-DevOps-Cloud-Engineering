@@ -1545,10 +1545,14 @@ sonar.php.coverage.reportPaths=build/logs/clover.xml
 sonar.php.tests.reportPath=build/logs/junit.xml
 
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/22a2f1b6-6665-4d23-834c-22a3c0314591)
+
 
 
 > HINT: To know what exactly to put inside the `sonar-scanner.properties` file, SonarQube has a configurations page where you can get
 some directions.
+
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/7e77f4e7-435c-45f8-bc36-cbe3d9b35cd5)
 
 
 A brief explanation of what is going on the the stage – set the environment variable for the scannerHome use the same name used 
@@ -1565,6 +1569,7 @@ cd /var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQube
 List the content to see the scanner tool `sonar-scanner`. That is what we are calling in the pipeline script.
 
 Output of (ls -latr)
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/786257c6-4420-4f49-a109-f393a1ed85fb)
 
 
 
@@ -1576,10 +1581,12 @@ Jenkins configuration code yourself.
 ```
 **Dashboard** > **php-todo** > Pipeline Syntax 
 ```
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/9a412e50-6268-4b93-866d-5bb1744e080a)
 
 - Click on Steps and select withSonarQubeEnv – This appears in the list because of the previous SonarQube configurations you
  have done in Jenkins. Otherwise, it would not be there.
- 
+ ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/1e104c75-319a-48f4-8e8f-f4ae1509b6b0)
+
 
 Within the generated block, you will use the sh command to run shell on the server. For more advanced usage in other projects, 
 you can add to bookmarks this 
@@ -1589,9 +1596,7 @@ in your browser.
 ### End-to-End Pipeline Overview
 Indeed, this has been one of the longest projects from Project 1, and if everything has worked out for you so far, you should have
 a view like below:
-
-
-
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/4890b539-32c9-4fa8-9655-e63050996975)
 
 **But we are not completely done yet!**
 
