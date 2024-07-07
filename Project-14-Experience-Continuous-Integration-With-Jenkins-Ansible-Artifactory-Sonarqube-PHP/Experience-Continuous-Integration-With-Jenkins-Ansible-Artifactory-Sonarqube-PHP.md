@@ -7,7 +7,7 @@ success metrics – so we encourage you to thoroughly study the following theory
 (e.g., to your new junior colleague or during a job interview).
 
 In previous projects, you have been deploying a tooling website directly into the
-MARKDOWN_HASH40d1b2d83998fabacb726e5bc3d22129MARKDOWNHASH directory on dev servers. Well, even though that worked fine, and we were 
+var/www/html directory on dev servers. Well, even though that worked fine, and we were 
 able to access the website, it is not the best way to do it. Real world web application code written on
 [Java](https://en.wikipedia.org/wiki/Java(programming_language)), .NET or other compiled programming languages require a build 
 stage to create an executable file. The executable file (e.g., jar file in case of Java) contains all the codes embedded, and the
@@ -839,7 +839,7 @@ sudo systemctl restart mysql
 
 4. Update the database connectivity requirements in the file .env.sample
 ```
-DB_HOST=172.31.87.194
+DB_HOST=172.31.26.78
 DB_DATABASE=homestead
 DB_USERNAME=homestead
 DB_PASSWORD=sePret^i
@@ -1791,7 +1791,9 @@ stage ('Deploy to Dev Environment') {
 ```
 
 ![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/2e0e4713-1b71-4185-a55a-d7a658fc8671)
-
+   
+ **Running on slave console Output**
+![image](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/assets/47281626/f19fcc0a-ce9c-443d-b598-9179eda33fa8)
 
 
 4. **Optional** – Experience pentesting in pentest environment by configuring [Wireshark](https://www.wireshark.org/) there and just explore for information sake only.[Watch Wireshark Tutorial here](https://youtu.be/lb1Dw0elw0Q)
