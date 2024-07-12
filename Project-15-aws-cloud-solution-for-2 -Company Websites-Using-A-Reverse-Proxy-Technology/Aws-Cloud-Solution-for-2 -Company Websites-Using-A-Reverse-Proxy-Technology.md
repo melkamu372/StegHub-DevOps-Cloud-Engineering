@@ -31,15 +31,54 @@ There are few requirements that must be met before you begin:
 
 1. Properly configure your AWS account and Organization Unit [Watch How To Do This Here](https://youtu.be/9PQYCc_20-Q)
 
-- Create an AWS Master account. (Also known as Root Account)
+- Create an AWS Master account. (Also known as Root Account) 
 - Within the Root account, create a sub-account and name it DevOps. (You will need another email address to complete this)
+1.1.  In the AWS Management Console, navigate to AWS Organizations.
+![image](https://github.com/user-attachments/assets/911d5366-0b8a-4572-b1a7-8b08e4e815c4)
+
+1.2. If you haven't already created an organization, click "Create an organization" and select "Enable All Features".
+1.3. Click "Add account".
+1.4. Select "Create account".
+1.5. Fill in the required details:
+ - Account name: DevOps
+ - Email address: Provide a new email address (different from the root account).
+1.6. Click "Create". AWS will send a verification email to the provided email address.
+![image](https://github.com/user-attachments/assets/4e5f0705-fd7a-4535-93af-717fad922a21)
+
+1.7. Verify the email address by following the instructions in the email sent by AWS.
+![image](https://github.com/user-attachments/assets/14a23046-4ea9-4d5f-a516-c96779e5e81a)
+
 - Within the Root account, create an AWS Organization Unit (OU). Name it Dev. (We will launch Dev resources in there)
-- Move the DevOps account into the Dev OU.
-- Login to the newly created AWS account using the new email address.
   
+  **Create an Organizational Unit (OU) Named Dev**  > **In the AWS Organizations dashboard, click on "Organize accounts"** > **Click on "Create organizational unit"** > **Enter Dev as the name for the new OU** > **Click "Create organizational unit"**
+![image](https://github.com/user-attachments/assets/b3782aa8-b644-4dc5-9119-1334996b9da9)
+
+- Move the DevOps account into the Dev OU.
+![image](https://github.com/user-attachments/assets/7ef21497-7bc0-4596-90c5-3faddd861781)
+
+- Login to the newly created AWS account using the new email address.
+   - Go to the AWS Management Console login page.
+   - Enter the email address used for the DevOps account and click Next.
+   - Click on "Forgot your password?" if you don't have the initial password.
+   - Follow the instructions to reset the password and Log in with the new password
+
+  ![image](https://github.com/user-attachments/assets/c113d79d-fd46-4e7f-8b91-9d8ad4e3d429)
+
 2. Create a free domain name for your fictitious company at Freenom domain registrar [here](https://www.freenom.com/en/index.html?lang=en).
+![image](https://github.com/user-attachments/assets/01cad4ff-604b-46e5-b5cc-bd4d88833d09)
+
 
 3. Create a hosted zone in AWS, and map it to your free domain from Freenom. [Watch how to do that here](https://youtu.be/IjcHp94Hq8A)
+
+ In the search bar, type "Route 53" and select "Route 53" from the results. >  In the Route 53 dashboard, click on "Hosted zones" in the left-hand navigation pane >
+ Click "Create hosted zone"
+Fill in the following details:
+   -  Domain name: Enter your Freenom domain name (e.g., example.tk).
+   -  Comment: Optional.
+   -  Type: Select "Public hosted zone".
+   -  VPC: Leave this blank for a public hosted zone.
+   -  Click "Create hosted zone".
+![image](https://github.com/user-attachments/assets/64d8a93d-fe01-4e76-b8e8-c6bcc6e73e10)
 
 > NOTE : As you proceed with configuration, ensure that all resources are appropriately tagged, for example:
 
@@ -54,10 +93,54 @@ Set Up a Virtual Private Network (VPC)
 Always make reference to the architectural diagram and ensure that your configuration is aligned with it.
 
 1. Create a [VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
-2. Create subnets as shown in the architecture
+
+![image](https://github.com/user-attachments/assets/eb6c52e3-89d7-4541-9d3b-a406a6125949)
+
+2. Create subnets as shown in the architecture  On the left panel menu of the VPC UI, click on Subnet > Create Subnet.
+
+VPC: 10.0.0.0/16
+
+- Public Subnet 1: 10.0.1.0/24
+- Public Subnet 2: 10.0.2.0/24
+- Private Subnet 1: 10.0.3.0/24
+- Private Subnet 2: 10.0.4.0/24
+- Private Subnet 3: 10.0.5.0/24
+- Private Subnet 4: 10.0.6.0/24
+
+  
+![image](https://github.com/user-attachments/assets/4553436f-1732-4514-8f69-96f2d15b4d16)
+
 3. Create a route table and associate it with public subnets
+
+**In the left-hand navigation pane, click on Route Tables** >  **Create route table button**
+ 
+ **Enter the following details:**
+
+   - Name tag: Provide a name for your route table  Public Route Table
+   - VPC: Select the VPC you created earlier.
+   - Click Create route table.
+
+![image](https://github.com/user-attachments/assets/5831a779-a38a-4f77-9234-7463f09cab7f)
+
+**Associate Route Table with Public Subnets**
+- Select the Public Route Table from the list.
+- Click on the Subnet associations tab.
+- Click Edit subnet associations.
+- In the Select subnets section, check the boxes for Public Subnet 1 and Public Subnet 2.
+- Click Save associations.
+![image](https://github.com/user-attachments/assets/d01a65af-81dc-48f2-89a7-85456f50b970)
+
+
+
 4. Create a route table and associate it with private subnets
+![image](https://github.com/user-attachments/assets/eec0bfe2-a264-493f-9913-81338de0eff5)
+
+Route Tables
+![image](https://github.com/user-attachments/assets/9a7eae01-80ef-4a38-9741-8792797ea1af)
+
 5. Create an [Internet Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html)
+**Click on Internet Gateways on the left-hand side** > **Create internet gateway** > **Enter a name for your internet gateway** > **Create internet gateway**
+
 6. Edit a route in public route table, and associate it with the Internet Gateway. (This is what allows a public subnet to be accisble 
 from the Internet)
 7. Create 3 [Elastic IPs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html)
