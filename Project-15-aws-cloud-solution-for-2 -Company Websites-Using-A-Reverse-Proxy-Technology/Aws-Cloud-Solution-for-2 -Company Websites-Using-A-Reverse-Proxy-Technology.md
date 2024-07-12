@@ -141,11 +141,21 @@ Route Tables
 5. Create an [Internet Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html)
 **Click on Internet Gateways on the left-hand side** > **Create internet gateway** > **Enter a name for your internet gateway** > **Create internet gateway**
 
+**Attach Internet Gateway to VPC**: Select the internet gateway you just created > Click the Actions dropdown, then select Attach to VPC >Select the VPC you created earlier >Click Attach internet gateway.
+
 6. Edit a route in public route table, and associate it with the Internet Gateway. (This is what allows a public subnet to be accisble 
 from the Internet)
+
+Go back to Route Tables and select the Public Route Table  >  Click on the Routes tab > Click Edit routes.
+Click Add route > Destination: 0.0.0.0/0 > Target: Select the internet gateway you created > Click Save routes
+
+
 7. Create 3 [Elastic IPs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html)
+
+
 8. Create a Nat Gateway and assign one of the Elastic IPs (*The other 2 will be used by 
 [Bastion hosts](https://aws.amazon.com/solutions/implementations/linux-bastion/))
+
 9. Create a Security Group for:
 
 
