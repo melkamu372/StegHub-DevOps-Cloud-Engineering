@@ -173,6 +173,8 @@ curl www.canhazip.com
 - Data Layer: Access to the Data layer, which is comprised of Amazon Relational Database Service (RDS) and Amazon Elastic File 
 System (EFS) must be carefully desinged – only webservers should be able to connect to RDS, while Nginx and Webservers will have 
 access to EFS Mountpoint.
+![image](https://github.com/user-attachments/assets/d4dd0580-a0bf-42db-8f2f-b4e219f683f5)
+
 
 
 **Proceed With Compute Resources**
