@@ -77,8 +77,9 @@ Fill in the following details:
    -  Comment: Optional.
    -  Type: Select "Public hosted zone".
    -  VPC: Leave this blank for a public hosted zone.
-   -  Click "Create hosted zone".
-![image](https://github.com/user-attachments/assets/64d8a93d-fe01-4e76-b8e8-c6bcc6e73e10)
+   -  Click "Create hosted zone"
+
+![image](https://github.com/user-attachments/assets/50f70a9e-5e6a-4210-91fa-36071bc25b73)
 
 > NOTE : As you proceed with configuration, ensure that all resources are appropriately tagged, for example:
 
@@ -177,7 +178,7 @@ load balancer, therefore we will update the rules later. For now, just create it
 Hence, you can use your workstation public IP address. To get this information, simply go to your terminal and type 
 curl www.canhazip.com
 
-- **Application Load Balancer**: ALB will be available from the Internet
+- **Application Load Balancer**: ALB will be available from the Internet give it both HTTPS and HTTP from anywhere 0.0.0.0/0
 
 - **Webservers** : Access to Webservers should only be allowed from the Nginx servers. Since we do not have the servers created yet, just put some dummy records as a place holder, we will update it later.
 
