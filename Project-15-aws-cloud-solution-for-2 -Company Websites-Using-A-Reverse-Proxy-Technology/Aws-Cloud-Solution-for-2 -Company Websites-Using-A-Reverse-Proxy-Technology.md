@@ -81,6 +81,8 @@ Fill in the following details:
 
 ![image](https://github.com/user-attachments/assets/50f70a9e-5e6a-4210-91fa-36071bc25b73)
 
+![image](https://github.com/user-attachments/assets/97a53c78-3940-4378-9a24-722d16123283)
+
 > NOTE : As you proceed with configuration, ensure that all resources are appropriately tagged, for example:
 
 Project: <Give your project a name>
