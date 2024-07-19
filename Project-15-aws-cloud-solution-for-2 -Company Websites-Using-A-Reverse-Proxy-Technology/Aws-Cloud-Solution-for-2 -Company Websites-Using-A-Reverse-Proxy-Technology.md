@@ -94,21 +94,22 @@ Always make reference to the architectural diagram and ensure that your configur
 
 1. Create a [VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
 
-![image](https://github.com/user-attachments/assets/eb6c52e3-89d7-4541-9d3b-a406a6125949)
+![image](https://github.com/user-attachments/assets/db03ce4e-84f0-4726-9ed8-6cff2dfcba49)
+
 
 2. Create subnets as shown in the architecture  On the left panel menu of the VPC UI, click on Subnet > Create Subnet.
 
 VPC: 10.0.0.0/16
 
-- Public Subnet 1: 10.0.1.0/24
-- Public Subnet 2: 10.0.2.0/24
-- Private Subnet 1: 10.0.3.0/24
-- Private Subnet 2: 10.0.4.0/24
-- Private Subnet 3: 10.0.5.0/24
-- Private Subnet 4: 10.0.6.0/24
+- Public Subnet 1: 10.0.1.0/24  in Zone A
+- Public Subnet 2: 10.0.2.0/24  in Zone B
+- Private Subnet 1: 10.0.3.0/24  in Zone A
+- Private Subnet 2: 10.0.4.0/24  in Zone B
+- Private Subnet 3: 10.0.5.0/24  in Zone A
+- Private Subnet 4: 10.0.6.0/24   in Zone B
 
-  
-![image](https://github.com/user-attachments/assets/4553436f-1732-4514-8f69-96f2d15b4d16)
+  ![image](https://github.com/user-attachments/assets/df150bd6-9dfc-4a8a-b8dc-3c3b36ef5d31)
+
 
 3. Create a route table and associate it with public subnets
 
@@ -120,7 +121,8 @@ VPC: 10.0.0.0/16
    - VPC: Select the VPC you created earlier.
    - Click Create route table.
 
-![image](https://github.com/user-attachments/assets/5831a779-a38a-4f77-9234-7463f09cab7f)
+![image](https://github.com/user-attachments/assets/1fa35eb3-83ac-46df-ade2-206b535ea19c)
+
 
 **Associate Route Table with Public Subnets**
 - Select the Public Route Table from the list.
@@ -128,26 +130,35 @@ VPC: 10.0.0.0/16
 - Click Edit subnet associations.
 - In the Select subnets section, check the boxes for Public Subnet 1 and Public Subnet 2.
 - Click Save associations.
-![image](https://github.com/user-attachments/assets/d01a65af-81dc-48f2-89a7-85456f50b970)
+
+![image](https://github.com/user-attachments/assets/07a75f1b-c222-496b-8481-77aa4d55de7c)
 
 
+4. Create a Private route table and associate it with private subnets
 
-4. Create a route table and associate it with private subnets
-![image](https://github.com/user-attachments/assets/eec0bfe2-a264-493f-9913-81338de0eff5)
+![image](https://github.com/user-attachments/assets/bcf78fee-1088-4c5e-ae1c-d1fa899ce90c)
 
-Route Tables
-![image](https://github.com/user-attachments/assets/9a7eae01-80ef-4a38-9741-8792797ea1af)
+
+**Route Tables**
+![image](https://github.com/user-attachments/assets/ec4ca91d-2bcc-4832-8c83-52d40cb27288)
+
 
 5. Create an [Internet Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html)
 **Click on Internet Gateways on the left-hand side** > **Create internet gateway** > **Enter a name for your internet gateway** > **Create internet gateway**
 
+![image](https://github.com/user-attachments/assets/44f4b184-3f6b-4992-8448-230d16f06983)
+
+
 **Attach Internet Gateway to VPC**: Select the internet gateway you just created > Click the Actions dropdown, then select Attach to VPC >Select the VPC you created earlier >Click Attach internet gateway.
+
+![image](https://github.com/user-attachments/assets/256558b2-0c27-45fc-8f85-d4e3ea5f0be1)
 
 6. Edit a route in public route table, and associate it with the Internet Gateway. (This is what allows a public subnet to be accisble 
 from the Internet)
 
 Go back to Route Tables and select the Public Route Table  >  Click on the Routes tab > Click Edit routes.
 Click Add route > Destination: 0.0.0.0/0 > Target: Select the internet gateway you created > Click Save routes
+![image](https://github.com/user-attachments/assets/f35bbb24-0d41-4d6a-b36f-8e70c70096b8)
 
 
 7. Create 3 [Elastic IPs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html)
@@ -166,15 +177,15 @@ load balancer, therefore we will update the rules later. For now, just create it
 Hence, you can use your workstation public IP address. To get this information, simply go to your terminal and type 
 curl www.canhazip.com
 
-- Application Load Balancer: ALB will be available from the Internet
+- **Application Load Balancer**: ALB will be available from the Internet
 
-- Webservers: Access to Webservers should only be allowed from the Nginx servers. Since we do not have the servers created yet, just put some dummy records as a place holder, we will update it later.
+- **Webservers** : Access to Webservers should only be allowed from the Nginx servers. Since we do not have the servers created yet, just put some dummy records as a place holder, we will update it later.
 
-- Data Layer: Access to the Data layer, which is comprised of Amazon Relational Database Service (RDS) and Amazon Elastic File 
+- **Data Layer** : Access to the Data layer, which is comprised of Amazon Relational Database Service (RDS) and Amazon Elastic File 
 System (EFS) must be carefully desinged – only webservers should be able to connect to RDS, while Nginx and Webservers will have 
 access to EFS Mountpoint.
-![image](https://github.com/user-attachments/assets/d4dd0580-a0bf-42db-8f2f-b4e219f683f5)
 
+![image](https://github.com/user-attachments/assets/932a2c44-7bfa-41d3-b30a-32495a058b3c)
 
 
 **Proceed With Compute Resources**
