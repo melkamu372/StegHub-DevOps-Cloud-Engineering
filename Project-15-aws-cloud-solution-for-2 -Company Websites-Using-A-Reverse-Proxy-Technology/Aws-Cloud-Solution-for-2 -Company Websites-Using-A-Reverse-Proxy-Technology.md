@@ -418,27 +418,42 @@ the webservers are within a private subnet, and we do not want direct access to 
 7. Ensure that health check passes for the target group
 
 
-## NOTE: This process must be repeated for both WordPress and Tooling websites.
+> NOTE: This process must be repeated for both WordPress and Tooling websites.
 
-## Setup EFS
+
+Create KMSa Key Management Service to encrypt the Database
+
+
+### Setup EFS
 Amazon Elastic File System (Amazon EFS) provides a simple, scalable, fully managed elastic Network File System (NFS) for use with
 AWS Cloud services and on-premises resources. In this project, we will utulize EFS service and mount filesystems on both Nginx 
 and Webservers to store data.
 
 1. Create an EFS filesystem
+![image](https://github.com/user-attachments/assets/2f6fda78-2f17-4af1-8456-67423be01edf)
+
+![image](https://github.com/user-attachments/assets/5612e4d9-e0ea-48d2-95b3-202826af7a45)
+
 2. Create an EFS mount target per AZ in the VPC, associate it with both subnets dedicated for data layer
 3. Associate the Security groups created earlier for data layer.
-4. Create an EFS access point. (Give it a name and leave all other settings as default)
+
+![image](https://github.com/user-attachments/assets/d0b8d03d-650b-4185-bb82-662118127883)
+
+4. Create an EFS access point. Create Access Points mount the applications wordpress and tooling
+![image](https://github.com/user-attachments/assets/37cf6069-996e-4494-8f02-03ad2a05efec)
 
 
-## Setup RDS
+### Setup RDS
 Pre-requisite: Create a KMS key from Key Management Service (KMS) to be used to encrypt the database instance.
+Create KMSa Key Management Service to encrypt the Database
+![image](https://github.com/user-attachments/assets/96e7cf1b-84e9-4bc7-b3f1-6780059466e4)
+
 
 Amazon Relational Database Service (Amazon RDS) is a managed distributed relational database service by Amazon Web Services. 
 This web service running in the cloud designed to simplify setup, operations, maintenans & scaling of relational databases. 
 Without RDS, Database Administrators (DBA) have more work to do, due to RDS, some DBAs have become jobless
 
-To ensure that yout databases are highly available and also have failover support in case one availability zone fails, we will 
+To ensure that your databases are highly available and also have failover support in case one availability zone fails, we will 
 configure a multi-AZ set up of RDS MySQL database instance. In our case, since we are only using 2 AZs, we can only failover to
 one, but the same concept applies to 3 Availability Zones. We will not consider possible failure of the whole Region, but for 
 this AWS also has a solution – this is a more advanced concept that will be discussed in following projects.
@@ -446,19 +461,43 @@ this AWS also has a solution – this is a more advanced concept that will be di
 To configure RDS, follow steps below:
 
 1. Create a subnet group and add 2 private subnets (data Layer)
+
 2. Create an RDS Instance for mysql 8.*.*
+![image](https://github.com/user-attachments/assets/7820b737-14ec-486c-b729-0dd25d8b7f88)
+
+![image](https://github.com/user-attachments/assets/db4c2ed8-772c-485b-bd07-1f56a001f459)
+
 3. To satisfy our architectural diagram, you will need to select either Dev/Test or Production Sample Template. But to minimize AWS 
 cost, you can select the Do not create a standby instance option under Availability & durability sample template (The production 
 template will enable Multi-AZ deployment)
+
+![image](https://github.com/user-attachments/assets/b8b9cf58-cd39-4015-bd54-5c0cde57fb8f)
+
 4. Configure other settings accordingly (For test purposes, most of the default settings are good to go). In the real world, you will
 need to size the database appropriately. You will need to get some information about the usage. If it is a highly transactional 
 database that grows at 10GB weekly, you must bear that in mind while configuring the initial storage allocation, storage autoscaling, 
 and maximum storage threshold.
+![image](https://github.com/user-attachments/assets/375c782f-05c2-48e1-a411-864736b5c6b6)
+![image](https://github.com/user-attachments/assets/99284e05-55d3-4358-b39c-1b2afd0be087)
+
+![image](https://github.com/user-attachments/assets/17520cf8-10b0-495b-a576-f941c7702c09)
+
 5. Configure VPC and security (ensure the database is not available from the Internet)
+![image](https://github.com/user-attachments/assets/0972a1d8-b7ad-4c84-9480-9f0e6848ac8f)
+
+
 6. Configure backups and retention
+![image](https://github.com/user-attachments/assets/b4a7ee89-44a1-4008-9edb-fd2ced78df4a)
+
+![image](https://github.com/user-attachments/assets/335cc4ad-9fff-4f2f-b4a9-14b789c7d9eb)
+
 7. Encrypt the database using the KMS key created earlier
+![image](https://github.com/user-attachments/assets/762f4649-d8d7-4149-b78a-aa1a42ca4053)
+
+
 8.Enable CloudWatch monitoring and export Error and Slow Query logs (for production, also include Audit)
 
+![image](https://github.com/user-attachments/assets/e9f83e68-841a-4c67-882a-97d4843357c8)
 
 ## Note This service is an expensinve one. Ensure to review the monthly cost before creating. (DO NOT LEAVE ANY SERVICE RUNNING FOR LONG)
 
