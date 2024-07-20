@@ -83,6 +83,25 @@ Fill in the following details:
 
 ![image](https://github.com/user-attachments/assets/97a53c78-3940-4378-9a24-722d16123283)
 
+ Go to the domain name provider and edit the nameservers
+
+Transfer the (4 server address) in the hostname zone in the (NS column) to the domain provider (nameservers).
+![image](https://github.com/user-attachments/assets/a1e6c4ea-4f3c-48a7-809e-e424892bcd5c)
+
+The next step is to get a certificate from AWS Certificate Manager. The reason we are creating a certificate first is because when creating `ALB` we need to select a certificate.
+
+- Click on request a Cert > Request public cert > Next
+![image](https://github.com/user-attachments/assets/d98e20c7-c16b-476b-a744-89f673f0c004)
+![image](https://github.com/user-attachments/assets/967556ef-f08e-4d16-8a7b-7eaa563f9e82)
+
+
+In the domain name, we are going to use a wild card i.e(*.). should in case we want to have another `name` or `subdomain`, the `WILDCARD` will make sure that any name before the domain name is attached to the `certificate`. e.g  melkamu.tooling.cloudns.be
+![image](https://github.com/user-attachments/assets/b61044db-930f-451e-8d1a-f3295a0c2285)
+
+NOTE: Because we are using DNS verification is going to automatically write to the Rout53 to confirm
+
+![image](https://github.com/user-attachments/assets/00ee7cc8-dbbe-4a16-a393-3b6c322bed75)
+
 > NOTE : As you proceed with configuration, ensure that all resources are appropriately tagged, for example:
 
 Project: <Give your project a name>
@@ -213,15 +232,12 @@ You will need to set up and configure compute resources inside your VPC. The rec
 - TLS Certificates
 - Application Load Balancers (ALB)
 
-
 ## Set Up Compute Resources for Nginx
 Provision EC2 Instances for Nginx
 
 1. Create an EC2 Instance based on CentOS Amazon Machine Image (AMI) in any 2 Availability Zones (AZ) in any AWS Region 
 (it is recommended to use the Region that is closest to your customers). Use EC2 instance of T2 family (e.g. t2.micro or similar)
-Lunch 3 Ec2 instances running a redhat server namely,Bastion - as the Jump server, nginx - for external load balancer and webserver - for the 2 applications. At this point, we need to install and configure some basic requirements on the instances.
 
-Bastion, Nginx and Webserver
 
 2. Ensure that it has the following software installed:
 
