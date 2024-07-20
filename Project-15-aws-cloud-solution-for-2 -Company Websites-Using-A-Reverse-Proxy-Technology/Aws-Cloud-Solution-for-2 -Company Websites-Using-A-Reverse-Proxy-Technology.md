@@ -240,8 +240,7 @@ Select the EC2 instance you want to create an AMI from  > Click on Actions > Ima
 - Provide a name and description for the image.
 - Configure any additional options like reboot behavior.
 - Click Create image
-![image](https://github.com/user-attachments/assets/1bda8546-1f73-4a20-b6c2-1d2073bd4695)
-
+  
 Prepare Launch Template For Nginx (One Per Subnet)
 1. Make use of the AMI to set up a launch template
 2. Ensure the Instances are launched into a public subnet
@@ -269,8 +268,6 @@ Prepare Launch Template For Nginx (One Per Subnet)
 8. Minimum capacity is 2
 9. Maximum capacity is 4
 10. Set scale out if CPU utilization reaches 90%
-
-
 
 ## Set Up Compute Resources for Bastion
 Provision the EC2 Instances for Bastion
@@ -323,7 +320,7 @@ Configure Autoscaling For Bastion
 11. Ensure there is an SNS topic to send scaling notifications
 
 
-**Set Up Compute Resources for Webservers**
+## Set Up Compute Resources for Webservers
 
 Provision the EC2 Instances for Webservers
 Now, you will need to create 2 separate launch templates for both the WordPress and Tooling websites
@@ -345,6 +342,11 @@ Now, you will need to create 2 separate launch templates for both the WordPress 
 
 
 3. Create an AMI out of the EC2 instance
+Select the EC2 instance you want to create an AMI from  > Click on Actions > Image and templates > Create image.
+- Provide a name and description for the image.
+- Configure any additional options like reboot behavior.
+- Click Create image
+![image](https://github.com/user-attachments/assets/1bda8546-1f73-4a20-b6c2-1d2073bd4695)
 
 Prepare Launch Template For Webservers (One per subnet)
 
