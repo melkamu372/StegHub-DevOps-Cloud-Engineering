@@ -165,10 +165,22 @@ Click Add route > Destination: 0.0.0.0/0 > Target: Select the internet gateway y
 
 
 7. Create 3 [Elastic IPs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html)
+Create Elastic IP to configured with the NAT gateway. The NAT gateway enables connection from the public subnet to private subnet and it needs a static ip to make this happen. VPC > Elastic IP addresses > Allocate Elastic IP address - add a name tag and click on allocate
 
+![image](https://github.com/user-attachments/assets/f32f5656-4b84-49d5-b823-36953abb6523)
 
 8. Create a Nat Gateway and assign one of the Elastic IPs (*The other 2 will be used by 
 [Bastion hosts](https://aws.amazon.com/solutions/implementations/linux-bastion/))
+
+Create a Nat Gateway and assign the Elastic IPs Click on VPC > NAT gateways > Create NAT gateway
+
+Select a Public Subnet
+Connection Type: Public
+Allocate Elastic IP
+![image](https://github.com/user-attachments/assets/e41fabaf-39fc-47b9-87bb-7d68e4c00a30)
+
+Update the Private route table - add allow anywhere ip and associate it the NAT gateway
+![image](https://github.com/user-attachments/assets/41812c4f-37ce-47c5-a577-7aa9871efde7)
 
 9. Create a Security Group for:
 
@@ -207,6 +219,9 @@ Provision EC2 Instances for Nginx
 
 1. Create an EC2 Instance based on CentOS Amazon Machine Image (AMI) in any 2 Availability Zones (AZ) in any AWS Region 
 (it is recommended to use the Region that is closest to your customers). Use EC2 instance of T2 family (e.g. t2.micro or similar)
+Lunch 3 Ec2 instances running a redhat server namely,Bastion - as the Jump server, nginx - for external load balancer and webserver - for the 2 applications. At this point, we need to install and configure some basic requirements on the instances.
+
+Bastion, Nginx and Webserver
 
 2. Ensure that it has the following software installed:
 
@@ -221,6 +236,11 @@ Provision EC2 Instances for Nginx
 
 
 3. Create an AMI out of the EC2 instance
+Select the EC2 instance you want to create an AMI from  > Click on Actions > Image and templates > Create image.
+- Provide a name and description for the image.
+- Configure any additional options like reboot behavior.
+- Click Create image
+![image](https://github.com/user-attachments/assets/1bda8546-1f73-4a20-b6c2-1d2073bd4695)
 
 Prepare Launch Template For Nginx (One Per Subnet)
 1. Make use of the AMI to set up a launch template
