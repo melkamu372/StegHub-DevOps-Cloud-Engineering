@@ -394,6 +394,16 @@ across the 2 `Availability Zones`. We will also be able to `offload SSL/TLS cert
 Nginx will be able to perform faster since it will not require extra compute resources to validate certificates for every request.
 
 1. Create an Internet facing ALB
+
+Open the Amazon EC2 console > Navigate to Load Balancers under the Load Balancing section > Click Create Load Balancer and select Application Load Balancer >  Configure the ALB > 
+
+- Name: Enter a name for your ALB.
+- Scheme: Choose Internet-facing.
+- IP address type: Choose ipv4.
+- Listeners: Add a listener for HTTPS (port 443).
+- Availability Zones: Select the appropriate VPC and Availability Zones (AZs). Ensure that the ALB is created within subnets that have internet access.
+![image](https://github.com/user-attachments/assets/3721068b-38a9-468d-acf4-eaf5910e9c41)
+
 2. Ensure that it listens on HTTPS protocol (TCP port 443)
 3. Ensure the ALB is created within the appropriate VPC | AZ | Subnets
 4. Choose the Certificate from ACM
@@ -420,9 +430,30 @@ the webservers are within a private subnet, and we do not want direct access to 
 
 > NOTE: This process must be repeated for both WordPress and Tooling websites.
 
-
 Create KMSa Key Management Service to encrypt the Database
 
+Open the AWS Management Console > Navigate to the AWS Key Management Service (KMS) > Click Create Key >
+- Key Type: Choose Symmetric.
+- Key Usage: Select Encrypt and decrypt.
+![image](https://github.com/user-attachments/assets/56e9819d-23a2-4866-b0c8-f4f1d1413365)
+
+**Configure Key:**
+- Key Alias: Enter an alias for your key  `Project15_key_Rds`
+- Key Description: Optionally add a description.
+![image](https://github.com/user-attachments/assets/6c8e511d-3623-4687-8c04-da9adba952cd)
+
+Define Key Administrative Permissions:
+![image](https://github.com/user-attachments/assets/fd22b5a9-88a2-4b5f-b7dd-9321ebb20242)
+
+Add IAM roles or users who can manage this key.
+
+Define Key Usage Permissions:
+
+Add IAM roles or users who can use this key to encrypt and decrypt data.
+Review and Create:
+![image](https://github.com/user-attachments/assets/7cca8bde-e0e1-4497-9eae-eaff018ae9aa)
+
+Review the settings and click Create Key.
 
 ### Setup EFS
 Amazon Elastic File System (Amazon EFS) provides a simple, scalable, fully managed elastic Network File System (NFS) for use with
