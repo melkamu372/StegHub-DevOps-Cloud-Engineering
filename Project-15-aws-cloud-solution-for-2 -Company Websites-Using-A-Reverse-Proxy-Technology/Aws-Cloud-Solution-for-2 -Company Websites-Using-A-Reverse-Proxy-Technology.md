@@ -1,12 +1,14 @@
-# AWS CLOUD SOLUTION FOR 2 COMPANY WEBSITES USING A REVERSE PROXY TECHNOLOGY
+## AWS CLOUD SOLUTION FOR 2 COMPANY WEBSITES USING A REVERSE PROXY TECHNOLOGY
 
-**WARNING**: This infrastructure set up is NOT covered by `AWS free tier`. Therefore, ensure to DELETE ALL the resources created immediately after finishing the project. Monthly cost may be shockingly high if resources are not deleted. Also, it is strongly recommended to set up a budget and configure notifications when your spendings reach a predefined limit. [Watch this video](https://www.youtube.com/watch?v=fvz0cphjHjg)  to learn how to configure AWS budget.
+**WARNING**: This infrastructure set up is NOT covered by `AWS free tier`. Therefore, ensure to DELETE ALL the resources created immediately after finishing the project. Monthly cost may be shockingly high if resources are not deleted. Also, it is strongly recommended to set up a budget and configure notifications when your spendings reach a predefined limit.
+[Watch this video](https://www.youtube.com/watch?v=fvz0cphjHjg) to learn how to configure AWS budget.
 
 
 **Let us Get Started**
 
-You have been doing great work so far – implementing different Web Solutions and getting hands on experience with many great DevOps tools. In previous projects you used basic [Infrastructure as a Service (IaaS)](https://en.wikipedia.org/wiki/Infrastructure_as_a_service) offerings from AWS such as [EC2 (Elastic Compute Cloud)](https://en.wikipedia.org/wiki/Amazon_Elastic_Compute_Cloud) as rented
-Virtual Machines and [EBS (Elastic Block Store)](https://en.wikipedia.org/wiki/Amazon_Elastic_Block_Store), you have also learned how to configure Key pairs and basic Security Groups.
+You have been doing great work so far – implementing different Web Solutions and getting hands on experience with many great DevOps tools. In previous projects you used basic [Infrastructure as a Service (IaaS)](https://en.wikipedia.org/wiki/Infrastructure_as_a_service) offerings from AWS such as 
+- [EC2 (Elastic Compute Cloud)](https://en.wikipedia.org/wiki/Amazon_Elastic_Compute_Cloud) as rented  Virtual Machines and
+-  [EBS (Elastic Block Store)](https://en.wikipedia.org/wiki/Amazon_Elastic_Block_Store), you have also learned how to configure Key pairs and basic Security Groups.
 
 But the power of Clouds is not only in being able to rent Virtual Machines – it is much more than that. From now on, you will start 
 gradually study different Cloud concepts and tools on example of AWS, but do not be worried, your knowledge will not be limited to only AWS specific concepts – overall principles are common across most of the major Cloud Providers (e.g., Microsoft Azure and Google Cloud Platform).
@@ -14,8 +16,8 @@ gradually study different Cloud concepts and tools on example of AWS, but do not
 > NOTE: The next few projects will be implemented manually. Before you begin to automate infrastructure in the cloud, it is very important that you can build the solution manually. Otherwise, programming your automation may become frustrating very quickly.
 
 You will build a secure infrastructure inside AWS VPC (Virtual Private Cloud) network for a fictitious company (Choose an interesting 
-name for it) that uses [WordPress CMS](https://wordpress.com/) for its main business website, and a Tooling Website
-(https://github.com/<your-name>/tooling) for their DevOps team. As part of the company’s desire for improved security and performance, a decision has been made to use a reverse proxy technology from NGINX to achieve this.
+name for it) named `tooling` that uses [WordPress CMS](https://wordpress.com/) for its main business website, and a Tooling Website
+(https://github.com/melkamu372/tooling) for their DevOps team. As part of the company’s desire for improved security and performance, a decision has been made to use a reverse proxy technology from NGINX to achieve this.
 
 Cost, Security, and Scalability are the major requirements for this project. Hence, implementing the architecture designed below,
 ensure that infrastructure for both websites, WordPress and Tooling, is resilient to Web Server’s failures, can accomodate to increased traffic and, at the same time, has reasonable cost.
@@ -64,20 +66,21 @@ There are few requirements that must be met before you begin:
 
   ![image](https://github.com/user-attachments/assets/c113d79d-fd46-4e7f-8b91-9d8ad4e3d429)
 
-2. Create a free domain name for your fictitious company at Freenom domain registrar [here](https://www.freenom.com/en/index.html?lang=en).
+2. Create a free domain name for your fictitious company. I used [cloudns](https://www.cloudns.net/)
+
 ![image](https://github.com/user-attachments/assets/01cad4ff-604b-46e5-b5cc-bd4d88833d09)
 
 
-3. Create a hosted zone in AWS, and map it to your free domain from Freenom. [Watch how to do that here](https://youtu.be/IjcHp94Hq8A)
+3. Create a hosted zone in AWS, and map it to your free domain. [Watch how to do that here](https://youtu.be/IjcHp94Hq8A)
 
- In the search bar, type "Route 53" and select "Route 53" from the results. >  In the Route 53 dashboard, click on "Hosted zones" in the left-hand navigation pane >
- Click "Create hosted zone"
+ In the search bar, type `Route 53` and select `Route 53` from the results. >  In the Route 53 dashboard, click on `Hosted zones` in the left-hand navigation pane >
+ Click `Create hosted zone`
 Fill in the following details:
    -  Domain name: Enter your Freenom domain name (e.g., example.tk).
    -  Comment: Optional.
-   -  Type: Select "Public hosted zone".
+   -  Type: Select Public hosted zone.
    -  VPC: Leave this blank for a public hosted zone.
-   -  Click "Create hosted zone"
+   -  Click Create hosted zone
 
 ![image](https://github.com/user-attachments/assets/50f70a9e-5e6a-4210-91fa-36071bc25b73)
 
@@ -104,9 +107,11 @@ NOTE: Because we are using DNS verification is going to automatically write to t
 
 > NOTE : As you proceed with configuration, ensure that all resources are appropriately tagged, for example:
 
-Project: <Give your project a name>
-Environment: <dev>
-Automated: <No> (If you create a recource using an automation tool, it would be <Yes>)
+Project: Give your project a name `Project-15`
+
+Environment: `dev`
+
+Automated:`No` (If you create a recource using an automation tool, it would be `Yes`)
 
 
 # SET UP A VIRTUAL PRIVATE NETWORK (VPC)
@@ -117,6 +122,10 @@ Always make reference to the architectural diagram and ensure that your configur
 1. Create a [VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
 
 ![image](https://github.com/user-attachments/assets/db03ce4e-84f0-4726-9ed8-6cff2dfcba49)
+
+
+**Enable DNS hosting**
+![image](https://github.com/user-attachments/assets/c79be184-235e-4b58-8258-24c279884d4f)
 
 
 2. Create subnets as shown in the architecture  On the left panel menu of the VPC UI, click on Subnet > Create Subnet.
@@ -166,7 +175,8 @@ VPC: 10.0.0.0/16
 
 
 5. Create an [Internet Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html)
-**Click on Internet Gateways on the left-hand side** > **Create internet gateway** > **Enter a name for your internet gateway** > **Create internet gateway**
+
+Click on Internet Gateways on the left-hand side >  Create internet gateway > Enter a name for your internet gateway > Create internet gateway
 
 ![image](https://github.com/user-attachments/assets/44f4b184-3f6b-4992-8448-230d16f06983)
 
@@ -183,13 +193,13 @@ Click Add route > Destination: 0.0.0.0/0 > Target: Select the internet gateway y
 ![image](https://github.com/user-attachments/assets/f35bbb24-0d41-4d6a-b36f-8e70c70096b8)
 
 
-7. Create 3 [Elastic IPs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html)
+7. Create 3 [Elastic IPs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html) one for `Nat getway` and the other `2 will be used by Bastion hosts`
+
 Create Elastic IP to configured with the NAT gateway. The NAT gateway enables connection from the public subnet to private subnet and it needs a static ip to make this happen. VPC > Elastic IP addresses > Allocate Elastic IP address - add a name tag and click on allocate
 
 ![image](https://github.com/user-attachments/assets/f32f5656-4b84-49d5-b823-36953abb6523)
 
-8. Create a Nat Gateway and assign one of the Elastic IPs (*The other 2 will be used by 
-[Bastion hosts](https://aws.amazon.com/solutions/implementations/linux-bastion/))
+8. Create a Nat Gateway and assign one of the Elastic IPs the other 2 will be used by [Bastion hosts](https://aws.amazon.com/solutions/implementations/linux-bastion/))
 
 Create a Nat Gateway and assign the Elastic IPs Click on VPC > NAT gateways > Create NAT gateway
 
@@ -430,31 +440,6 @@ the webservers are within a private subnet, and we do not want direct access to 
 
 > NOTE: This process must be repeated for both WordPress and Tooling websites.
 
-Create KMSa Key Management Service to encrypt the Database
-
-Open the AWS Management Console > Navigate to the AWS Key Management Service (KMS) > Click Create Key >
-- Key Type: Choose Symmetric.
-- Key Usage: Select Encrypt and decrypt.
-![image](https://github.com/user-attachments/assets/56e9819d-23a2-4866-b0c8-f4f1d1413365)
-
-**Configure Key:**
-- Key Alias: Enter an alias for your key  `Project15_key_Rds`
-- Key Description: Optionally add a description.
-![image](https://github.com/user-attachments/assets/6c8e511d-3623-4687-8c04-da9adba952cd)
-
-Define Key Administrative Permissions:
-![image](https://github.com/user-attachments/assets/fd22b5a9-88a2-4b5f-b7dd-9321ebb20242)
-
-Add IAM roles or users who can manage this key.
-
-Define Key Usage Permissions:
-
-Add IAM roles or users who can use this key to encrypt and decrypt data.
-Review and Create:
-![image](https://github.com/user-attachments/assets/7cca8bde-e0e1-4497-9eae-eaff018ae9aa)
-
-Review the settings and click Create Key.
-
 ### Setup EFS
 Amazon Elastic File System (Amazon EFS) provides a simple, scalable, fully managed elastic Network File System (NFS) for use with
 AWS Cloud services and on-premises resources. In this project, we will utulize EFS service and mount filesystems on both Nginx 
@@ -475,9 +460,34 @@ and Webservers to store data.
 
 
 ### Setup RDS
-Pre-requisite: Create a KMS key from Key Management Service (KMS) to be used to encrypt the database instance.
-Create KMSa Key Management Service to encrypt the Database
-![image](https://github.com/user-attachments/assets/96e7cf1b-84e9-4bc7-b3f1-6780059466e4)
+Pre-requisite: Create a KMS key from Key Management Service (KMS) to be used to encrypt the database instance. Create KMSa Key Management Service to encrypt the Database
+
+Open the AWS Management Console > Navigate to the AWS Key Management Service (KMS) > Click Create Key >
+- Key Type: Choose Symmetric.
+- Key Usage: Select Encrypt and decrypt.
+![image](https://github.com/user-attachments/assets/56e9819d-23a2-4866-b0c8-f4f1d1413365)
+
+**Configure Key:**
+- Key Alias: Enter an alias for your key  `Project15_key_Rds`
+- Key Description: Optionally add a description.
+![image](https://github.com/user-attachments/assets/6c8e511d-3623-4687-8c04-da9adba952cd)
+
+Define Key Administrative Permissions: Add IAM roles or users who can manage this key.
+![image](https://github.com/user-attachments/assets/a90c66e4-f9d2-4d40-a9c8-ec62f2309d90)
+
+Define Key Usage Permissions:
+![image](https://github.com/user-attachments/assets/369339ae-5338-406a-b95b-3182a8d31e81)
+
+
+Review and Create:
+![image](https://github.com/user-attachments/assets/7cca8bde-e0e1-4497-9eae-eaff018ae9aa)
+
+Review the settings and click Create Key.
+
+![image](https://github.com/user-attachments/assets/2fdecef9-60b0-47d5-8fca-9559e4d19ab4)
+
+![image](https://github.com/user-attachments/assets/684861eb-fe0e-446d-a4e7-229d65bb3fcb)
+
 
 
 Amazon Relational Database Service (Amazon RDS) is a managed distributed relational database service by Amazon Web Services. 
@@ -492,6 +502,12 @@ this AWS also has a solution – this is a more advanced concept that will be di
 To configure RDS, follow steps below:
 
 1. Create a subnet group and add 2 private subnets (data Layer)
+![image](https://github.com/user-attachments/assets/54e0e870-5027-4cb1-a1f8-f8b2e7dbc999)
+
+![image](https://github.com/user-attachments/assets/6a40a1f3-106b-4436-9995-39bf65ff1968)
+
+![image](https://github.com/user-attachments/assets/3edaca88-5779-425d-82a0-362e8c99cc4b)
+
 
 2. Create an RDS Instance for mysql 8.*.*
 ![image](https://github.com/user-attachments/assets/7820b737-14ec-486c-b729-0dd25d8b7f88)
@@ -502,16 +518,18 @@ To configure RDS, follow steps below:
 cost, you can select the Do not create a standby instance option under Availability & durability sample template (The production 
 template will enable Multi-AZ deployment)
 
-![image](https://github.com/user-attachments/assets/b8b9cf58-cd39-4015-bd54-5c0cde57fb8f)
+
+![image](https://github.com/user-attachments/assets/ccfa61ba-d934-4b8b-b00b-dd51a3f586ff)
 
 4. Configure other settings accordingly (For test purposes, most of the default settings are good to go). In the real world, you will
 need to size the database appropriately. You will need to get some information about the usage. If it is a highly transactional 
 database that grows at 10GB weekly, you must bear that in mind while configuring the initial storage allocation, storage autoscaling, 
 and maximum storage threshold.
-![image](https://github.com/user-attachments/assets/375c782f-05c2-48e1-a411-864736b5c6b6)
-![image](https://github.com/user-attachments/assets/99284e05-55d3-4358-b39c-1b2afd0be087)
 
-![image](https://github.com/user-attachments/assets/17520cf8-10b0-495b-a576-f941c7702c09)
+![image](https://github.com/user-attachments/assets/865ce1a0-3755-4c73-ac3e-68dcee9fbc6a)
+
+![image](https://github.com/user-attachments/assets/e2c5cb14-2b26-4407-967f-4535e43ca7ad)
+
 
 5. Configure VPC and security (ensure the database is not available from the Internet)
 ![image](https://github.com/user-attachments/assets/0972a1d8-b7ad-4c84-9480-9f0e6848ac8f)
@@ -529,6 +547,9 @@ and maximum storage threshold.
 8.Enable CloudWatch monitoring and export Error and Slow Query logs (for production, also include Audit)
 
 ![image](https://github.com/user-attachments/assets/e9f83e68-841a-4c67-882a-97d4843357c8)
+
+
+![image](https://github.com/user-attachments/assets/c70967e1-7d29-48bb-879d-45a33743c683)
 
 ## Note This service is an expensinve one. Ensure to review the monthly cost before creating. (DO NOT LEAVE ANY SERVICE RUNNING FOR LONG)
 
