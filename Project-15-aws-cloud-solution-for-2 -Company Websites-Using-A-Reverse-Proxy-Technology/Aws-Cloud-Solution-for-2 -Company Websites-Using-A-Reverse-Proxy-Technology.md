@@ -383,8 +383,11 @@ Configure Target Groups
 
 
 Configure Autoscaling For Bastion
+![image](https://github.com/user-attachments/assets/e20fe6ee-55c9-446d-b55e-0cdd1e31ad7c)
 
 1. Select the right launch template
+![image](https://github.com/user-attachments/assets/1db07707-89aa-4f10-8ff2-ba26006fcdd3)
+
 2. Select the VPC
 3. Select both public subnets
 4. Enable Application Load Balancer for the AutoScalingGroup (ASG)
