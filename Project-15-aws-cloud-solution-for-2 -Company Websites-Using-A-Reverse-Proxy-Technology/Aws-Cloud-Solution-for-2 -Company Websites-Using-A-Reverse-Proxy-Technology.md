@@ -114,7 +114,7 @@ Environment: `dev`
 Automated:`No` (If you create a recource using an automation tool, it would be `Yes`)
 
 
-# SET UP A VIRTUAL PRIVATE NETWORK (VPC)
+## SET UP A VIRTUAL PRIVATE NETWORK (VPC)
 
 Set Up a Virtual Private Network (VPC)
 Always make reference to the architectural diagram and ensure that your configuration is aligned with it.
@@ -242,8 +242,7 @@ You will need to set up and configure compute resources inside your VPC. The rec
 - TLS Certificates
 - Application Load Balancers (ALB)
 
-## Set Up Compute Resources for Nginx
-Provision EC2 Instances for Nginx
+## Set Up Compute Resources for Nginx  Provision EC2 Instances for Nginx
 
 1. Create an EC2 Instance based on CentOS Amazon Machine Image (AMI) in any 2 Availability Zones (AZ) in any AWS Region 
 (it is recommended to use the Region that is closest to your customers). Use EC2 instance of T2 family (e.g. t2.micro or similar)
@@ -271,6 +270,37 @@ yum install wget vim python3 telnet htop git mysql net-tools chrony -y
 systemctl start chronyd
 
 systemctl enable chronyd
+```
+**Configure selinux policies for the webservers and nginx servers**
+```
+setsebool -P httpd_can_network_connect=1
+setsebool -P httpd_can_network_connect_db=1
+setsebool -P httpd_execmem=1
+setsebool -P httpd_use_nfs 1
+```
+**This section will instll amazon efs utils for mounting the target on the Elastic file system**
+```
+git clone https://github.com/aws/efs-utils
+
+cd efs-utils
+
+yum install -y make
+
+yum install -y rpm-build
+
+make rpm 
+
+yum install -y  ./build/amazon-efs-utils*rpm
+```
+**Seting up self-signed certificate for the nginx instance**
+```
+sudo mkdir /etc/ssl/private
+
+sudo chmod 700 /etc/ssl/private
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/ACS.key -out /etc/ssl/certs/ACS.crt
+
+sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
 ```
 
 3. Create an AMI out of the EC2 instance
@@ -323,7 +353,7 @@ where you created Nginx server
 - epel-release
 - htop
 
-We will use instance to create an ami for launching instances in Auto-scaling groups so all the installations will be done before creating the ami from the instance
+We will use instance to create an ami for launching instances 
 
 ```
 sudu su -
@@ -333,41 +363,6 @@ yum install wget vim python3 telnet htop git mysql net-tools chrony -y
 systemctl start chronyd 
 systemctl enable chronyd
 ```
-configure selinux policies for the webservers and nginx servers
-
-```
-setsebool -P httpd_can_network_connect=1
-setsebool -P httpd_can_network_connect_db=1
-setsebool -P httpd_execmem=1
-setsebool -P httpd_use_nfs 1
-```
-This section will insatll amazon efs utils for mounting the target on the Elastic file system
-
-```
-git clone https://github.com/aws/efs-utils
-
-cd efs-utils
-
-yum install -y make
-
-yum install -y rpm-build
-
-make rpm 
-
-yum install -y  ./build/amazon-efs-utils*rpm
-```
-
-Setting up self-signed certificate for the nginx instance
-```
-sudo mkdir /etc/ssl/private
-
-sudo chmod 700 /etc/ssl/private
-
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/ACS.key -out /etc/ssl/certs/ACS.crt
-
-sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
-```
-
 3. Associate an Elastic IP with each of the Bastion EC2 Instances
 4. Create an AMI out of the EC2 instance
 
@@ -422,39 +417,51 @@ Now, you will need to create 2 separate launch templates for both the WordPress 
 - php
 
 ```
-	#commands for ami installation  
-	yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-	yum install -y dnf-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm
-	yum install wget vim python3 telnet htop git mysql net-tools chrony -y
-	systemctl start chronyd
-	systemctl enable chronyd
-	
-	#configure selinux policies
-	setsebool -P httpd_can_network_connect=1
-	setsebool -P httpd_can_network_connect_db=1
-	setsebool -P httpd_execmem=1
-	setsebool -P httpd_use_nfs 1
-	
-	#install amazon efs utils for mounting the target on the Elastic file system
-	git clone https://github.com/aws/efs-utils
-	cd efs-utils
-	yum install -y make
-	yum install -y rpm-build
-	make rpm 
-	yum install -y  ./build/amazon-efs-utils*rpm
-	
-	#setting up self signed certificate for the webserver (apache)
-	yum install -y mod_ssl
-	openssl req -newkey rsa:2048 -nodes -keyout /etc/pki/tls/private/ACS.key -x509 -days 365 -out /etc/pki/tls/certs/ACS.crt
-	vi /etc/httpd/conf.d/ssl.conf
+yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
+yum install -y dnf-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+
+yum install wget vim python3 telnet htop git mysql net-tools chrony -y
+
+systemctl start chronyd
+
+systemctl enable chronyd
 ```
 
-3. Create an AMI out of the EC2 instance
-Select the EC2 instance you want to create an AMI from  > Click on Actions > Image and templates > Create image.
+3. Create an AMI out of the EC2 instance select the EC2 instance you want to create an AMI from  > Click on Actions > Image and templates > Create image.
 - Provide a name and description for the image.
 - Configure any additional options like reboot behavior.
 - Click Create image
-![image](https://github.com/user-attachments/assets/1bda8546-1f73-4a20-b6c2-1d2073bd4695)
+
+**configure selinux policies for the webservers and nginx servers**
+```
+setsebool -P httpd_can_network_connect=1
+setsebool -P httpd_can_network_connect_db=1
+setsebool -P httpd_execmem=1
+setsebool -P httpd_use_nfs 1
+```
+**instll amazon efs utils for mounting the target on the Elastic file system**
+```
+git clone https://github.com/aws/efs-utils
+
+cd efs-utils
+
+yum install -y make
+
+yum install -y rpm-build
+
+make rpm 
+
+yum install -y  ./build/amazon-efs-utils*rpm
+```
+Setting up self-signed certificate for the apache webserver instance
+```
+yum install -y mod_ssl
+
+openssl req -newkey rsa:2048 -nodes -keyout /etc/pki/tls/private/ACS.key -x509 -days 365 -out /etc/pki/tls/certs/ACS.crt
+
+vi /etc/httpd/conf.d/ssl.conf
+```
 
 Prepare Launch Template For Webservers (One per subnet)
 
@@ -463,12 +470,18 @@ Prepare Launch Template For Webservers (One per subnet)
 3. Assign appropriate security group
 4. Configure Userdata to update yum package repository and install wordpress (Only required on the WordPress launch template)
 
+   **Instances are listed**
+![image](https://github.com/user-attachments/assets/863bb64e-c814-4052-bf9c-4f001d607931)
+
+**Creating AMI from the instances**
+![image](https://github.com/user-attachments/assets/8e03a1b8-459f-4cd9-8edb-27b4e917329f)
+
+**Creating Target Groups**
+![image](https://github.com/user-attachments/assets/60ff02b8-58f2-4d78-9a13-ed20188ade65)
 
 
 
-TLS Certificates From Amazon Certificate Manager (ACM)
-
-You will need TLS certificates to handle secured connectivity to your Application Load Balancers (ALB).
+TLS Certificates From Amazon Certificate Manager (ACM) you will need TLS certificates to handle secured connectivity to your Application Load Balancers (ALB)
 
 1. Navigate to AWS ACM
 2. Request a public wildcard certificate for the domain name you registered in Freenom
@@ -476,9 +489,7 @@ You will need TLS certificates to handle secured connectivity to your Applicatio
 4. Tag the resource
 
 
-# CONFIGURE APPLICATION LOAD BALANCER (ALB)
-
-## Application Load Balancer To Route Traffic To NGINX
+## CONFIGURE APPLICATION LOAD BALANCER (ALB) Application Load Balancer To Route Traffic To NGINX
 Nginx EC2 Instances will have configurations that accepts incoming traffic only from Load Balancers. No request should go directly
 to Nginx servers. With this kind of setup, we will benefit from intelligent routing of requests from the `ALB` to Nginx servers 
 across the 2 `Availability Zones`. We will also be able to `offload SSL/TLS certificates` on the ALB instead of Nginx. Therefore, 
@@ -493,11 +504,19 @@ Open the Amazon EC2 console > Navigate to Load Balancers under the Load Balancin
 - IP address type: Choose ipv4
 - Listeners: Add a listener for HTTPS (port 443).
 - Availability Zones: Select the appropriate VPC and Availability Zones (AZs). Ensure that the ALB is created within subnets that have internet access.
-![image](https://github.com/user-attachments/assets/3721068b-38a9-468d-acf4-eaf5910e9c41)
+
+![image](https://github.com/user-attachments/assets/52c0dcaa-82e5-4308-8fc7-4bf6a278b5c3)
+
+![image](https://github.com/user-attachments/assets/70790ef8-d2d8-4eb2-a517-cdda346fc709)
 
 2. Ensure that it listens on HTTPS protocol (TCP port 443)
 3. Ensure the ALB is created within the appropriate VPC | AZ | Subnets
+![image](https://github.com/user-attachments/assets/ea341106-20d4-4204-96fd-3863260b6aea)
+![image](https://github.com/user-attachments/assets/c47745f9-0534-4052-bb81-44478acd363c)
+
 4. Choose the Certificate from ACM
+![image](https://github.com/user-attachments/assets/cac7c484-758b-410b-a7d6-a3b048520236)
+
 5. Select Security Group
 6. Select Nginx Instances as the target group
 
