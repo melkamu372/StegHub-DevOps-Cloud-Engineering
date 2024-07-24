@@ -520,6 +520,9 @@ The lunch templates requires AMIs (Amazon Machine Images) - Create AMIs from the
 
 ![image](https://github.com/user-attachments/assets/93830c54-8b75-4546-a182-acf31a406474)
 
+![image](https://github.com/user-attachments/assets/5db8cc97-f067-4e0d-be49-508363b399b9)
+
+![image](https://github.com/user-attachments/assets/ccab3da6-af22-49f0-ac88-c7d7ebfdf91e)
 
 ## CONFIGURE APPLICATION LOAD BALANCER (ALB) Application Load Balancer To Route Traffic To NGINX
 Nginx EC2 Instances will have configurations that accepts incoming traffic only from Load Balancers. No request should go directly
@@ -718,8 +721,12 @@ reached using a browser.
 
 ![image](https://github.com/user-attachments/assets/eccf5ffc-e0bb-4f77-9099-a22cdea149a0)
 
+ Worpress website
 
-  
+![image](https://github.com/user-attachments/assets/70df13b6-731d-4673-8fd9-87d3177c6b27)
+
+![image](https://github.com/user-attachments/assets/8fb52606-226a-4dcf-954c-c2673ee08e0e)
+
 ### The end of Project 15 
 In this project We have just created a secured, scalable and cost-effective infrastructure to host 2 enterprise websites using various Cloud services
 from AWS. At this point, your infrastructure is ready to host real websites’ load. Since it is a pretty expensive infrastructure
