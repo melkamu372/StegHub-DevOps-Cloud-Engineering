@@ -324,18 +324,6 @@ Prepare Launch Template For Nginx (One Per Subnet)
 4. Register Nginx Instances as targets
 5. Ensure that health check passes for the target group
 
-## Configure Autoscaling For Nginx
-
-1. Select the right launch template
-2. Select the VPC
-3. Select both public subnets
-4. Enable Application Load Balancer for the AutoScalingGroup (ASG)
-5. Select the target group you created before
-6. Ensure that you have health checks for both EC2 and ALB
-7. The desired capacity is 2
-8. Minimum capacity is 2
-9. Maximum capacity is 4
-10. Set scale out if CPU utilization reaches 90%
 
 ## Set Up Compute Resources for Bastion
 Provision the EC2 Instances for Bastion
@@ -380,24 +368,6 @@ Configure Target Groups
 2. Ensure the protocol is TCP on port 22
 3. Register Bastion Instances as targets
 4. Ensure that health check passes for the target group
-
-
-Configure Autoscaling For Bastion
-![image](https://github.com/user-attachments/assets/e20fe6ee-55c9-446d-b55e-0cdd1e31ad7c)
-
-1. Select the right launch template
-![image](https://github.com/user-attachments/assets/1db07707-89aa-4f10-8ff2-ba26006fcdd3)
-
-2. Select the VPC
-3. Select both public subnets
-4. Enable Application Load Balancer for the AutoScalingGroup (ASG)
-5. Select the target group you created before
-6. Ensure that you have health checks for both EC2 and ALB
-7. The desired capacity is 2
-8. Minimum capacity is 2
-9. Maximum capacity is 4
-10. Set scale out if CPU utilization reaches 90%
-11. Ensure there is an SNS topic to send scaling notifications
 
 
 ## Set Up Compute Resources for Webservers
@@ -483,8 +453,63 @@ Prepare Launch Template For Webservers (One per subnet)
 ![image](https://github.com/user-attachments/assets/60ff02b8-58f2-4d78-9a13-ed20188ade65)
 
 
+**Create Launch Templates**
+The lunch templates requires AMIs (Amazon Machine Images) - Create AMIs from the instances and terminate them.From the created custom AMIs, create Launch templates for each of the instances
 
-TLS Certificates From Amazon Certificate Manager (ACM) you will need TLS certificates to handle secured connectivity to your Application Load Balancers (ALB)
+
+![image](https://github.com/user-attachments/assets/b2eefc6b-f8f1-486e-9264-fb6626802256)
+
+![image](https://github.com/user-attachments/assets/84b07bc8-1013-4030-9113-6ec754c02c80)
+
+![image](https://github.com/user-attachments/assets/7c060b05-8563-4f8f-b171-87b8bf293cf9)
+
+![image](https://github.com/user-attachments/assets/6cdde2e7-6074-437a-a999-3144b290db1b)
+
+![image](https://github.com/user-attachments/assets/3ae68deb-7be2-4187-ba14-848b2d991879)
+
+**Configure Autoscaling For Bastion**
+
+![image](https://github.com/user-attachments/assets/e20fe6ee-55c9-446d-b55e-0cdd1e31ad7c)
+
+1. Select the right launch template
+![image](https://github.com/user-attachments/assets/1db07707-89aa-4f10-8ff2-ba26006fcdd3)
+
+![image](https://github.com/user-attachments/assets/73d372e4-c4a6-4686-a3d6-3fc6966eb117)
+
+2. Select the VPC
+3. Select both public subnets
+4. Enable Application Load Balancer for the AutoScalingGroup (ASG)
+![image](https://github.com/user-attachments/assets/ed367c15-b6a8-4220-8f72-ea962f82adf2)
+
+5. Select the target group you created before
+6. Ensure that you have health checks for both EC2 and ALB
+7. The desired capacity is 2
+8. Minimum capacity is 2
+9. Maximum capacity is 4
+10. Set scale out if CPU utilization reaches 90%
+![image](https://github.com/user-attachments/assets/d5f3e74c-b0fd-4d74-9a83-571ffe2ada2b)
+
+11. Ensure there is an SNS topic to send scaling notifications
+![image](https://github.com/user-attachments/assets/f9e1fa83-c2c4-49fe-ad16-49522bf64a73)
+
+![image](https://github.com/user-attachments/assets/0347edb7-a950-4caa-892e-8b12e4455ab4)
+
+![image](https://github.com/user-attachments/assets/8ed9fcf2-bfa2-42bb-a7b7-fed4f30e140e)
+
+## Configure Autoscaling For Nginx repate same thing for this also
+
+1. Select the right launch template
+2. Select the VPC
+3. Select both public subnets
+4. Enable Application Load Balancer for the AutoScalingGroup (ASG)
+5. Select the target group you created before
+6. Ensure that you have health checks for both EC2 and ALB
+7. The desired capacity is 2
+8. Minimum capacity is 2
+9. Maximum capacity is 4
+10. Set scale out if CPU utilization reaches 90%
+
+**TLS Certificates From Amazon Certificate Manager (ACM) you will need TLS certificates to handle secured connectivity to your Application Load Balancers (ALB)**
 
 1. Navigate to AWS ACM
 2. Request a public wildcard certificate for the domain name you registered in Freenom
