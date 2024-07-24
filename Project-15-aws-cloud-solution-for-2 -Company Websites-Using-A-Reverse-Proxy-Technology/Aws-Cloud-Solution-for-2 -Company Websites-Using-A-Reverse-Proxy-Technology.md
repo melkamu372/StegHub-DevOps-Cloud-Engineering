@@ -703,16 +703,7 @@ and maximum storage threshold.
 
 ![image](https://github.com/user-attachments/assets/c70967e1-7d29-48bb-879d-45a33743c683)
 
-## Note This service is an expensinve one. Ensure to review the monthly cost before creating. (DO NOT LEAVE ANY SERVICE RUNNING FOR LONG)
-
-## Configuring DNS with Route53
-Earlier in this project you registered a free domain with Freenom and configured a hosted zone in Route53. But that is not all 
-that needs to be done as far as DNS configuration is concerned.
-
-You need to ensure that the main domain for the WordPress website can be reached, and the subdomain for Tooling website can also be 
-reached using a browser.
-
-Create other records such as CNAME, alias and A records.
+> Note This service is an expensinve one. Ensure to review the monthly cost before creating. **(DO NOT LEAVE ANY SERVICE RUNNING FOR LONG)Create other records such as CNAME, alias and A records**
 
 **NOTE:** You can use either CNAME or alias records to achieve the same thing. But alias record has better functionality because it is 
 a faster to resolve DNS record, and can coexist with other records on that name. Read here to get to know more about the differences.
@@ -720,7 +711,16 @@ a faster to resolve DNS record, and can coexist with other records on that name.
 
 - Create an alias record for the root domain and direct its traffic to the ALB DNS name.
 - Create an alias record for tooling.<yourdomain>.com and direct its traffic to the ALB DNS name.
-  
+
+You need to ensure that the main domain for the WordPress website can be reached, and the subdomain for Tooling website can also be 
+reached using a browser.
+
+![image](https://github.com/user-attachments/assets/3c3e009a-c4cd-4cb7-be7d-98e98dbf4de5)
+
+
+
+
+
   
 ### The end of Project 15 
 In this project We have just created a secured, scalable and cost-effective infrastructure to host 2 enterprise websites using various Cloud services
