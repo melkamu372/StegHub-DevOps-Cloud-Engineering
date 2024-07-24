@@ -715,10 +715,8 @@ a faster to resolve DNS record, and can coexist with other records on that name.
 You need to ensure that the main domain for the WordPress website can be reached, and the subdomain for Tooling website can also be 
 reached using a browser.
 
-![image](https://github.com/user-attachments/assets/3c3e009a-c4cd-4cb7-be7d-98e98dbf4de5)
 
-
-
+![image](https://github.com/user-attachments/assets/eccf5ffc-e0bb-4f77-9099-a22cdea149a0)
 
 
   
