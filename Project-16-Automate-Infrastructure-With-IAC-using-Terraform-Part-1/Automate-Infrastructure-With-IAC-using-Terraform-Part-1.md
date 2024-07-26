@@ -565,6 +565,7 @@ resource "aws_subnet" "public" {
 
 ![image](https://github.com/user-attachments/assets/028b0000-0ef3-4e88-800a-d5f6e6fd4d27)
 
+![image](https://github.com/user-attachments/assets/39aec0e3-d2d0-4c15-b4f3-287c3a59f31a)
 
 
 Note: You should try changing the value of preferred_number_of_public_subnets variable to null and notice how many subnets get 
@@ -576,8 +577,10 @@ created.
 infrastructure that has been deployed to production.
 
 To destroy whatever has been created run terraform destroy command, and type yes after evaluating the plan.
-
-# Introducing variables.tf & terraform.tfvars
+```
+terraform destroy
+```
+# Introducing `variables.tf` & `terraform.tfvars`
 
 Instead of havng a long lisf of variables in main.tf file, we can actually make our code a lot more readable and better structured by 
 moving out some parts of the configuration content to other files.
@@ -591,7 +594,7 @@ moving out some parts of the configuration content to other files.
 4. Set values for each of the variables.
 
 
-# Maint.tf
+**`Maint.tf`**
 
 ```
 # Get list of availability zones
@@ -622,13 +625,15 @@ resource "aws_subnet" "public" {
   availability_zone       = data.aws_availability_zones.available.names[count.index]
 }
 ```
+![image](https://github.com/user-attachments/assets/42252931-de3d-4ff8-966f-797ba302b28c)
 
 
-## variables.tf
+
+**`variables.tf`**
 
 ```
 variable "region" {
-      default = "eu-central-1"
+      default = "us-east-1"
 }
 
 variable "vpc_cidr" {
@@ -655,12 +660,13 @@ variable "enable_classiclink_dns_support" {
       default = null
 }
 ```
+![image](https://github.com/user-attachments/assets/3ee4e0bb-3c15-4749-bf74-1056aa44839b)
 
 
-## terraform.tfvars
+**`terraform.tfvars`**
 
 ```
-region = "eu-central-1"
+region = "us-east-1"
 
 vpc_cidr = "172.16.0.0/16" 
 
@@ -674,6 +680,8 @@ enable_classiclink_dns_support = "false"
 
 preferred_number_of_public_subnets = 2
 ```
+![image](https://github.com/user-attachments/assets/d8413c74-46b1-4823-8d40-acce7ea84795)
+
 
 You should also have this file structure in the PBL folder.
 
@@ -685,9 +693,26 @@ You should also have this file structure in the PBL folder.
     ├── terraform.tfvars
     └── variables.tf
 ```
+![image](https://github.com/user-attachments/assets/e91258f8-ae6c-4119-adbe-6bac9ab69d9f)
 
 
 Run terraform plan and ensure everything works
+`Plan`
+![image](https://github.com/user-attachments/assets/373d5680-2313-4fc6-b174-0d7a319570c8)
+
+`apply`
+![image](https://github.com/user-attachments/assets/a1089cac-73b3-4491-a1bc-c552bcb21790)
+
+`Verify VPC in AWS management Console`
+![image](https://github.com/user-attachments/assets/c557df1e-38e5-413c-8940-2bdd6cdb1c17)
+
+![image](https://github.com/user-attachments/assets/bb17b72f-715a-4c52-ab02-b5228f89b869)
+
+```
+# Delete the infastructure
+terraform destroy
+```
+![image](https://github.com/user-attachments/assets/35717cdb-08d3-4f51-a1da-6e65ae5b6185)
 
 ### The End of Project 16 
 In this project we have learned how to create and delete AWS Network Infrastructure programmatically with Terraform!
