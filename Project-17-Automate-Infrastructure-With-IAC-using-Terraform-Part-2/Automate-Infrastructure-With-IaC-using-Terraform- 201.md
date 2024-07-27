@@ -1,4 +1,22 @@
 ## Automate Infrastructure With IaC using Terraform- 201
+[In Previous Project](https://github.com/melkamu372/StegHub-DevOps-Cloud-Engineering/blob/main/Project-16-Automate-Infrastructure-With-IAC-using-Terraform-Part-1/Automate-Infrastructure-With-IAC-using-Terraform-Part-1.md) We created The VPC and the 2 required public subnets were. Let's continue by creating the required 4 private subnets
+
+
+**Create 4 private subnets**
+```
+resource "aws_subnet" "private" {
+  count                   = var.preferred_number_of_private_subnets == null ? length(data.aws_availability_zones.available.names) : var.preferred_number_of_private_subnets
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = cidrsubnet(var.vpc_cidr, 8, count.index + 2)
+  map_public_ip_on_launch = true
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
+
+  tags = {
+    Name = "oayanda_prisubnet_${count.index + 1}"
+
+  }
+}
+```
 Before we go deeper into automating other parts of our infrastructure on AWS, it is very important to fully understand certain concepts around ``Networking` (in case this is completely new area to you). 
 
 Networking is a very broad topic and some of internals of Terraform 
@@ -48,7 +66,7 @@ by environment, etc.)
 
 **Note:** You can add multiple tags as a default set. for example, in out terraform.tfvars file we can have default tags 
 defined.
-
+Assign values for the tags variable in the terraform.tfvars file
 ```
 tags = {
   Enviroment      = "production" 
@@ -57,6 +75,7 @@ tags = {
   Billing-Account = "736498736845"
 }
 ```
+![image](https://github.com/user-attachments/assets/9c0c7322-b73c-4aed-9ebb-2baca27603cc)
 
 Now you can tag all you resources using the format below
 
@@ -69,7 +88,7 @@ tags = merge(
   )
 ```
 
-**NOTE:** Update the variables.tf to declare the variable tags used in the format above;
+**NOTE:** Update the `variables.tf` to declare the variable tags used in the format above;
 
 ```
 variable "tags" {
@@ -79,6 +98,7 @@ variable "tags" {
 }
 ```
 
+![image](https://github.com/user-attachments/assets/e09ebdd5-32ac-4151-95c9-6d08a2714b05)
 
 The nice thing about this is – anytime we need to make a change to the tags, we simply do that in one single place (terraform.tfvars).
 
@@ -86,11 +106,12 @@ But, our key-value pairs are hard coded. So, go ahead and work out a fix for tha
 
 Apply the same best practices for all other resources you will create further.
 
-Internet Gateways & format() function Create an Internet Gateway in a separate Terraform file internet_gateway.tf
+## Internet Gateways
+Internet Gateways & format() function Create an Internet Gateway in a separate Terraform file `internet_gateway.tf`
 
 
 ```
-resource "aws_internet_gateway" "ig" {
+resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
   tags = merge(
@@ -102,6 +123,7 @@ resource "aws_internet_gateway" "ig" {
 }
 ```
 
+![image](https://github.com/user-attachments/assets/5c7fecf2-86f1-4967-9a2d-16fa989b5724)
 
 Did you notice how we have used format() function to dynamically generate a unique name for this resource? The first part of the %s
 takes the interpolated value of aws_vpc.main.id while the second %s appends a literal string IG and finally an exclamation mark is 
@@ -130,9 +152,11 @@ tags = merge(
     } 
   )
 ```
+![image](https://github.com/user-attachments/assets/c292d10d-d7b5-40ed-ae7a-878801087ce5)
 
 
-NAT Gateways
+### NAT Gateways
+
 Create 1 NAT Gateways and 1 Elastic IP (EIP) addresses
 
 Now use similar approach to create the NAT Gateways in a new file called natgateway.tf.
@@ -170,7 +194,9 @@ resource "aws_nat_gateway" "nat" {
 }
 
 ```
+![image](https://github.com/user-attachments/assets/9dfbf64e-cd19-471e-ae40-c2bcfce7a0dc)
 
+![image](https://github.com/user-attachments/assets/8240d94a-78bf-4751-aec9-3fad6693262c)
 
 ## AWS ROUTES
 
@@ -227,6 +253,7 @@ resource "aws_route_table_association" "public-subnets-assoc" {
 }
 
 ```
+![image](https://github.com/user-attachments/assets/2d2b4bde-31bf-432f-8fea-ec8bcfe7602d)
 
 
 Now if you run terraform plan and terraform apply it will add the following resources to AWS in multi-az set up:
@@ -281,6 +308,8 @@ name = "ec2_instance_role"
 
 ```
 
+![image](https://github.com/user-attachments/assets/a518c3f3-2a4b-4b68-a06a-f129c605860b)
+
 In this code we are creating AssumeRole with AssumeRole policy. It grants to an entity, in our case it is an EC2, permissions to assume the role.
 
 
@@ -317,6 +346,7 @@ resource "aws_iam_policy" "policy" {
 }
 
 ```
+![image](https://github.com/user-attachments/assets/2ab9791c-d46c-4d60-9191-2707f45a0b11)
 
 
 3. Attach the Policy to the IAM Role
@@ -330,6 +360,7 @@ This is where, we will be attaching the policy which we created above, to the ro
     }
     
 ```
+![image](https://github.com/user-attachments/assets/d6422ff4-82e5-43af-a1d9-7ca98452168e)
 
 
 4. Create an Instance Profile and interpolate the IAM Role
@@ -341,6 +372,7 @@ resource "aws_iam_instance_profile" "ip" {
     }
     
 ```
+![image](https://github.com/user-attachments/assets/429664e0-bb03-4170-8f19-80f32c839ca3)
 
 We are pretty much done with Identity and Management part for now, let us move on and create other resources required.
 
@@ -596,6 +628,7 @@ resource "aws_security_group_rule" "inbound-mysql-webserver" {
 }
 ```
 
+![image](https://github.com/user-attachments/assets/a1695e1d-589f-4d47-a411-e8f9bf91f0c5)
 
 > **IMPORTANT NOTE:** We used the aws_security_group_rule to refrence another security group in a security group.
 
@@ -673,6 +706,7 @@ resource "aws_route53_record" "wordpress" {
   }
 }
 ```
+![image](https://github.com/user-attachments/assets/8cc3ad3c-3b68-435f-aea1-ead4772984ee)
 
 
 ## 3. Create an external (Internet facing) Application Load Balancer (ALB)
