@@ -12,7 +12,7 @@ resource "aws_subnet" "private" {
   availability_zone       = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    Name = "oayanda_prisubnet_${count.index + 1}"
+    Name = "project17_prisubnet_${count.index + 1}"
 
   }
 }
@@ -797,6 +797,7 @@ output "alb_target_group_arn" {
   value = aws_lb_target_group.nginx-tgt.arn
 }
 ```
+![image](https://github.com/user-attachments/assets/0c4a9471-6155-4908-80b7-6f38ea51c5bb)
 
 
 ## 4. Create an Internal (Internal) Application Load Balancer (ALB)
@@ -830,6 +831,7 @@ resource "aws_lb" "ialb" {
   load_balancer_type = "application"
 }
 ```
+
 
 
 To inform our ALB to where route the traffic we need to create a Target Group to point to its targets:
@@ -911,6 +913,9 @@ resource "aws_lb_listener_rule" "tooling-listener" {
   }
 }
 ```
+![image](https://github.com/user-attachments/assets/167ebbf8-06f0-4e3f-aab2-08c4b99157e9)
+
+
 ## 6. Create an Auto Scaling Group (ASG) for Bastion, Tooling, Nginx and WordPress
 
 This Section we will create the Auto Scaling Group (ASG) Now we need to configure our ASG to be able to scale the EC2s out and in depending on the application traffic.
