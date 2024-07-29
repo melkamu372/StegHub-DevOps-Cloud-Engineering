@@ -1378,6 +1378,7 @@ resource "aws_efs_access_point" "tooling" {
   }
 }
 ```
+![image](https://github.com/user-attachments/assets/4f003c16-5a9d-4027-8fee-e57f6717968e)
 
 
 ## 8. Create [MySQL RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_MySQL.html)
@@ -1415,6 +1416,7 @@ resource "aws_db_instance" "ACS-rds" {
   multi_az               = "true"
 }
 ```
+![image](https://github.com/user-attachments/assets/447450f9-9398-4657-9013-b8dbba7489e6)
 
 
 Before Applying, if you take note, we gave refrence to a lot of varibales in our resources that has not been declared in the 
@@ -1529,13 +1531,13 @@ keypair = "devops"
 # Ensure to change this to your acccount number
 account_no = "123456789"
 
-db-username = "david"
+db-username = "melkamu"
 
-db-password = "devopspbl"
+db-password = "PassWord.1"
 
 tags = {
   Enviroment      = "production" 
-  Owner-Email     = "infradev-segun@darey.io"
+  Owner-Email     = "melkamu372@gmail.com"
   Managed-By      = "Terraform"
   Billing-Account = "1234567890"
 }
@@ -1549,9 +1551,23 @@ apply our code we need to take note of two things;
 of modules in Project 18
 - Secondly, our application wont work becuase in out shell script that was passed into the launch some endpoints like the RDs and EFS
  point is needed in which they have not been created yet. So in project 19 we will use our Ansible knowledge to fix this.
+
+
  
 Try to plan and apply your Terraform codes, explore the resources in AWS console and make sure you destroy them right away to avoid
 massive costs.
 
+```
+terraform plan
+```
+![image](https://github.com/user-attachments/assets/3c41f3ca-cfc5-4a83-b8ac-3ad0a13038ed)
+
+```
+terraform apply
+```
+
+```
+terraform destroy
+```
 ### The End of Project 17
 Now We have fully automated creation of AWS Infrastructure for 2 websites with Terraform. In the next project we will further enhance our codes by refactoring and introducing more exciting Terraform concepts! Go ahead and continue your PBL journey!
