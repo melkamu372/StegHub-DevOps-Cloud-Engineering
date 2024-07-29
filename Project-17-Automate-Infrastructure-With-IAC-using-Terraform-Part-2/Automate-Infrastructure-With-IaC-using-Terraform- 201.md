@@ -937,6 +937,12 @@ This Section we will create the Auto Scaling Group (ASG) Now we need to configur
 
 Before we start configuring an ASG, we need to create the launch template and the the AMI needed. For now we are going to use a random AMI from AWS, then in project 19, we will use `Packerto` create our `ami`.
 
+To get random Amazon Machine Images (AMIs) 
+
+![image](https://github.com/user-attachments/assets/c7dbce5c-42c7-429c-9da9-328aadb7c8f4)
+
+
+
 Based on our Architetcture we need for Auto Scaling Groups for bastion, nginx, wordpress and tooling, so we will create two files;
 `asg-bastion-nginx.tf` will contain Launch Template and Austoscaling group for Bastion and Nginx, then `asg-wordpress-tooling.tf` will contain Launch Template and Austoscaling group for wordpress and tooling.
 
@@ -1553,18 +1559,43 @@ of modules in Project 18
  point is needed in which they have not been created yet. So in project 19 we will use our Ansible knowledge to fix this.
 
 
- 
 Try to plan and apply your Terraform codes, explore the resources in AWS console and make sure you destroy them right away to avoid
 massive costs.
 
 ```
 terraform plan
 ```
-![image](https://github.com/user-attachments/assets/3c41f3ca-cfc5-4a83-b8ac-3ad0a13038ed)
+![image](https://github.com/user-attachments/assets/2d1b0d96-5519-4e6e-9c06-80a4ca7de476)
+
+![image](https://github.com/user-attachments/assets/1a2405c5-52e2-4366-9708-c09593ee9cd0)
+
+![image](https://github.com/user-attachments/assets/00cd8cc5-7374-41ce-9cb1-206bc8934a0d)
+
+![image](https://github.com/user-attachments/assets/58134698-c1b8-4ee2-8c6c-f8096cbc3483)
+
+![image](https://github.com/user-attachments/assets/ef4ed567-6d60-49e0-b94b-016aa2f3445e)
+
 
 ```
 terraform apply
 ```
+![image](https://github.com/user-attachments/assets/6d49d070-cb28-4b79-bb7a-254dba4fea4b)
+![image](https://github.com/user-attachments/assets/a0163682-8fdd-48e0-9b10-9e87165c429c)
+![image](https://github.com/user-attachments/assets/43ca6da1-934c-420b-844d-b81e84bb21ba)
+![image](https://github.com/user-attachments/assets/6b055ccc-35fe-465d-961c-b966532278b5)
+![image](https://github.com/user-attachments/assets/e3c92422-cf42-4e9e-b926-b8af1f5c241b)
+![image](https://github.com/user-attachments/assets/724606f8-554e-4d29-8e2e-2f25adb4d32d)
+
+Aws Console
+
+
+![image](https://github.com/user-attachments/assets/c0582fd1-50b6-4cf0-9576-c28138b2d156)
+![image](https://github.com/user-attachments/assets/0b439217-ebc2-4369-bb58-4c38971865c2)
+![image](https://github.com/user-attachments/assets/bdbbd1bb-7931-445e-8a89-e25bafc8640c)
+![image](https://github.com/user-attachments/assets/23ec0e86-720d-404f-8e04-25e59c22074c)
+![image](https://github.com/user-attachments/assets/305eb54f-905f-43ae-a8cb-f9dd9820f215)
+![image](https://github.com/user-attachments/assets/672c8dfb-2941-4e94-a31f-138b6d4eea2c)
+![image](https://github.com/user-attachments/assets/0abed942-ddc9-42e6-899f-dd55346ed47a)
 
 ```
 terraform destroy
