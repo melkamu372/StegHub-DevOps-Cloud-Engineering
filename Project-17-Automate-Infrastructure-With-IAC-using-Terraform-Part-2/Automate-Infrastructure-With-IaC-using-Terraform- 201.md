@@ -649,7 +649,8 @@ Create `cert.tf` file and add the following code snippets to it.
 > NOTE: Read Through to change the domain name to your own domain name and every other name that needs to be changed.
 
 - Check out the terraform documentation for AWS Certificate manager
-
+NOTE: You'd have to create a hosted zone from the AWS management console first before making reference to the created hosted zone in the code below;
+![image](https://github.com/user-attachments/assets/cc3ee12e-833f-49f5-95f2-6aa3e60e650a)
 
 ```
 # The entire section create a certifcate, public zone, and validate the certificate using DNS method
@@ -717,7 +718,8 @@ resource "aws_route53_record" "wordpress" {
 }
 ```
 
-![image](https://github.com/user-attachments/assets/3f8d3e52-7c54-4574-9dd4-90b502f9e9d9)
+![image](https://github.com/user-attachments/assets/5753114c-48c7-4584-8b7d-bef81de6db11)
+
 
 
 ## 3. Create an external (Internet facing) Application Load Balancer (ALB)
@@ -898,7 +900,8 @@ resource "aws_lb_listener" "web-listener" {
   load_balancer_arn = aws_lb.ialb.arn
   port              = 443
   protocol          = "HTTPS"
-  certificate_arn   = aws_acm_certificate_validation.oyindamola.certificate_arn
+  certificate_arn   = aws_acm_certificate_validation.melkamutech.certificate_arn
+
 
   default_action {
     type             = "forward"
@@ -919,10 +922,11 @@ resource "aws_lb_listener_rule" "tooling-listener" {
 
   condition {
     host_header {
-      values = ["tooling.oyindamola.gq"]
+      values = ["tooling.melkamutech.online"]
     }
   }
 }
+
 ```
 ![image](https://github.com/user-attachments/assets/167ebbf8-06f0-4e3f-aab2-08c4b99157e9)
 
@@ -1105,6 +1109,7 @@ resource "aws_autoscaling_attachment" "asg_attachment_nginx" {
   alb_target_group_arn   = aws_lb_target_group.nginx-tgt.arn
 }
 ```
+![image](https://github.com/user-attachments/assets/960ebc0c-247f-49a7-9756-da125160694c)
 
 Autoscaling for wordpres and toolibng will be created in a seperate file
 
@@ -1252,6 +1257,7 @@ resource "aws_autoscaling_attachment" "asg_attachment_tooling" {
   alb_target_group_arn   = aws_lb_target_group.tooling-tgt.arn
 }
 ```
+![image](https://github.com/user-attachments/assets/7de5ceb7-2442-4035-acba-f5fd5eb9985c)
 
 
 ## STORAGE AND DATABASE
