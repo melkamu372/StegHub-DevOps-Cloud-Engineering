@@ -12,11 +12,14 @@ resource "aws_subnet" "private" {
   availability_zone       = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    Name = "project17_prisubnet_${count.index + 1}"
+    Name = "project17-PrivateSubnet-${count.index + 1}"
 
   }
 }
 ```
+![image](https://github.com/user-attachments/assets/a5f843ce-1813-4668-8219-f226db870492)
+
+
 Before we go deeper into automating other parts of our infrastructure on AWS, it is very important to fully understand certain concepts around ``Networking` (in case this is completely new area to you). 
 
 Networking is a very broad topic and some of internals of Terraform 
@@ -123,7 +126,7 @@ resource "aws_internet_gateway" "igw" {
 }
 ```
 
-![image](https://github.com/user-attachments/assets/5c7fecf2-86f1-4967-9a2d-16fa989b5724)
+![image](https://github.com/user-attachments/assets/634244cb-a39d-4592-85e1-95891769a5a0)
 
 Did you notice how we have used format() function to dynamically generate a unique name for this resource? The first part of the %s
 takes the interpolated value of aws_vpc.main.id while the second %s appends a literal string IG and finally an exclamation mark is 
@@ -194,9 +197,8 @@ resource "aws_nat_gateway" "nat" {
 }
 
 ```
-![image](https://github.com/user-attachments/assets/9dfbf64e-cd19-471e-ae40-c2bcfce7a0dc)
+![image](https://github.com/user-attachments/assets/29eba38b-dac8-486e-aa26-c2c440366755)
 
-![image](https://github.com/user-attachments/assets/8240d94a-78bf-4751-aec9-3fad6693262c)
 
 ## AWS ROUTES
 
@@ -253,8 +255,7 @@ resource "aws_route_table_association" "public-subnets-assoc" {
 }
 
 ```
-![image](https://github.com/user-attachments/assets/2d2b4bde-31bf-432f-8fea-ec8bcfe7602d)
-
+![image](https://github.com/user-attachments/assets/4231094c-8d37-4c06-b273-e8812388ec35)
 
 Now if you run terraform plan and terraform apply it will add the following resources to AWS in multi-az set up:
 
@@ -266,6 +267,12 @@ Now if you run terraform plan and terraform apply it will add the following reso
 - 1 NAT Gateway
 - 1 EIP
 - 2 Route tables
+![image](https://github.com/user-attachments/assets/c67d27c3-1730-44b8-829e-1c8c5d04e76a)
+![image](https://github.com/user-attachments/assets/80dea02e-11ec-4b67-863f-efbe032bf648)
+![image](https://github.com/user-attachments/assets/2dbf842a-2f02-4a7c-82d7-624a3fb243df)
+
+![image](https://github.com/user-attachments/assets/6b400b8d-3440-40ce-925b-fc06029996aa)
+![image](https://github.com/user-attachments/assets/1c399222-d23e-4fbe-a491-a239f95af963)
 
 Now, we are done with Networking part of AWS set up, let us move on to Compute and Access Control configuration automation using Terraform!
 
@@ -308,7 +315,8 @@ name = "ec2_instance_role"
 
 ```
 
-![image](https://github.com/user-attachments/assets/a518c3f3-2a4b-4b68-a06a-f129c605860b)
+![image](https://github.com/user-attachments/assets/b4391f17-1fb4-48cc-ac6a-829da7fa241a)
+
 
 In this code we are creating AssumeRole with AssumeRole policy. It grants to an entity, in our case it is an EC2, permissions to assume the role.
 
@@ -346,7 +354,8 @@ resource "aws_iam_policy" "policy" {
 }
 
 ```
-![image](https://github.com/user-attachments/assets/2ab9791c-d46c-4d60-9191-2707f45a0b11)
+![image](https://github.com/user-attachments/assets/75f5b905-859f-4362-8324-e63113c5a7a5)
+
 
 
 3. Attach the Policy to the IAM Role
@@ -360,7 +369,7 @@ This is where, we will be attaching the policy which we created above, to the ro
     }
     
 ```
-![image](https://github.com/user-attachments/assets/d6422ff4-82e5-43af-a1d9-7ca98452168e)
+![image](https://github.com/user-attachments/assets/535f9498-e544-4f52-a0f9-186c2a864633)
 
 
 4. Create an Instance Profile and interpolate the IAM Role
@@ -372,7 +381,8 @@ resource "aws_iam_instance_profile" "ip" {
     }
     
 ```
-![image](https://github.com/user-attachments/assets/429664e0-bb03-4170-8f19-80f32c839ca3)
+![image](https://github.com/user-attachments/assets/c41591cf-3f2a-4c38-ae8c-6a2a7169ca3b)
+
 
 We are pretty much done with Identity and Management part for now, let us move on and create other resources required.
 
@@ -706,7 +716,8 @@ resource "aws_route53_record" "wordpress" {
   }
 }
 ```
-![image](https://github.com/user-attachments/assets/8cc3ad3c-3b68-435f-aea1-ead4772984ee)
+
+![image](https://github.com/user-attachments/assets/3f8d3e52-7c54-4574-9dd4-90b502f9e9d9)
 
 
 ## 3. Create an external (Internet facing) Application Load Balancer (ALB)
