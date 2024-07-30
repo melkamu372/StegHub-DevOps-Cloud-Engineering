@@ -1585,6 +1585,7 @@ terraform apply
 ![image](https://github.com/user-attachments/assets/6b055ccc-35fe-465d-961c-b966532278b5)
 ![image](https://github.com/user-attachments/assets/e3c92422-cf42-4e9e-b926-b8af1f5c241b)
 ![image](https://github.com/user-attachments/assets/724606f8-554e-4d29-8e2e-2f25adb4d32d)
+![image](https://github.com/user-attachments/assets/34b7a19f-e17b-43cf-9247-6b2ca3d70b1c)
 
 Aws Console
 
@@ -1607,7 +1608,7 @@ Aws Console
 ![image](https://github.com/user-attachments/assets/9e54922d-d09f-4aae-ae43-2a96a95b1a8e)
 
 ```
-terraform destroy
+terraform destroy -auto-approve
 ```
 ### The End of Project 17
 Now We have fully automated creation of AWS Infrastructure for 2 websites with Terraform. In the next project we will further enhance our codes by refactoring and introducing more exciting Terraform concepts! Go ahead and continue your PBL journey!
