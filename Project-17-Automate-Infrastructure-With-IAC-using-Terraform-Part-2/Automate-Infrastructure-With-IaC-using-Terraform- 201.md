@@ -1610,5 +1610,7 @@ Aws Console
 ```
 terraform destroy -auto-approve
 ```
+![image](https://github.com/user-attachments/assets/0ae0f9a7-dae4-4ec9-a854-12b9ba2014da)
+
 ### The End of Project 17
 Now We have fully automated creation of AWS Infrastructure for 2 websites with Terraform. In the next project we will further enhance our codes by refactoring and introducing more exciting Terraform concepts! Go ahead and continue your PBL journey!
