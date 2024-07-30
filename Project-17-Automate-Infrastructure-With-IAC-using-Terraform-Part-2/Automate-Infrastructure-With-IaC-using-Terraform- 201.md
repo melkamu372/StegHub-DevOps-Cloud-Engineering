@@ -1600,6 +1600,11 @@ Aws Console
 
 ![image](https://github.com/user-attachments/assets/e9b23df5-6570-4650-9dcd-a35c9d247c2b)
 
+![image](https://github.com/user-attachments/assets/7ce4b5bf-42fa-4db5-977e-52fb9c6abb51)
+
+![image](https://github.com/user-attachments/assets/15450ff6-4016-42f5-896a-f8229b2b25e7)
+
+![image](https://github.com/user-attachments/assets/9e54922d-d09f-4aae-ae43-2a96a95b1a8e)
 
 ```
 terraform destroy
