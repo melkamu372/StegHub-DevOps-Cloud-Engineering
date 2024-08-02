@@ -34,7 +34,7 @@ Let us configure it! Here is our plan to Re-initialize Terraform to use S3 backe
 To get to know how lock in DynamoDB works, read the following [article](https://angelo-malatacca83.medium.com/aws-terraform-s3-and-dynamodb-backend-3b28431a76c1)
 
 
-Create a file and name it backend.tf. Add the below code and replace the name of the S3 bucket you created in Project-16.
+Create a file and name it `backend.tf` Add the below code and replace the name of the S3 bucket you created in Project-16.
 ```
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "dev-terraform-bucket"
@@ -52,6 +52,8 @@ resource "aws_s3_bucket" "terraform_state" {
   }
 }
 ```
+![image](https://github.com/user-attachments/assets/3d63ede2-6c0e-4aaf-af6d-14882f87643a)
+
 You must be aware that Terraform stores secret data inside the state files. Passwords, and secret keys processed by resources are 
 always stored in there. Hence, you must consider to always enable encryption. You can see how we achieved that with 
 server_side_encryption_configuration.
@@ -75,6 +77,7 @@ resource "aws_dynamodb_table" "terraform_locks" {
   }
 }
 ```
+![image](https://github.com/user-attachments/assets/e0c69178-e85e-4685-92e9-2c2a8610a3f7)
 
 Terraform expects that both S3 bucket and DynamoDB resources are already created before we configure the backend. So, let us run
 terraform apply to provision resources.
@@ -92,26 +95,33 @@ terraform {
   }
 }
 ```
+![image](https://github.com/user-attachments/assets/d4c14096-60ac-4729-8797-6da8f9d2a162)
 
 Now its time to re-initialize the backend. Run terraform init and confirm you are happy to change the backend by typing yes
+```
+terraform init
+```
+![image](https://github.com/user-attachments/assets/ec4e71c1-701b-429d-8d84-902277cd11d6)
 
 -  Verify the changes
 Before doing anything if you opened AWS now to see what happened you should be able to see the following:
 
 - tfstatefile is now inside the S3 bucket
+
 - DynamoDB table which we create has an entry which includes state file status
 
-Navigate to the DynamoDB table inside AWS and leave the page open in your browser. Run terraform plan and while that is running, 
+Navigate to the DynamoDB table inside AWS and leave the page open in your browser.
+Run terraform plan and while that is running, 
+
+```
+terraform plan
+```
 refresh the browser and see how the lock is being handled:
 
 
-![6098](https://user-images.githubusercontent.com/85270361/210179390-9412a572-7848-4d12-867a-c6da46cf3609.PNG)
+![image](https://github.com/user-attachments/assets/0c01937a-7d50-481a-a52e-871b951cd229)
 
 
-After terraform plan completes, refresh DynamoDB table.
-
-
-![6099](https://user-images.githubusercontent.com/85270361/210179428-c4fe484b-817c-42d2-a6eb-6a1e338d5a2e.PNG)
 
 
 5. Add Terraform Output
@@ -130,6 +140,8 @@ output "dynamodb_table_name" {
   description = "The name of the DynamoDB table"
 }
 ```
+![image](https://github.com/user-attachments/assets/c76a1289-9bca-49f6-a6ab-d6972b459f64)
+
 
 Now we have everything ready to go!
 
@@ -139,9 +151,12 @@ another engineer has applied changes, the state file will always be up to date.
 
 Now, head over to the S3 console again, refresh the page, and click the grey “Show” button next to “Versions.” You should now see 
 several versions of your terraform.tfstate file in the S3 bucket:
+```
+terraform apply
+```
+![image](https://github.com/user-attachments/assets/1d2b3a7e-aa6b-4fe8-bc93-8c8c9658eff0)
 
-
-![7000](https://user-images.githubusercontent.com/85270361/210179489-0eb33480-2ac3-4a7f-830b-2ce3d10d080f.PNG)
+![image](https://github.com/user-attachments/assets/04b36ac4-c268-423d-88a8-56175dc089c9)
 
 
 With help of remote backend and locking configuration that we have just configured, collaboration is no longer a problem.
