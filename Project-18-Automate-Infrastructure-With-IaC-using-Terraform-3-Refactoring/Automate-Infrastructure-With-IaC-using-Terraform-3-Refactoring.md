@@ -167,6 +167,7 @@ environments, such as: Dev, sit, uat, preprod, prod, etc.
 This separation of environments can be achieved using one of two methods:
 
 a. [Terraform Workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces)
+
 b. Directory based separation using terraform.tfvars file
 
 
@@ -296,6 +297,7 @@ type into directories within a ‘modules’ directory, for example, like this:
   - VPC: For VPC and netowrking resources such as subnets, roles, e.t.c.
   - security: for creating security group resources
 ```
+![image](https://github.com/user-attachments/assets/6616e50f-a49b-4ab6-99f4-579f18731a08)
 
 
 Each module shall contain following files:
@@ -305,8 +307,12 @@ Each module shall contain following files:
 - outputs.tf (optional, if you need to refer outputs from any of these resources in your root module)
 - variables.tf (as we learned before - it is a good practice not to hard code the values and use variables)
 ```
+![image](https://github.com/user-attachments/assets/654a8f16-d280-4242-8cd3-deceb0b22734)
 
 It is also recommended to configure providers and backends sections in separate files but should be placed in the root module.
+
+![image](https://github.com/user-attachments/assets/cbadce6d-f3a0-428e-b2d7-41845eeb91a8)
+
 
 After you have given it a try, you can check out this [repository](https://github.com/darey-devops/PBL-project-18) 
 for guidiance and erors fixing.
@@ -361,25 +367,34 @@ Complete the rest of the codes yourself, the resulting configuration structure i
     ├── terraform.tfvars
     └── variables.tf
 ```
+![image](https://github.com/user-attachments/assets/065eabe1-4d71-4f52-9ba5-58a4abaeae67)
 
 Now, the code is much more well-structured and can be easily read, edited and reused by your DevOps team members.
 
 BLOCKERS: Your website would not be available because the userdata scripts we added to the launch template does not contain the 
 latest endpoints for EFS, ALB and RDS and also our AMI is not properly configured, so how do we fix this?
 
-In project 19, you would see how to use packer to create AMIs, Terrafrom to create the infrastructure and Ansible to configure the
+**In project 19**, WE would see how to use **packer to create AMIs**, Terrafrom to create the infrastructure and Ansible to configure the
 infrasrtucture.
 
 We will also see how to use terraform cloud for our backends.
-
 
 **Pro-tips:**
 
 1. You can validate your codes before running terraform plan with terraform validate command. It will check if your code is 
 syntactically valid and internally consistent.
+```
+terraform validate
+```
+![image](https://github.com/user-attachments/assets/aec265ae-e899-4b54-9bc9-f642f1c032f9)
+
+```
+terraform plan
+```
+![image](https://github.com/user-attachments/assets/d40ad0d3-9805-4b0d-a3bd-2834b36b42b1)
+
 2. In order to make your configuration files more readable and follow canonical format and style – use terraform fmt command. It will 
 apply Terraform language style conventions and format your .tf files in accordance to them.
 
-
-**Congratulations**
-You have done a great job developing and refactoring AWS Infrastructure as Code with Terraform!
+## The End of Project 18
+we have done a great job developing and refactoring AWS Infrastructure as Code with Terraform!
