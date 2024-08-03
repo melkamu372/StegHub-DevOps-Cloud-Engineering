@@ -95,7 +95,9 @@ terraform {
   }
 }
 ```
-![image](https://github.com/user-attachments/assets/d4c14096-60ac-4729-8797-6da8f9d2a162)
+
+![image](https://github.com/user-attachments/assets/9da4b56f-2e8d-4348-827d-412479318533)
+![image](https://github.com/user-attachments/assets/99519c6f-de8f-4e72-a5b8-63be117abed7)
 
 Now its time to re-initialize the backend. Run terraform init and confirm you are happy to change the backend by typing yes
 ```
@@ -297,7 +299,8 @@ type into directories within a ‘modules’ directory, for example, like this:
   - VPC: For VPC and netowrking resources such as subnets, roles, e.t.c.
   - security: for creating security group resources
 ```
-![image](https://github.com/user-attachments/assets/6616e50f-a49b-4ab6-99f4-579f18731a08)
+![image](https://github.com/user-attachments/assets/50e6835a-5b39-49bd-b3dd-3e1f985a02a5)
+
 
 
 Each module shall contain following files:
@@ -307,11 +310,13 @@ Each module shall contain following files:
 - outputs.tf (optional, if you need to refer outputs from any of these resources in your root module)
 - variables.tf (as we learned before - it is a good practice not to hard code the values and use variables)
 ```
-![image](https://github.com/user-attachments/assets/654a8f16-d280-4242-8cd3-deceb0b22734)
+![image](https://github.com/user-attachments/assets/949bb1dc-c3be-415b-8c38-722d9831973d)
 
 It is also recommended to configure providers and backends sections in separate files but should be placed in the root module.
 
-![image](https://github.com/user-attachments/assets/cbadce6d-f3a0-428e-b2d7-41845eeb91a8)
+![image](https://github.com/user-attachments/assets/628da44d-e385-47d7-b612-7f93513d8b18) ![image](https://github.com/user-attachments/assets/dfdaa15b-8d6d-4445-aa8a-af6ff1612631)
+
+
 
 
 After you have given it a try, you can check out this [repository](https://github.com/darey-devops/PBL-project-18) 
@@ -319,7 +324,7 @@ for guidiance and erors fixing.
 
 IMPORTANT: In the configuration sample from the repository, you can observe two examples of referencing the module:
 
-a. Import module as a source and have access to its variables via var keyword:
+a. Import module  as a source and have access to its variables via var keyword: in main.tf
 
 ```
 module "VPC" {
@@ -327,6 +332,7 @@ module "VPC" {
   region = var.region
   ...
 ```
+![image](https://github.com/user-attachments/assets/cc7514a4-641b-48fd-af99-1632ee9948ca)
 
 
 b. Refer to a module’s output by specifying the full path to the output variable by using module.%module_name%.%output_name% 
@@ -336,6 +342,7 @@ construction:
 ```
 subnets-compute = module.network.public_subnets-1
 ```
+![image](https://github.com/user-attachments/assets/c9ba715d-5684-4218-8ecd-ad32bad74b74)
 
 
 # COMPLETE THE TERRAFORM CONFIGURATION
@@ -367,7 +374,7 @@ Complete the rest of the codes yourself, the resulting configuration structure i
     ├── terraform.tfvars
     └── variables.tf
 ```
-![image](https://github.com/user-attachments/assets/065eabe1-4d71-4f52-9ba5-58a4abaeae67)
+![image](https://github.com/user-attachments/assets/66ef101d-b40a-4cb1-8568-2eda76453f4e)
 
 Now, the code is much more well-structured and can be easily read, edited and reused by your DevOps team members.
 
@@ -386,15 +393,33 @@ syntactically valid and internally consistent.
 ```
 terraform validate
 ```
-![image](https://github.com/user-attachments/assets/aec265ae-e899-4b54-9bc9-f642f1c032f9)
+![image](https://github.com/user-attachments/assets/242b73fb-5f43-42f7-b60d-54553e216805)
+
 
 ```
 terraform plan
 ```
-![image](https://github.com/user-attachments/assets/d40ad0d3-9805-4b0d-a3bd-2834b36b42b1)
+![image](https://github.com/user-attachments/assets/7ca72493-3e96-46ec-b03a-d22b089addd8)
+
 
 2. In order to make your configuration files more readable and follow canonical format and style – use terraform fmt command. It will 
 apply Terraform language style conventions and format your .tf files in accordance to them.
+
+ Navigate to Your Project Directory
+
+![image](https://github.com/user-attachments/assets/0ce0c5fe-6978-4201-a32b-71a688a8224c)
+
+Simply run the terraform fmt command to format all Terraform files in your project directory 
+```
+terraform fmt
+```
+
+```
+terraform fmt -check
+
+```
+![image](https://github.com/user-attachments/assets/5f3c396f-7bb9-485b-b85e-fa68d8f28532)
+
 
 ## The End of Project 18
 we have done a great job developing and refactoring AWS Infrastructure as Code with Terraform!
