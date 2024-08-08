@@ -69,21 +69,74 @@ necessary AWS resources.
 
 5. Now it is time to run our Terrafrom scripts, but in our previous project which was project 18, we talked about using Packer to
 build our images, and Ansible to configure the infrastructure, so for that we are going to make few changes to our our existing 
-[respository](https://github.com/darey-devops/PBL-project-18) from Project 18.
+[respository](https://github.com/melkamu372/PBL/tree/project-18) from Project 18.
 
-
-The files that would be Addedd is;
+**The files that would be Addedd is**
 - AMI: for building packer images
 
 - Ansible: for Ansible scripts to configure the infrastucture
 
-Before you proceed ensure you have the following tools installed on your local machine;
-
+**Before you proceed ensure you have the following tools installed on your local machine**;
 - [packer](https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli)
-- [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+
+**Installing Packer and Verify the Installation**
+Open a new Command Prompt Type `packer` and press **Enter**.
+![image](https://github.com/user-attachments/assets/2da04723-7853-401d-9b3d-9a5150f5a4af)
+
+- [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.htm)
+
+**Installing Ansible and Verify the Installation**
+![image](https://github.com/user-attachments/assets/f97347d1-6a72-4044-b211-6e14b11fd771)
+
 
 Refer to this [repository](https://github.com/darey-devops/PBL-project-19) for guidiance on how to refactor your enviroment to meet 
 the new changes above and ensure you go through the README.md file.
+
+**Install graphviz**
+Graphviz is a powerful open-source tool for creating diagrams and visualizations of graph structures
+```
+sudo apt install graphviz
+```
+**Generate a Terraform Dependency Graph**
+```
+terraform graph -type=plan | dot -Tpng > graph.png
+```
+```
+terraform graph | dot -Tpng > graph.png
+```
+![graph](https://github.com/user-attachments/assets/f8d89e97-49a3-4773-bcd3-2761b165bf26)
+
+
+To follow file structure create a new folder and name it `AMI`
+**Build Images Using Packer**
+
+1. Create a Packer Configuration File
+```
+{
+  "builders": [
+    {
+      "type": "aws_ami",
+      "access_key": "YOUR_AWS_ACCESS_KEY",
+      "secret_key": "YOUR_AWS_SECRET_KEY",
+      "region": "us-east-1",
+      "source_ami": "ami-0abcdef1234567890",
+      "instance_type": "t2.micro",
+      "ssh_username": "ubuntu",
+      "ami_name": "my-app-image-{{timestamp}}"
+    }
+  ]
+}
+
+```
+
+**Run Packer Build**
+```
+packer build packer.json
+```
+![image](https://github.com/user-attachments/assets/d09c1750-0ca4-46d5-9689-588cb9be41e1)
+
+
+
 
 6. Run terraform plan and terraform apply from web console
 
