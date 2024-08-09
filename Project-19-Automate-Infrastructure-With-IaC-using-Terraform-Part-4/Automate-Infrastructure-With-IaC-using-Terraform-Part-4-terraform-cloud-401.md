@@ -269,9 +269,34 @@ ami_nginx         = "ami-06fc8c99aa46e502f"
 
 Switch to `Runs` tab and click on `Queue plan manualy` button. If planning has been successfull, you can proceed and confirm Apply
 – press `Confirm and apply`, provide a comment and `Confirm plan`
+![image](https://github.com/user-attachments/assets/6b6311ff-c4b1-4988-a29b-1816f7ce89aa)
+
+![image](https://github.com/user-attachments/assets/5d89d2ec-4ddf-431d-bae2-2515d7844d69)
+![image](https://github.com/user-attachments/assets/656eedfa-acd1-42e1-a34b-7b4eae44a181)
+![image](https://github.com/user-attachments/assets/d609e345-ec5f-4098-9fe6-2ae578b6675c)
 
 Check the logs and verify that everything has run correctly. Note that Terraform Cloud has generated a unique state version that you 
 can open and see the codes applied and the changes made since the last run.
+**aftter apply**
+![image](https://github.com/user-attachments/assets/3fe8d088-84b0-48b2-8633-8f2e491962e3)
+
+![image](https://github.com/user-attachments/assets/734a2e9f-5093-4d10-a865-e23bfbf1e6ae)
+
+![image](https://github.com/user-attachments/assets/589962c3-257d-49fd-9b47-63c615bc604a)
+
+![image](https://github.com/user-attachments/assets/baa0e4f2-7ced-4dd6-a431-662c0d11794a)
+ 
+![image](https://github.com/user-attachments/assets/a4ed4296-762e-4258-8c5a-c56c0533a41d)
+
+![image](https://github.com/user-attachments/assets/871feed3-7cee-41c1-b8c0-e591270a8bb1)
+
+![image](https://github.com/user-attachments/assets/a33d683b-7cf8-4c18-862b-1a679c3550ac)
+![image](https://github.com/user-attachments/assets/26f25f86-1427-490f-86d9-a8bd7cd6cdd7)
+![image](https://github.com/user-attachments/assets/60542f71-86de-4a52-915c-2c9be59a7d98)
+![image](https://github.com/user-attachments/assets/4575bbd0-8076-48e8-8406-8cc79b983885)
+![image](https://github.com/user-attachments/assets/762fc008-f889-4033-ab37-a3e78c6b245f)
+![image](https://github.com/user-attachments/assets/ac35e3ef-baac-4fda-be68-c6bcee65732d)
+![image](https://github.com/user-attachments/assets/88cc260e-3f3f-4bd9-b0fa-90ab5fafe9c5)
 
 7. Test automated terraform plan
 
@@ -283,9 +308,9 @@ Since provisioning of new Cloud resources might incur significant costs. Even th
 good idea to verify your plan results before pushing it to apply to avoid any misconfigurations that can cause ‘bill shock’.
 
 Note: First, try to approach this projectoun your own, but if you hit any blocker and could not move forward with the project, refer
-to project 19 video.
+to project 19 video
 
-Practice Task №1
+**Practice Task 1**
 
 1. Configure 3 branches in your terraform-cloud repository for dev, test, prod environments
 2. Make necessary configuration to trigger runs automatically only for dev environment
@@ -303,7 +328,7 @@ As your Terraform code base grows, your DevOps team might want to create you own
 can help with that.
 
 
-Practice Task No2 Working with Private repository
+**Practice Task No2 Working with Private repository**
 
 1. Create a simple Terraform repository (you can clone one from [here](https://github.com/hashicorp/learn-private-module-aws-s3-webapp))
  that will be your module
