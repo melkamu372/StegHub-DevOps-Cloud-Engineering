@@ -106,37 +106,105 @@ terraform graph | dot -Tpng > graph.png
 ```
 ![graph](https://github.com/user-attachments/assets/f8d89e97-49a3-4773-bcd3-2761b165bf26)
 
+### Action Plan for this project
+- Build images using packer
+
+- confirm the AMIs in the console
+
+- update terraform script with new ami IDs generated from packer build
+
+- create terraform cloud account and backend
+
+- run terraform script
+
+- update ansible script with values from teraform output
+
+   - RDS endpoints for wordpress and tooling
+   - Database name, password and username for wordpress and tooling
+   - Access point ID for wordpress and tooling
+   - Internal load balancer DNS for nginx reverse proxy
+- run ansible script
+
+- check the website
+
+- Install packer on your machine and input data required in each AMI created.
+
+- Run packer build for each of the files required and confirm if the AMI's were created.
 
 To follow file structure create a new folder and name it `AMI`
-**Build Images Using Packer**
+**Creating Bastion, Nginx, Tooling and Wordpress AMI Packer template**
 
-1. Create a Packer Configuration File
+The Packer template is a JSON or HCL file that defines the configurations for creating an AMI. Each AMI Bastion, Nginx, Tooling, and WordPress will have its own Packer template, or you can use a single template with multiple builders.
+Create a files named `bastion.pkr.hcl`, `nginx.pkr.hcl`,`ubuntu.pkr.hcl` and `web.pkr.hcl`  create  packer template code for each 
+
+for `bastion.pkr.hcl`
 ```
-{
-  "builders": [
-    {
-      "type": "aws_ami",
-      "access_key": "YOUR_AWS_ACCESS_KEY",
-      "secret_key": "YOUR_AWS_SECRET_KEY",
-      "region": "us-east-1",
-      "source_ami": "ami-0abcdef1234567890",
-      "instance_type": "t2.micro",
-      "ssh_username": "ubuntu",
-      "ami_name": "my-app-image-{{timestamp}}"
-    }
-  ]
+variable "aws_region" {
+  type    = string
+  default = "us-east-1"
 }
 
+variable "instance_type" {
+  type    = string
+  default = "t2.micro"
+}
+
+variable "ami_name" {
+  type    = string
+  default = "bastion-ami-${timestamp()}"
+}
+
+source "amazon-ebs" "bastion" {
+  region           = var.aws_region
+  instance_type    = var.instance_type
+  source_ami       = "ami-0c55b159cbfafe1f0"
+  ssh_username     = "ubuntu"
+  ami_name         = var.ami_name
+}
+
+build {
+  sources = ["source.amazon-ebs.bastion"]
+
+  provisioner "shell" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install -y htop",
+      # Add any additional Bastion-specific tools or configurations
+    ]
+  }
+}
+
+``` 
+![image](https://github.com/user-attachments/assets/95bbb929-87ed-44a3-b2ad-c5fdefc61565)
+
+
+To format a specific Packer configuration file, use the following command
+```
+packer fmt <name>.pkr.hcl
+```
+![image](https://github.com/user-attachments/assets/42bf2471-2fa7-4e0b-b710-6b54b427fbba)
+
+**Validate and Build the AMI**
+
+Validate: For each template, run:
+```
+packer validate bastion.pkr.hcl
+packer validate nginx.pkr.hcl
+packer validate ubuntu.pkr.hcl
+packer validate web.pkr.hcl
 ```
 
-**Run Packer Build**
+Build the AMI: For each template, run:
 ```
-packer build packer.json
+packer build bastion.pkr.hcl
+packer build nginx.pkr.hcl
+packer build ubuntu.pkr.hcl
+packer build web.pkr.hcl
 ```
-![image](https://github.com/user-attachments/assets/d09c1750-0ca4-46d5-9689-588cb9be41e1)
 
-
-
+**Deploy the AMIs**
+Once the AMIs are built, you can deploy them in AWS by launching instances using these AMIs. You can do this through the AWS Management Console, AWS CLI, or with automation tools like Terraform.
+we use terraform.
 
 6. Run terraform plan and terraform apply from web console
 
