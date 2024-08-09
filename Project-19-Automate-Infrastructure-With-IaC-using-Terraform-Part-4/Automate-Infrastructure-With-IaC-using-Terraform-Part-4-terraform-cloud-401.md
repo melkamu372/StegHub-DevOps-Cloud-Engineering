@@ -238,7 +238,8 @@ packer build web.pkr.hcl
 
 **For ubuntu**
 ![image](https://github.com/user-attachments/assets/a39aba16-8df9-49b2-a40e-768f98bf02df)
-
+![image](https://github.com/user-attachments/assets/8d9e39e5-6040-4dbc-9f4f-ea7ddfbf741b)
+![image](https://github.com/user-attachments/assets/a8425bf2-5b35-4b42-bbd2-1aa6b0936fce)
 
 **For web**
 ![image](https://github.com/user-attachments/assets/796f3833-aa84-4e3d-9655-b54e0c351502)
@@ -248,11 +249,18 @@ packer build web.pkr.hcl
 ![image](https://github.com/user-attachments/assets/383f6289-7cf9-4e0d-b113-67338c4e41d6)
 
 **The new AMI's ID from the packer build in the terraform script**
-
+![image](https://github.com/user-attachments/assets/a1c1ce0c-cc3d-442e-ad28-17bbc7913a0e)
 
 **Deploy the AMIs**
 Once the AMIs are built, you can deploy them in AWS by launching instances using these AMIs. You can do this through the AWS Management Console, AWS CLI, or with automation tools like Terraform.
 we use terraform.
+Update the AMis in the variable file terraform.auto.tfvars
+```
+# AMI IDs
+ami_web           = "ami-0f52b35733fd9d953"
+ami_bastion       = "ami-041ae799ea3b965a2"
+ami_nginx         = "ami-06fc8c99aa46e502f"
+```
 
 6. Run terraform plan and terraform apply from web console
 
