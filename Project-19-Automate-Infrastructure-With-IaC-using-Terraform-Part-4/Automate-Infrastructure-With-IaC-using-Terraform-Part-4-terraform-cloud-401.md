@@ -262,10 +262,13 @@ ami_bastion       = "ami-041ae799ea3b965a2"
 ami_nginx         = "ami-06fc8c99aa46e502f"
 ```
 
+![image](https://github.com/user-attachments/assets/2fddf73b-5e54-4a14-b44e-225ead280130)
+
+
 6. Run terraform plan and terraform apply from web console
 
-Switch to "Runs" tab and click on "Queue plan manualy" button. If planning has been successfull, you can proceed and confirm Apply
-– press "Confirm and apply", provide a comment and "Confirm plan"
+Switch to `Runs` tab and click on `Queue plan manualy` button. If planning has been successfull, you can proceed and confirm Apply
+– press `Confirm and apply`, provide a comment and `Confirm plan`
 
 Check the logs and verify that everything has run correctly. Note that Terraform Cloud has generated a unique state version that you 
 can open and see the codes applied and the changes made since the last run.
