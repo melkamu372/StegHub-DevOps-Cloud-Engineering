@@ -301,13 +301,23 @@ can open and see the codes applied and the changes made since the last run.
 7. Test automated terraform plan
 
 By now, you have tried to launch plan and apply manually from Terraform Cloud web console. But since we have an integration with GitHub,
-the process can be triggered automatically. Try to change something in any of .tf files and look at "Runs" tab again – plan must be 
-launched automatically, but to apply you still need to approve manually.
+the process can be triggered automatically. Try to change something in any of .tf files and look at `Runs` tab again – `plan must be 
+launched automatically`, but to `apply` you still need to approve manually.
 
+**To set up automatic triggers for Terraform plans and apply operations using GitHub and Terraform Cloud, follow these steps:**
+
+1. Connect GitHub to Terraform Cloud
+![image](https://github.com/user-attachments/assets/f14b123b-d346-4817-acb2-10f9d6d3a938)
+2. Configure the GitHub Webhook
+3. Verify the Webhook Integration Make a change to any Terraform configuration file (.tf file) in your repository. Commit and push the changes to the branch that is linked to your Terraform Cloud workspace.
+Check Terraform Cloud:
+
+Go to the "Runs" tab in your Terraform Cloud workspace.
+You should see that a new plan was automatically triggered as a result of your push.
 Since provisioning of new Cloud resources might incur significant costs. Even though you can configure "Auto apply", it is always a
 good idea to verify your plan results before pushing it to apply to avoid any misconfigurations that can cause ‘bill shock’.
 
-Note: First, try to approach this projectoun your own, but if you hit any blocker and could not move forward with the project, refer
+Note: First, try to approach this project on  your own, but if you hit any blocker and could not move forward with the project, refer
 to project 19 video
 
 **Practice Task 1**
@@ -318,7 +328,7 @@ to project 19 video
 4. Apply destroy from Terraform Cloud web console
 
 
-Public Module Registry vs Private Module Registry
+**Public Module Registry vs Private Module Registry**
 
 Terraform has a quite strong community of contributors (individual developers and 3rd party companies) that along with HashiCorp 
 maintain a Public Registry, where you can find reusable configuration packages (modules). We strongly encourage you to explore modules
