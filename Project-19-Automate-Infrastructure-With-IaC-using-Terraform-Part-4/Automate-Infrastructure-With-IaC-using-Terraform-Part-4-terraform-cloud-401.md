@@ -175,14 +175,35 @@ build {
 }
 
 ``` 
-![image](https://github.com/user-attachments/assets/95bbb929-87ed-44a3-b2ad-c5fdefc61565)
+![image](https://github.com/user-attachments/assets/d137862b-420d-408a-af04-31051ab960c8)
 
 
 To format a specific Packer configuration file, use the following command
 ```
 packer fmt <name>.pkr.hcl
 ```
-![image](https://github.com/user-attachments/assets/42bf2471-2fa7-4e0b-b710-6b54b427fbba)
+![image](https://github.com/user-attachments/assets/d8d5490d-e95c-46de-85f2-800a956d1c91)
+
+Add ebs plugin, copy and paste this code into your Packer configuration, then run packer init
+```
+packer {
+  required_plugins {
+    amazon = {
+      source  = "github.com/hashicorp/amazon"
+      version = "~> 1"
+    }
+  }
+}
+
+```
+
+**Initialize Plugins**
+```
+packer init bastion.pkr.hcl
+packer init nginx.pkr.hcl
+packer init ubuntu.pkr.hcl
+packer init web.pkr.hcl
+```
 
 **Validate and Build the AMI**
 
@@ -193,6 +214,7 @@ packer validate nginx.pkr.hcl
 packer validate ubuntu.pkr.hcl
 packer validate web.pkr.hcl
 ```
+![image](https://github.com/user-attachments/assets/b8727b1b-ef23-435d-bbc6-e702868606dc)
 
 Build the AMI: For each template, run:
 ```
@@ -201,6 +223,32 @@ packer build nginx.pkr.hcl
 packer build ubuntu.pkr.hcl
 packer build web.pkr.hcl
 ```
+**For Bastion**
+
+![image](https://github.com/user-attachments/assets/b95b9f85-cd70-4bd5-9e5f-b29e060e9d86)
+![image](https://github.com/user-attachments/assets/a3454615-3647-4b7f-a68d-7ab29fd996f8)
+![image](https://github.com/user-attachments/assets/2739407e-171b-4ab2-967d-87d44388821b)
+![image](https://github.com/user-attachments/assets/829c61b3-133a-4a51-b1e6-be48ce8c339f)
+
+**For nginx**
+![image](https://github.com/user-attachments/assets/2cdcdf32-eaf5-438f-b649-edc648b4ad95)
+![image](https://github.com/user-attachments/assets/d42bc992-c855-4964-be6d-eaada4d43733)
+![image](https://github.com/user-attachments/assets/ab66d562-2e2b-40df-b056-5f30f9033746)
+![image](https://github.com/user-attachments/assets/db8162fe-ea50-44da-99a2-9adfb50caf7e)
+
+**For ubuntu**
+![image](https://github.com/user-attachments/assets/a39aba16-8df9-49b2-a40e-768f98bf02df)
+
+
+**For web**
+![image](https://github.com/user-attachments/assets/796f3833-aa84-4e3d-9655-b54e0c351502)
+
+![image](https://github.com/user-attachments/assets/331371ba-896b-4367-9236-269b74bbdeea)
+![image](https://github.com/user-attachments/assets/d177bafa-63bd-4ac5-8c85-e67f4446af6f)
+![image](https://github.com/user-attachments/assets/383f6289-7cf9-4e0d-b113-67338c4e41d6)
+
+**The new AMI's ID from the packer build in the terraform script**
+
 
 **Deploy the AMIs**
 Once the AMIs are built, you can deploy them in AWS by launching instances using these AMIs. You can do this through the AWS Management Console, AWS CLI, or with automation tools like Terraform.
