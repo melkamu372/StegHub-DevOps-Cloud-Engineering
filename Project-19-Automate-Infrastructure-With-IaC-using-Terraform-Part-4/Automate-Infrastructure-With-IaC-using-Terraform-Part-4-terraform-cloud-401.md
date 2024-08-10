@@ -306,26 +306,83 @@ launched automatically`, but to `apply` you still need to approve manually.
 
 **To set up automatic triggers for Terraform plans and apply operations using GitHub and Terraform Cloud, follow these steps:**
 
-1. Connect GitHub to Terraform Cloud
+1.  Configuring a GitHub account as a Version Control System (VCS) provider in Terraform Cloud and follow steps
 ![image](https://github.com/user-attachments/assets/f14b123b-d346-4817-acb2-10f9d6d3a938)
-2. Configure the GitHub Webhook
+![image](https://github.com/user-attachments/assets/5b061292-d9d7-46cc-b6bd-20f72163a451)
+
 3. Verify the Webhook Integration Make a change to any Terraform configuration file (.tf file) in your repository. Commit and push the changes to the branch that is linked to your Terraform Cloud workspace.
 Check Terraform Cloud:
-
+![image](https://github.com/user-attachments/assets/66820a9e-9d0b-473f-8a8b-cc6a5ed986d8)
 Go to the "Runs" tab in your Terraform Cloud workspace.
 You should see that a new plan was automatically triggered as a result of your push.
 Since provisioning of new Cloud resources might incur significant costs. Even though you can configure "Auto apply", it is always a
 good idea to verify your plan results before pushing it to apply to avoid any misconfigurations that can cause ‘bill shock’.
+![image](https://github.com/user-attachments/assets/61d51671-79bd-4fa8-a8e8-380d5f157fb7)
+To do thise I use [GitHub Version Control (VCS) Workspace in Terraform Cloud](https://www.youtube.com/watch?v=75Y0B7vsBPg)
 
-Note: First, try to approach this project on  your own, but if you hit any blocker and could not move forward with the project, refer
-to project 19 video
+> Note: First, try to approach this project on  your own, but if you hit any blocker and could not move forward with the project, [refer
+to project 19 video](https://www.youtube.com/watch?v=nCemvjcKuIA)
 
 **Practice Task 1**
 
 1. Configure 3 branches in your terraform-cloud repository for dev, test, prod environments
+First, ensure that your repository is set up with three branches corresponding to the environments: dev, test, and prod.
+Create Branches
+```
+git checkout -b dev
+git push origin dev
+
+git checkout -b test
+git push origin test
+
+git checkout -b prod
+git push origin prod
+
+```
+![image](https://github.com/user-attachments/assets/a88107f8-c08c-4ac3-b85e-cecb34750525)
+
 2. Make necessary configuration to trigger runs automatically only for dev environment
+Create Workspaces: Create three workspaces, one for each environment (e.g., dev, test, prod).
+![image](https://github.com/user-attachments/assets/d8baacee-8430-40e4-b045-2c53c057e67c)
+
+Now let us change our prod branch and test trigger in our prod workspace
+![image](https://github.com/user-attachments/assets/3ff925ae-f453-42cf-a91f-037f45b78156)
+![image](https://github.com/user-attachments/assets/6b7a99af-eabd-4062-8719-2bc943b4d642)
+
+**Configure Auto-Apply for Dev Environment Only**
+Enable Auto-Apply in Dev Workspace: > Go to the dev workspace in Terraform Cloud> Navigate to Settings > General Settings > Under Execution Mode, select Auto Apply
+![image](https://github.com/user-attachments/assets/6f49ad1e-528a-49e3-800f-c4280ce33c7f)
+
+This will automatically apply the changes after a successful plan
+
+**Disable Auto-Apply for Test and Prod:**
+
+Go to the test and prod workspaces. Ensure that Auto Apply is disabled, so that plans require manual approval before applying.
+
+> To do this I use  [Structuring Repositories for Terraform Workspaces](https://www.youtube.com/watch?v=IDLGpkRmDXg) 
 3. Create an Email and Slack notifications for certain events (e.g. started plan or errored run) and test it
+![image](https://github.com/user-attachments/assets/79c06adb-24c2-4992-b4f6-8f909e0eeb67)
+
+**Email Notification:**
+In the dev workspace, go to Settings > Notifications  > Add a new notification with the following settings >
+- Type: Email
+- Recipient Email: (Enter your email address)
+- Triggers: Select events like Run Started, Run Completed, Run Errored, etc.
+
+![image](https://github.com/user-attachments/assets/81318058-2c62-45a6-a152-2762f068ddc8)
+![image](https://github.com/user-attachments/assets/533ca5de-c19a-4785-91f4-138700e1ec79)
+
+**Slack Notification:**
+
+Set up a Slack Webhook URL in your Slack workspace.
+In the dev workspace, go to Settings > Notifications.
+Add a new notification with the following settings:
+Type: Slack
+Webhook URL: (Enter your Slack Webhook URL)
+Triggers: Select similar events like Run Started, Run Completed, Run Errored, etc
+
 4. Apply destroy from Terraform Cloud web console
+
 
 
 **Public Module Registry vs Private Module Registry**
