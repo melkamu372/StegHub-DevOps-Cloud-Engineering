@@ -380,16 +380,19 @@ Add a new notification with the following settings:
 Type: Slack
 Webhook URL: (Enter your Slack Webhook URL)
 Triggers: Select similar events like Run Started, Run Completed, Run Errored, etc
+![image](https://github.com/user-attachments/assets/54c62bf9-2cd1-4580-a828-2e78fc6e3b16)
+![image](https://github.com/user-attachments/assets/9a95c766-a1fb-4dcd-8bc5-1266880f75b3)
+![image](https://github.com/user-attachments/assets/bcf7021e-0daf-4997-a362-52a21d92129d)
 
 4. Apply destroy from Terraform Cloud web console
-
+![image](https://github.com/user-attachments/assets/ad394c9a-39a8-4006-ab01-8d448576e029)
 
 
 **Public Module Registry vs Private Module Registry**
 
 Terraform has a quite strong community of contributors (individual developers and 3rd party companies) that along with HashiCorp 
 maintain a Public Registry, where you can find reusable configuration packages (modules). We strongly encourage you to explore modules
-shared to the public registry, specifically for this project – you can check out this AWS provider registy page.
+shared to the public registry, specifically for this project – you can check out this [AWS provider registy page] (https://github.com/hashicorp/learn-private-module-aws-s3-webapp).
 
 As your Terraform code base grows, your DevOps team might want to create you own library of reusable components – Private Registry 
 can help with that.
@@ -399,13 +402,73 @@ can help with that.
 
 1. Create a simple Terraform repository (you can clone one from [here](https://github.com/hashicorp/learn-private-module-aws-s3-webapp))
  that will be your module
-2. Import the module into your private registry
-3. Create a configuration that uses the module
-4. Create a workspace for the configuration
-5. Deploy the infrastructure
-6. Destroy your deployment
+![image](https://github.com/user-attachments/assets/d20b1c14-79df-42da-8cd3-59d9bb4bec91)
+create atleast on release
+![image](https://github.com/user-attachments/assets/a59d2f0e-b321-4780-ae47-8f489921e694)
 
-Note: First, try to approach this task oun your own, but if you have any difficulties with it, refer to this [tutorial](https://developer.hashicorp.com/terraform/tutorials/modules/module-private-registry-share).
+2. Import the module into your private registry
+![image](https://github.com/user-attachments/assets/7b1b1812-a0da-49c8-9263-61af75835f5f)
+![image](https://github.com/user-attachments/assets/c98a36ee-30d5-48e7-b15a-84bc9878dda1)
+![image](https://github.com/user-attachments/assets/6df7bdca-18dd-4b58-9d60-f9366c7fbce2)
+
+3. Create a configuration that uses the module
+- In your local machine, create a new directory for the Terraform configuration
+- Create a main.tf file to use the module
+```
+module "s3_webapp" {
+  source  = "app.terraform.io/melkamu-pbl-19/s3-bucket-static-website/aws"
+  version = "1.0.0"  # Use the appropriate version
+  prefix = "my-prefix"
+  name   = "my-webapp-bucket"
+  region = "us-east-1"
+}
+
+```
+Replace your-org with your Terraform Cloud organization name.
+Initialize the Configuration
+```
+terraform init
+```
+![image](https://github.com/user-attachments/assets/aa81b354-c43c-4188-84c1-9e5e85b4226d)
+
+
+4. Create a workspace for the configuration Select CLI-driven workflow Name the workspace `s3-webapp-workspace`
+![image](https://github.com/user-attachments/assets/c933bfa0-6dd7-4e2f-9685-f7b016755a0c)
+
+**Configure the Workspace**:
+Link the workspace to the configuration by setting the environment variable TF_WORKSPACE in your terminal:
+```
+export TF_WORKSPACE=s3-webapp-workspace
+```
+
+5. Deploy the infrastructure
+
+In your terminal, execute `terraform apply` to deploy the infrastructure:
+```
+terraform apply
+```
+![image](https://github.com/user-attachments/assets/8e1effc7-c8cc-4415-8048-c0f8d03d6145)
+
+**Verify the Deployment:**
+Check the AWS console or the Terraform Cloud UI to confirm that the S3 bucket  were created successfully.
+![image](https://github.com/user-attachments/assets/d9d43913-abde-471d-bcd8-ffb71e083c6e)
+![image](https://github.com/user-attachments/assets/239e9bb8-cba1-4d24-afe0-9535b2fab9ab)
+![image](https://github.com/user-attachments/assets/787f381b-8150-4261-b2a1-390a32636913)
+
+6. Destroy your deployment
+Once you're done, clean up the resources by running
+```
+terraform destroy
+```
+Confirm the destroy operation by typing yes
+![image](https://github.com/user-attachments/assets/7bd36d90-eeb2-4d4e-acb3-3c81f526bfd4)
+
+**Verify Destruction**:
+Ensure that all resources were destroyed in the AWS console and Terraform Cloud
+
+I use this to do [Publishing Private Modules to the Terraform Private Registry] (https://www.youtube.com/watch?v=axPsEfJSXBg&t=141s)
+
+> Note: First, try to approach this task oun your own, but if you have any difficulties with it, refer to this [tutorial](https://developer.hashicorp.com/terraform/tutorials/modules/module-private-registry-share).
 
 ### The End of Project 19
 
