@@ -497,11 +497,13 @@ docker push melkamu372/php-todo-app:latest
 - Add your Docker login credentials in Manage Credentials in Jenkins> create New pipeline and  Select Github and your Github account >  Select the repo for the pipeline > create pipeline
 
 4. Simulate a CI pipeline from a feature and master branch using previously created Jenkinsfile
+![image](https://github.com/user-attachments/assets/4fef6aa1-01c4-4c5c-8f77-bc7421a33bca)
 
 5. Ensure that the tagged images from your Jenkinsfile have a prefix that suggests which branch the image was pushed from. 
 For example, feature-0.0.1.
-
 6. Verify that the images pushed from the CI can be found at the registry.
+![image](https://github.com/user-attachments/assets/a14915ef-ff91-445b-a228-badaf7eea043)
+
 
 ## Deployment with [Docker Compose](https://docs.docker.com/compose/)
 
@@ -598,10 +600,34 @@ docker compose ls
 
 **Practice Task 2 – Complete Continous Integration With A Test Stage**
 1. Document your understanding of all the fields specified in the Docker Compose file tooling.yaml
-2. Update your Jenkinsfile with a test stage before pushing the image to the registry.
-3. What you will be testing here is to ensure that the tooling site http endpoint is able to return status code 200. Any other code 
+**Services**
+- tooling_frontend:
+  - Build: Creates an image from the Dockerfile in the current directory.
+  - Ports: Maps port 80 in the container to port 5000 on the host.
+  - Volumes: Mounts a named volume tooling_frontend to /var/www/html in the container.
+  - Links: Connects to the db service by name.
+- db:
+ - Image: Uses the MySQL 5.7 image.
+- Restart: Automatically restarts if it stops.
+- Environment: Sets up database credentials and configuration.
+- Volumes: Mounts a named volume db to /var/lib/mysql in the container for persistent data.
+   
+**Links**
+
+- links: Connects tooling_frontend to db, allowing the frontend to access the database service by its name.
+
+**Volumes**
+- tooling_frontend: Named volume for the frontend data.
+- db: Named volume for MySQL data.
+
+2. Update your Jenkinsfile with a test stage before pushing the image to the registry  What you will be testing here is to ensure that the tooling site http endpoint is able to return status code 200. Any other code 
 will be determined a stage failure.
+
+![image](https://github.com/user-attachments/assets/e49ead7b-a926-48c0-b5ed-8c277a0b5c8e)
+![image](https://github.com/user-attachments/assets/d68c487d-6dab-403e-a682-680c59dc1c07)
+
 4. Implement a similar pipeline for the PHP-todo app.
+
 5. Ensure that both pipelines have a clean-up stage where all the images are deleted on the Jenkins server.
 
 ## The End of Project 20
