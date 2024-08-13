@@ -48,4 +48,4 @@ Docker is a platform designed to help developers build, deploy, and run applicat
 
 ---
 
-This foundation should give you a good start with Docker. As you work on your project, you'll become more familiar with these concepts and how they apply to your specific needs. If you have any questions or need further details, feel free to ask!
+
