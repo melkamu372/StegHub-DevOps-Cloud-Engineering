@@ -433,27 +433,29 @@ The project below will challenge you a little bit, but the experience there is v
 **Part 1**
 
 1. Write a Dockerfile for the TODO app
-![image](https://github.com/user-attachments/assets/ab732c42-4277-446d-92df-023c2bc9ee4a)
+![image](https://github.com/user-attachments/assets/1bf9ae4d-828e-4704-92c8-dc15422d47f7)
+
 2. Run both database and app on your laptop Docker Engine
 Build the Application Docker Image
 ```
 docker build -t php-todo-app .
 ```
-![image](https://github.com/user-attachments/assets/cd58f7ae-0521-4c78-acc5-43bb1085d853)
+![image](https://github.com/user-attachments/assets/17c393d6-d12b-4312-af27-18e862b4c731)
 
 Run the MySQL container with the following command:
 ```
 docker run --name mysql-db -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=tododb -e MYSQL_USER=todo_user -e MYSQL_PASSWORD=todo_pass -p 3306:3306 -d mysql:8.0
 ```
-![image](https://github.com/user-attachments/assets/9db9b0b4-bade-4182-ad8c-ca299054607e)
-
+docker run --name mysql-db -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=mydatabase -e MYSQL_USER=myuser -e MYSQL_PASSWORD=mypassword -d mysql:8.0
+docker run --name php-apache-app -p 8080:80 --link mysql-db:db -d php-apache-app
 Run the PHP-Todo application container with:
 ```
-docker run --name php-todo -p 8080:80 --link mysql-db:mysql -d php-todo-app
+docker run --name php-todo -p 8080:80 --link mysql-db:mysql -d php-apache-app
 ```
-![image](https://github.com/user-attachments/assets/88c524eb-6961-4980-80c8-bbda41d202c2)
-![image](https://github.com/user-attachments/assets/8efa1272-7232-414c-a032-f8ce290b2595)
+![image](https://github.com/user-attachments/assets/83f512c5-2c45-44fc-a924-e64f04e9a578)
+
 3. Access the application from the browser
+![image](https://github.com/user-attachments/assets/46a02ed0-50dc-443b-a437-f9c8f636a6b8)
 
 
 **Part 2**
@@ -464,16 +466,42 @@ docker run --name php-todo -p 8080:80 --link mysql-db:mysql -d php-todo-app
 ![image](https://github.com/user-attachments/assets/79142718-4f41-4066-8e72-4104527318ee)
 
 3. Push the docker images from your PC to the repository
+Tag Your Docker Image
+```
+docker tag php-apache-app melkamu372/php-todo-app:latest
+
+```
+Log In to Docker Hub:
+```
+docker login
+```
+![image](https://github.com/user-attachments/assets/2b55c1de-8a09-4008-a46b-2f7f1388f50a)
+Push the Docker Image:
+```
+docker push melkamu372/php-todo-app:latest
+
+```
+![image](https://github.com/user-attachments/assets/603e5a21-1848-40fe-af24-6da1cc051212)
+![image](https://github.com/user-attachments/assets/cd36cb1f-d9ab-4d8f-814c-bb44286d1c0f)
 
 **Part 3**
 1. Write a Jenkinsfile that will simulate a Docker Build and a Docker Push to the registry
+
+![image](https://github.com/user-attachments/assets/50ca483b-dfb6-45dc-8e6d-e6d7b3128800)
+
 2. Connect your repo to Jenkins
+![image](https://github.com/user-attachments/assets/c56227b2-e0e0-4610-99f2-f2f8f4491c15)
+
 3. Create a multi-branch pipeline
+- Install Blue Ocean plugin and Open it dashboard
+- Add your Docker login credentials in Manage Credentials in Jenkins> create New pipeline and  Select Github and your Github account >  Select the repo for the pipeline > create pipeline
+
 4. Simulate a CI pipeline from a feature and master branch using previously created Jenkinsfile
+
 5. Ensure that the tagged images from your Jenkinsfile have a prefix that suggests which branch the image was pushed from. 
 For example, feature-0.0.1.
-6. Verify that the images pushed from the CI can be found at the registry.
 
+6. Verify that the images pushed from the CI can be found at the registry.
 
 ## Deployment with [Docker Compose](https://docs.docker.com/compose/)
 
@@ -486,6 +514,12 @@ the applications and dependencies up and running with minimal effort by launchin
 **In this section, we will refactor the Tooling app POC so that we can leverage the power of Docker Compose**
 
 1. First, install Docker Compose on your workstation from [here](https://docs.docker.com/compose/install/)
+```
+docker-compose --version
+docker-compose version 1.28.5, build c4eb3a1f 
+```
+![image](https://github.com/user-attachments/assets/46484fc9-e0e2-4c6c-a168-716d0aed25f7)
+
 2. Create a file, name it tooling.yaml
 3. Begin to write the Docker Compose definitions with YAML syntax. The YAML file is used for defining services, networks, and volumes:
 
@@ -499,16 +533,12 @@ services:
     volumes:
       - tooling_frontend:/var/www/html
 ```
+![image](https://github.com/user-attachments/assets/f5c7dd6b-31ff-4adb-9acc-6f80999a4cea)
 
 The YAML file has declarative fields, and it is vital to understand what they are used for.
 
 - version: Is used to specify the version of Docker Compose API that the Docker Compose engine will connect to. This field is optional
 from docker compose version v1.27.0. You can verify your installed version with:
-
-```
-docker-compose --version
-docker-compose version 1.28.5, build c4eb3a1f 
-```
 
 - service: A service definition contains a configuration that is applied to each container started for that service. In the snippet 
 above, the only service listed there is tooling_frontend. So, every other field under the tooling_frontend service will execute 
@@ -556,12 +586,14 @@ Run the command to start the containers
 ```
 docker-compose -f tooling.yaml  up -d 
 ```
+![image](https://github.com/user-attachments/assets/88432ee7-ed43-4d6d-8481-4e009092a623)
 
 Verify that the compose is in the running status:
 
 ```
 docker compose ls
 ```
+![image](https://github.com/user-attachments/assets/fcfa9939-1fe6-4113-8200-e9aef6081d95)
 
 
 **Practice Task 2 – Complete Continous Integration With A Test Stage**
