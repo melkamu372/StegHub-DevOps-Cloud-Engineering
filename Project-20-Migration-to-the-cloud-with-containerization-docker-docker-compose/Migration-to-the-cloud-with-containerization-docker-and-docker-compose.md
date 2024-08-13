@@ -430,17 +430,42 @@ Download php-todo repository from [here](https://github.com/StegTechHub/tooling)
 
 The project below will challenge you a little bit, but the experience there is very valuable for future projects.
 
-Part 1
+**Part 1**
+
 1. Write a Dockerfile for the TODO app
+![image](https://github.com/user-attachments/assets/ab732c42-4277-446d-92df-023c2bc9ee4a)
 2. Run both database and app on your laptop Docker Engine
+Build the Application Docker Image
+```
+docker build -t php-todo-app .
+```
+![image](https://github.com/user-attachments/assets/cd58f7ae-0521-4c78-acc5-43bb1085d853)
+
+Run the MySQL container with the following command:
+```
+docker run --name mysql-db -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=tododb -e MYSQL_USER=todo_user -e MYSQL_PASSWORD=todo_pass -p 3306:3306 -d mysql:8.0
+```
+![image](https://github.com/user-attachments/assets/9db9b0b4-bade-4182-ad8c-ca299054607e)
+
+Run the PHP-Todo application container with:
+```
+docker run --name php-todo -p 8080:80 --link mysql-db:mysql -d php-todo-app
+```
+![image](https://github.com/user-attachments/assets/88c524eb-6961-4980-80c8-bbda41d202c2)
+![image](https://github.com/user-attachments/assets/8efa1272-7232-414c-a032-f8ce290b2595)
 3. Access the application from the browser
 
-Part 2
+
+**Part 2**
 1. Create an account in Docker Hub
+![image](https://github.com/user-attachments/assets/0fabd82a-d5db-4788-ae72-f23b77f53242)
+
 2. Create a new Docker Hub repository
+![image](https://github.com/user-attachments/assets/79142718-4f41-4066-8e72-4104527318ee)
+
 3. Push the docker images from your PC to the repository
 
-Part 3
+**Part 3**
 1. Write a Jenkinsfile that will simulate a Docker Build and a Docker Push to the registry
 2. Connect your repo to Jenkins
 3. Create a multi-branch pipeline
