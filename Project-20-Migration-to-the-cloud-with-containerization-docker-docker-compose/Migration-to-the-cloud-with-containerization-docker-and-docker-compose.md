@@ -586,7 +586,7 @@ volumes:
 Run the command to start the containers
 
 ```
-docker-compose -f tooling.yaml  up -d 
+docker-compose -f tooling.yml  up -d 
 ```
 ![image](https://github.com/user-attachments/assets/88432ee7-ed43-4d6d-8481-4e009092a623)
 
@@ -597,6 +597,11 @@ docker compose ls
 ```
 ![image](https://github.com/user-attachments/assets/fcfa9939-1fe6-4113-8200-e9aef6081d95)
 
+To stop containers
+```
+docker-compose -f tooling.yml down
+```
+![image](https://github.com/user-attachments/assets/423694de-51f2-486d-8782-51f319abc1d9)
 
 **Practice Task 2 – Complete Continous Integration With A Test Stage**
 1. Document your understanding of all the fields specified in the Docker Compose file tooling.yaml
@@ -623,12 +628,12 @@ docker compose ls
 2. Update your Jenkinsfile with a test stage before pushing the image to the registry  What you will be testing here is to ensure that the tooling site http endpoint is able to return status code 200. Any other code 
 will be determined a stage failure.
 
-![image](https://github.com/user-attachments/assets/e49ead7b-a926-48c0-b5ed-8c277a0b5c8e)
-![image](https://github.com/user-attachments/assets/d68c487d-6dab-403e-a682-680c59dc1c07)
-
+![image](https://github.com/user-attachments/assets/1e4f7ffe-2326-48cb-80ca-f48ed66c7ae1)
+![image](https://github.com/user-attachments/assets/1622bb3e-9219-4568-9202-44d3612a769f)
 4. Implement a similar pipeline for the PHP-todo app.
-
 5. Ensure that both pipelines have a clean-up stage where all the images are deleted on the Jenkins server.
+![image](https://github.com/user-attachments/assets/c806e147-add8-4481-a5f9-36ed118dbd71)
+![image](https://github.com/user-attachments/assets/dd490263-aae1-487b-b5ea-b2c9f44ec1c3)
 
 ## The End of Project 20
 In this project we have started our journey into migrating an application running on virtual machines into the Cloud with containerization.
