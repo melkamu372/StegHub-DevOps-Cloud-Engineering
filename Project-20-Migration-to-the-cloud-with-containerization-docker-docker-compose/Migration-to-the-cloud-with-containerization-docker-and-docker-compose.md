@@ -635,15 +635,13 @@ will be determined a stage failure.
 
 5. Ensure that both pipelines have a clean-up stage where all the images are deleted on the Jenkins server.
 
+![image](https://github.com/user-attachments/assets/21667d36-7f23-460a-8633-14b25b38d049)
 
-![image](https://github.com/user-attachments/assets/e6e85443-b1b2-4b2c-aabc-5476875928d2)
+![image](https://github.com/user-attachments/assets/8bcdff3b-231e-4b63-a7cb-68ef23c336f4)
 
-![image](https://github.com/user-attachments/assets/02cadda8-f376-4da8-9091-ba12da0dba67)
+![image](https://github.com/user-attachments/assets/feaba5c2-d314-4788-9e02-8946fc2ccfa4)
 
-![image](https://github.com/user-attachments/assets/d516bd70-02ec-4371-8a14-004f042297e8)
-
-![image](https://github.com/user-attachments/assets/0f863e83-b35e-4bdb-9cd1-f7b069db74b9)
-
+![image](https://github.com/user-attachments/assets/0e05c357-18fe-4273-9e7d-b6899d87c7de)
 
 ## The End of Project 20
 In this project we have started our journey into migrating an application running on virtual machines into the Cloud with containerization.
