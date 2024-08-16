@@ -420,7 +420,8 @@ google search of the error message, and figure out where to update the configura
 If everything works, you can open the browser and type http://localhost:8085
 
 You will see the login page.
-![image](https://github.com/user-attachments/assets/ad372d71-c66f-4abf-87d8-26a995cca058)
+![image](https://github.com/user-attachments/assets/d335944c-9e82-423d-be6c-eda785334a80)
+
 
 The default email is test@gmail.com, the password is 12345 or you can check users' credentials stored in the toolingdb.user table.
 
