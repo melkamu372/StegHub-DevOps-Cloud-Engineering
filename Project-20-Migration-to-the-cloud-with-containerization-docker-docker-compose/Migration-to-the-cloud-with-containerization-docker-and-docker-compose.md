@@ -627,13 +627,23 @@ docker-compose -f tooling.yml down
 
 2. Update your Jenkinsfile with a test stage before pushing the image to the registry  What you will be testing here is to ensure that the tooling site http endpoint is able to return status code 200. Any other code 
 will be determined a stage failure.
+![image](https://github.com/user-attachments/assets/0c2af7bb-d0f8-485b-89ad-a3fb2b44a60e)
+![image](https://github.com/user-attachments/assets/31b9fba4-df63-41b8-ad2b-e91ed37b9355)
 
-![image](https://github.com/user-attachments/assets/1e4f7ffe-2326-48cb-80ca-f48ed66c7ae1)
-![image](https://github.com/user-attachments/assets/1622bb3e-9219-4568-9202-44d3612a769f)
 4. Implement a similar pipeline for the PHP-todo app.
+
+
 5. Ensure that both pipelines have a clean-up stage where all the images are deleted on the Jenkins server.
-![image](https://github.com/user-attachments/assets/c806e147-add8-4481-a5f9-36ed118dbd71)
-![image](https://github.com/user-attachments/assets/dd490263-aae1-487b-b5ea-b2c9f44ec1c3)
+
+
+![image](https://github.com/user-attachments/assets/e6e85443-b1b2-4b2c-aabc-5476875928d2)
+
+![image](https://github.com/user-attachments/assets/02cadda8-f376-4da8-9091-ba12da0dba67)
+
+![image](https://github.com/user-attachments/assets/d516bd70-02ec-4371-8a14-004f042297e8)
+
+![image](https://github.com/user-attachments/assets/0f863e83-b35e-4bdb-9cd1-f7b069db74b9)
+
 
 ## The End of Project 20
 In this project we have started our journey into migrating an application running on virtual machines into the Cloud with containerization.
