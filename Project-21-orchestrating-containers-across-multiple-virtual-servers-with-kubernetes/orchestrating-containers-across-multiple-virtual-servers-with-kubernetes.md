@@ -202,6 +202,9 @@ challenges.
 **Virtual Private Cloud –VPC**
 
 1. Create a directory named k8s-cluster-from-ground-up
+```
+mkdir k8s-cluster-from-ground-up
+```
 2. Create a VPC and store the ID as a variable:
 
 ```
@@ -212,7 +215,6 @@ VPC_ID=$(aws ec2 create-vpc \
 
 ```
 
-
 3. Tag the VPC so that it is named:
 
 ```
@@ -222,6 +224,7 @@ aws ec2 create-tags \
   --resources ${VPC_ID} \
   --tags Key=Name,Value=${NAME} 
 ```
+![image](https://github.com/user-attachments/assets/b9ae38bf-5c4e-4805-b065-a3982083396c)
 
 
 **Domain Name System – DNS**
@@ -241,16 +244,16 @@ aws ec2 modify-vpc-attribute \
 --vpc-id ${VPC_ID} \
 --enable-dns-hostnames '{"Value": true}'
 ```
+![image](https://github.com/user-attachments/assets/1a461e4b-99ea-4b2f-9c53-7894c51d55a1)
 
-![7006](https://user-images.githubusercontent.com/85270361/210191966-626e2e0b-085b-4e64-944e-5d9b789a87d6.PNG)
-
+![image](https://github.com/user-attachments/assets/4fcd0a9a-100e-4e65-ba45-50ffde0281b2)
 
 **AWS Region**
 
 6. Set the required region
 
 ```
-AWS_REGION=eu-central-1
+AWS_REGION=us-east-1
 ```
 
 
