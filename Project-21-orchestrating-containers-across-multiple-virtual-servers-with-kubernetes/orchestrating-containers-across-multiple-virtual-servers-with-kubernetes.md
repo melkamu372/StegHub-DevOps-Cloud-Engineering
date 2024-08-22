@@ -224,8 +224,7 @@ aws ec2 create-tags \
   --resources ${VPC_ID} \
   --tags Key=Name,Value=${NAME} 
 ```
-![image](https://github.com/user-attachments/assets/b9ae38bf-5c4e-4805-b065-a3982083396c)
-
+![image](https://github.com/user-attachments/assets/d28099ca-c78e-44c7-b14f-9ec9dee5ddeb)
 
 **Domain Name System – DNS**
 
@@ -244,9 +243,9 @@ aws ec2 modify-vpc-attribute \
 --vpc-id ${VPC_ID} \
 --enable-dns-hostnames '{"Value": true}'
 ```
-![image](https://github.com/user-attachments/assets/1a461e4b-99ea-4b2f-9c53-7894c51d55a1)
+![image](https://github.com/user-attachments/assets/3b61ee7a-be5d-4ff4-8321-0d5ca0474e15)
 
-![image](https://github.com/user-attachments/assets/4fcd0a9a-100e-4e65-ba45-50ffde0281b2)
+![image](https://github.com/user-attachments/assets/f027bbe7-bf24-4865-a7dd-fc34fa67f785)
 
 **AWS Region**
 
@@ -256,59 +255,9 @@ aws ec2 modify-vpc-attribute \
 AWS_REGION=us-east-1
 ```
 
-
-**Dynamic Host Configuration Protocol – DHCP**
-
-7. Configure DHCP Options Set:
-
-[Dynamic Host Configuration Protocol (DHCP)](https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol)is a network 
-management protocol used on Internet Protocol networks for automatically assigning IP addresses and other communication parameters
-to devices connected to the network using a client–server architecture.
-
-**AWS** automatically creates and associates a DHCP option set for your **Amazon VPC** upon creation and sets two options: 
-domain-name-servers (defaults to AmazonProvidedDNS) and **domain-name** (defaults to the domain name for your set region). 
-**AmazonProvidedDNS** is an Amazon Domain Name System (DNS) server, and this option enables DNS for instances to communicate using
-DNS names.
-
-By default EC2 instances have fully qualified names like ip-172-50-197-106.eu-central-1.compute.internal. 
-But you can set your own configuration using an example below.
-
-
-```
-DHCP_OPTION_SET_ID=$(aws ec2 create-dhcp-options \
-  --dhcp-configuration \
-    "Key=domain-name,Values=$AWS_REGION.compute.internal" \
-    "Key=domain-name-servers,Values=AmazonProvidedDNS" \
-  --output text --query 'DhcpOptions.DhcpOptionsId')
-```
-
-
-8. Tag the DHCP Option set:
-
-```
-aws ec2 create-tags \
-  --resources ${DHCP_OPTION_SET_ID} \
-  --tags Key=Name,Value=${NAME}
-```
-
-
-![7007](https://user-images.githubusercontent.com/85270361/210192103-d973f4af-3a3f-4ad9-8536-d087c8529855.PNG)
-
-
-9. Associate the DHCP Option set with the VPC:
-
-```
-aws ec2 associate-dhcp-options \
-  --dhcp-options-id ${DHCP_OPTION_SET_ID} \
-  --vpc-id ${VPC_ID}
-```
-
-![7008](https://user-images.githubusercontent.com/85270361/210192123-64f6e029-84d5-4ae1-b550-e244f54328cb.PNG)
-
-
 **Subnet**
 
-10. Create the Subnet:
+7. Create the Subnet:
 
 ```
 SUBNET_ID=$(aws ec2 create-subnet \
@@ -316,17 +265,18 @@ SUBNET_ID=$(aws ec2 create-subnet \
   --cidr-block 172.31.0.0/24 \
   --output text --query 'Subnet.SubnetId')
 ```
-
+![image](https://github.com/user-attachments/assets/d80773b5-dba5-4276-8e19-e9ac565050c0)
 
 ```
 aws ec2 create-tags \
   --resources ${SUBNET_ID} \
   --tags Key=Name,Value=${NAME}
 ```
+![image](https://github.com/user-attachments/assets/affbd0cd-f005-4096-9657-02afc64aaacd)
 
 **Internet Gateway – IGW**
 
-11. Create the Internet Gateway and attach it to the VPC:
+8. Create the Internet Gateway and attach it to the VPC:
 
 ```
 INTERNET_GATEWAY_ID=$(aws ec2 create-internet-gateway \
@@ -342,12 +292,11 @@ aws ec2 attach-internet-gateway \
   --internet-gateway-id ${INTERNET_GATEWAY_ID} \
   --vpc-id ${VPC_ID}
 ```
-
-
+![image](https://github.com/user-attachments/assets/e85d43ea-aafa-4f7a-9b02-45859ce70837)
 
 **Route tables**
 
-12. Create route tables, associate the route table to subnet, and create a route to allow external traffic to the Internet through 
+9. Create route tables, associate the route table to subnet, and create a route to allow external traffic to the Internet through 
 the Internet Gateway:
 
 ```
@@ -381,4 +330,127 @@ aws ec2 create-route \
     "Return": true
 }
 ```
+![image](https://github.com/user-attachments/assets/580cd8c3-9e95-4332-80c0-19f2d504bac4)
+
+
+
+**Security Groups**
+
+10. Configure security groups
+
+```
+# Create the security group and store its ID in a variable
+SECURITY_GROUP_ID=$(aws ec2 create-security-group \
+  --group-name ${NAME} \
+  --description "Kubernetes cluster security group" \
+  --vpc-id ${VPC_ID} \
+  --output text --query 'GroupId')
+
+# Create the NAME tag for the security group
+aws ec2 create-tags \
+  --resources ${SECURITY_GROUP_ID} \
+  --tags Key=Name,Value=${NAME}
+
+# Create Inbound traffic for all communication within the subnet to connect on ports used by the master node(s)
+aws ec2 authorize-security-group-ingress \
+    --group-id ${SECURITY_GROUP_ID} \
+    --ip-permissions IpProtocol=tcp,FromPort=2379,ToPort=2380,IpRanges='[{CidrIp=172.31.0.0/24}]'
+
+# # Create Inbound traffic for all communication within the subnet to connect on ports used by the worker nodes
+aws ec2 authorize-security-group-ingress \
+    --group-id ${SECURITY_GROUP_ID} \
+    --ip-permissions IpProtocol=tcp,FromPort=30000,ToPort=32767,IpRanges='[{CidrIp=172.31.0.0/24}]'
+
+# Create inbound traffic to allow connections to the Kubernetes API Server listening on port 6443
+aws ec2 authorize-security-group-ingress \
+  --group-id ${SECURITY_GROUP_ID} \
+  --protocol tcp \
+  --port 6443 \
+  --cidr 0.0.0.0/0
+
+# Create Inbound traffic for SSH from anywhere (Do not do this in production. Limit access ONLY to IPs or CIDR that MUST connect)
+aws ec2 authorize-security-group-ingress \
+  --group-id ${SECURITY_GROUP_ID} \
+  --protocol tcp \
+  --port 22 \
+  --cidr 0.0.0.0/0
+
+# Create ICMP ingress for all types
+aws ec2 authorize-security-group-ingress \
+  --group-id ${SECURITY_GROUP_ID} \
+  --protocol icmp \
+  --port -1 \
+  --cidr 0.0.0.0/0
+```
+
+
+**Network Load Balancer**
+
+11. Create a network Load balancer
+
+```
+LOAD_BALANCER_ARN=$(aws elbv2 create-load-balancer \
+--name ${NAME} \
+--subnets ${SUBNET_ID} \
+--scheme internet-facing \
+--type network \
+--output text --query 'LoadBalancers[].LoadBalancerArn')
+```
+
+![image](https://github.com/user-attachments/assets/0c1426d0-abc0-4d50-b504-872485e73b21)
+
+
+**Tagret Group**
+
+12. Create a target group: (For now it will be unhealthy because there are no real targets yet.)
+
+```
+TARGET_GROUP_ARN=$(aws elbv2 create-target-group \
+  --name ${NAME} \
+  --protocol TCP \
+  --port 6443 \
+  --vpc-id ${VPC_ID} \
+  --target-type ip \
+  --output text --query 'TargetGroups[].TargetGroupArn')
+```
+
+![image](https://github.com/user-attachments/assets/a1bab2e7-d436-41e5-9db0-a9266e8700ff)
+
+13. Register targets: (Just like above, no real targets. You will just put the IP addresses so that, when the nodes become available,
+ they will be used as targets.)
+ 
+```
+aws elbv2 register-targets \
+  --target-group-arn ${TARGET_GROUP_ARN} \
+  --targets Id=172.31.0.1{0,1,2}
+```
+
+![image](https://github.com/user-attachments/assets/71355f37-aba4-49bf-aa75-f86b4d33d003)
+
+
+14. Create a listener to listen for requests and forward to the target nodes on TCP port 6443
+
+```
+aws elbv2 create-listener \
+--load-balancer-arn ${LOAD_BALANCER_ARN} \
+--protocol TCP \
+--port 6443 \
+--default-actions Type=forward,TargetGroupArn=${TARGET_GROUP_ARN} \
+--output text --query 'Listeners[].ListenerArn'
+```
+
+![image](https://github.com/user-attachments/assets/cf19a03c-f129-4a23-b7a3-d8420d801cf4)
+
+
+**K8s Public Address**
+
+15. Get the Kubernetes Public address
+
+```
+KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
+--load-balancer-arns ${LOAD_BALANCER_ARN} \
+--output text --query 'LoadBalancers[].DNSName')
+```
+![image](https://github.com/user-attachments/assets/c94d7676-463d-40f8-9887-58cef220e70d)
+
 
