@@ -1240,17 +1240,13 @@ ETCD_ENCRYPTION_KEY=$(head -c 64 /dev/urandom | base64)
 ```
 
 See the output that will be generated when called. Yours will be a different random string.
-
+```
 echo $ETCD_ENCRYPTION_KEY
-
-**OUTPUT:**
-
 ```
-OuxSvV5XUQVid4fNNbeyFEDTUPr1yozZPQ+E6Eqj80m1FSVDB6jOHt9miD/7kMdJIvVshlMgxY80wFajlqItug===$
-```
+![image](https://github.com/user-attachments/assets/15c9f16e-c3a4-4828-afc2-41de930d1f20)
 
-** Create an encryption-config.yaml file as 
-[documented officially by kubernetes](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#understanding-the-encryption-at-rest-configuration)
+
+**Create an encryption-config.yaml file as**  [documented officially by kubernetes](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#understanding-the-encryption-at-rest-configuration)
 
 
 ```
@@ -1271,13 +1267,27 @@ EOF
 
 Send the encryption file to the Controller nodes using scp and a for loop.
 
-**Bootstrap etcd cluster**
-TIPS: Use a terminal multi-plexer like [multi-tabbed putty](https://youtu.be/0c1cWrMnZlc) or [tmux](https://youtu.be/Yl7NFenTgIo) to
+```
+for i in 0 1 2; do
+  instance="${NAME}-master-${i}"
+  external_ip=$(aws ec2 describe-instances \
+    --filters "Name=tag:Name,Values=${instance}" \
+    --output text --query 'Reservations[].Instances[].PublicIpAddress')
+  scp -i ../ssh/${NAME}.id_rsa \
+    encryption-config.yaml ubuntu@${external_ip}:~/; \
+done
+```
+![image](https://github.com/user-attachments/assets/f2d794cf-ce78-4d5f-ad6a-02fcd14ee48c)
+
+
+**Bootstrap `etcd` cluster**
+
+> **TIPS**: Use a terminal multi-plexer like [multi-tabbed putty](https://youtu.be/0c1cWrMnZlc) or [tmux](https://youtu.be/Yl7NFenTgIo) to
 work with multiple terminal sessions simultaneously. It will make your life easier, especially when you need to work on multiple 
 nodes and run the same command across all nodes. Imagine repeating the same commands on 10 different nodes, and you don not intend
 to start automating with a configuration management tool like Ansible yet.
 
-The primary purpose of the etcd component is to store the state of the cluster. This is because Kubernetes itself is stateless.
+The primary purpose of the `etcd` component is to store the state of the cluster. This is because Kubernetes itself is stateless.
 Therefore, all its stateful data will persist in etcd. Since Kubernetes is a distributed system – it needs a distributed storage
 to keep persistent data in it. etcd is a highly-available key value store that fits the purpose. All K8s cluster configurations
 are stored in a form of key value pairs in etcd, it also stores the actual and desired states of the cluster. etcd cluster is
@@ -1286,6 +1296,21 @@ instances, so all of them will be always reconciled.
 
 **NOTE:** Don not just copy and paste the commands, ensure that you go through each and understand exactly what they will do on your
 servers. Use tools like tmux to make it easy to run commands on multiple terminal screens at once.
+
+
+I use Tmux (Terminal Multiplexer) is a powerful tool that allows you to manage multiple terminal sessions within a single window. 
+
+**Installation**
+```
+sudo apt update
+sudo apt install tmux
+
+```
+**Starting Tmux**
+```
+tmux
+```
+![image](https://github.com/user-attachments/assets/f23b586b-2965-4068-af2d-aaa401739658)
 
 1. SSH into the controller server
 
@@ -1317,9 +1342,7 @@ ssh -i k8s-cluster-from-ground-up.id_rsa ubuntu@${master_3_ip}
 ```
 
 You should have a a similar pane like below. You should be able to see all the files that have been sent to the nodes.
-
-![7017](https://user-images.githubusercontent.com/85270361/210205971-b0fd812f-d764-4ed9-9e9f-9c9c98b4d378.PNG)
-
+![image](https://github.com/user-attachments/assets/4858eff8-be08-4035-8f60-f01684c18412)
 
 2. Download and install etcd
 
@@ -1428,11 +1451,13 @@ sudo ETCDCTL_API=3 etcdctl member list \
 ade74a4f39c39f33, started, master-1, https://172.31.0.11:2380, https://172.31.0.11:2379, false
 ed33b44c0b153ee3, started, master-2, https://172.31.0.12:2380, https://172.31.0.12:2379, false
 ```
+![image](https://github.com/user-attachments/assets/d0089866-4e23-4c7d-97d8-d3c4d73f09d5)
 
 
 ```
 systemctl status etcd
 ```
 
-![7018](https://user-images.githubusercontent.com/85270361/210208317-3f56bbad-6ad4-49e7-a371-0eebce37fdc6.PNG)
+![image](https://github.com/user-attachments/assets/a729b8cc-f4b6-4c1f-86e3-6eeeb991a8d2)
+
 
