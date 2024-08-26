@@ -1336,7 +1336,22 @@ sudo apt install tmux
 ```
 tmux
 ```
+**To split the current window into two panes side by side**
+
+`Press Ctrl + b, then %`
+
+**To split the window into top and bottom panes:**
+
+`Press Ctrl + b, then " `
+
+
+
+
+
 ![image](https://github.com/user-attachments/assets/f23b586b-2965-4068-af2d-aaa401739658)
+
+
+
 
 1. SSH into the controller server
 
@@ -1707,5 +1722,11 @@ HINTS:
 1. The problem relates to etcd configuration.
 2. Check the systemd logs for the api-server. The problem will be clearly logged, and it will give you an idea what is wrong. Find 
 out how to fix it.
+![image](https://github.com/user-attachments/assets/7a42a165-4bdd-4293-bd89-b207e599ff3c)
+
+![image](https://github.com/user-attachments/assets/143c455c-fc71-431e-9325-926ea36b8b1d)
+
+![image](https://github.com/user-attachments/assets/3369ead7-e1df-4ff8-9d20-bca13e799c95)
+
 
 
