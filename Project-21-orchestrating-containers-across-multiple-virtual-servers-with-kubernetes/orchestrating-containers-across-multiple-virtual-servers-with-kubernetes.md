@@ -1247,7 +1247,22 @@ instance="${NAME}-master-${i}" \
   kube-scheduler.kubeconfig kube-controller-manager.kubeconfig ubuntu@${external_ip}:~/;
 done
 ```
+
+
 ![image](https://github.com/user-attachments/assets/44b71553-811d-4c80-a7aa-d1e29541efe0)
+
+
+```
+for i in 0 1 2; do
+instance="${NAME}-master-${i}" \
+  external_ip=$(aws ec2 describe-instances \
+    --filters "Name=tag:Name,Values=${instance}" \
+    --output text --query 'Reservations[].Instances[].PublicIpAddress')
+  scp -i ../ssh/${NAME}.id_rsa \
+  admin.kubeconfig ubuntu@${external_ip}:~/;
+done
+```
+![image](https://github.com/user-attachments/assets/f1fc8803-64bd-45ab-9a73-7bc6bf921622)
 
 ### Step 5 PREPARE THE `etcd` DATABASE FOR ENCRYPTION AT REST.
 
@@ -1262,7 +1277,7 @@ hear "in-flight" or "in transit" refers to data that is being transferred over t
 Generate the encryption key and encode it using base64
 
 ```
-ETCD_ENCRYPTION_KEY=$(head -c 64 /dev/urandom | base64) 
+ETCD_ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64) 
 ```
 
 See the output that will be generated when called. Yours will be a different random string.
@@ -1722,7 +1737,8 @@ HINTS:
 1. The problem relates to etcd configuration.
 2. Check the systemd logs for the api-server. The problem will be clearly logged, and it will give you an idea what is wrong. Find 
 out how to fix it.
-![image](https://github.com/user-attachments/assets/7a42a165-4bdd-4293-bd89-b207e599ff3c)
+
+![image](https://github.com/user-attachments/assets/b7245158-2d40-4a10-8dcd-edf55d396bde)
 
 ![image](https://github.com/user-attachments/assets/143c455c-fc71-431e-9325-926ea36b8b1d)
 
