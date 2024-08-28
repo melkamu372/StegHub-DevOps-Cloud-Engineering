@@ -1004,7 +1004,7 @@ for i in 0 1 2; do
     ca.pem ${instance}-key.pem ${instance}.pem ubuntu@${external_ip}:~/; \
 done
 ```
-![image](https://github.com/user-attachments/assets/8a24f340-501e-45c9-8087-a1add84d0402)
+![image](https://github.com/user-attachments/assets/f7685c86-0cb4-4c23-8c3c-95903233237a)
 
 
 **Master or Controller node:** – Note that only the api-server related files will be sent over to the master nodes.
@@ -1020,13 +1020,14 @@ instance="${NAME}-master-${i}" \
     master-kubernetes.pem master-kubernetes-key.pem ubuntu@${external_ip}:~/;
 done
 ```
-![image](https://github.com/user-attachments/assets/21a5511b-d128-44e0-8a44-dd6e7f78f92a)
+![image](https://github.com/user-attachments/assets/576d0a09-9c21-43f0-ad96-ec998be9e631)
+
 
 The kube-proxy, kube-controller-manager, kube-scheduler, and kubelet client certificates will be used to generate client authentication 
 configuration files later.
 
 
-### Step 4  Use `KUBECTL` TO GENERATE KUBERNETES CONFIGURATION FILES FOR AUTHENTICATION
+###  Use `KUBECTL` TO GENERATE KUBERNETES CONFIGURATION FILES FOR AUTHENTICATION
 
 All the work you are doing right now is ensuring that you do not face any difficulties by the time the Kubernetes cluster is up and 
 running. In this step, you will create some files known as kubeconfig, which enables Kubernetes clients to locate and authenticate to 
@@ -1042,9 +1043,9 @@ First, let us create a few environment variables for reuse by multiple commands.
 
 
 ```
-KUBERNETES_API_SERVER_ADDRESS=$(aws elbv2 describe-load-balancers --load-balancer-arns 
-${LOAD_BALANCER_ARN} --output text --query 'LoadBalancers[].DNSName')
+KUBERNETES_API_SERVER_ADDRESS=$(aws elbv2 describe-load-balancers --load-balancer-arns ${LOAD_BALANCER_ARN} --output text --query 'LoadBalancers[].DNSName')
 ```
+![image](https://github.com/user-attachments/assets/79bba61a-9cac-433f-b229-39f4471d771e)
 
 1. Generate the kubelet kubeconfig file
 For each of the nodes running the kubelet component, it is very important that the client certificate configured for that node is used
@@ -1082,17 +1083,19 @@ instance_hostname="ip-172-31-0-2${i}"
   kubectl config use-context default --kubeconfig=${instance}.kubeconfig
 done
 ```
-![image](https://github.com/user-attachments/assets/f53c45a0-b9ca-46f8-abf1-68d595d26d15)
+![image](https://github.com/user-attachments/assets/4b262214-760d-4ff1-96d9-678aee7eedec)
+
 
 
 
 
 **List the output**
-
+Using ls we see newly generate kubeconfig files
 ```
 ls -ltr *.kubeconfig
 ```
-![image](https://github.com/user-attachments/assets/6cacd24f-c0b0-455d-a4bc-a7427190990f)
+![image](https://github.com/user-attachments/assets/52896c2c-36b8-4ebf-af5f-638a626cd623)
+
 
 Open up the kubeconfig files generated and review the 3 different sections that have been configured:
 
@@ -1163,7 +1166,7 @@ routing through the Load Balancer.
   kubectl config use-context default --kubeconfig=kube-controller-manager.kubeconfig
 }
 ```
-![image](https://github.com/user-attachments/assets/dc5a1252-1f99-467c-a0af-df5591d5ae3e)
+![image](https://github.com/user-attachments/assets/34fdc1b1-8a75-47c4-b92d-f0652cbdf1b5)
 
 
 4. Generating the Kube-Scheduler Kubeconfig
@@ -1190,7 +1193,7 @@ routing through the Load Balancer.
   kubectl config use-context default --kubeconfig=kube-scheduler.kubeconfig
 }
 ```
-![image](https://github.com/user-attachments/assets/cfd49d52-45c8-4f6b-965e-ce207b335aba)
+![image](https://github.com/user-attachments/assets/f0a8c916-dba4-4949-8bef-edb14486cf3e)
 
 
 5. Finally, generate the kubeconfig file for the admin user
@@ -1217,13 +1220,14 @@ routing through the Load Balancer.
   kubectl config use-context default --kubeconfig=admin.kubeconfig
 }
 ```
-![image](https://github.com/user-attachments/assets/643b5959-3a08-4d27-b879-acd9be8e4827)
+
+![image](https://github.com/user-attachments/assets/67df2791-6cf4-4bee-bb3f-00670a58032f)
 
 
 **TASK: Distribute the files to their respective servers, using scp and a for loop like we have done previously. This is a test to 
 validate that you understand which component must go to which node.**
-Distribute the files to their respective servers, using scp and a for loop
-Copy the config files for kublet and kube-proxy to the worker nodes.
+
+Distribute the files to their respective servers, using scp and a for loop Copy the config files for kublet and kube-proxy to the worker nodes.
 ```
 for i in 0 1 2; do
    instance="${NAME}-worker-${i}"
@@ -1234,9 +1238,10 @@ for i in 0 1 2; do
     ${instance}.kubeconfig kube-proxy.kubeconfig ubuntu@${external_ip}:~/
 done
 ```
-![image](https://github.com/user-attachments/assets/27e916e3-b79f-4db4-aae1-eded22f17ba1)
+![image](https://github.com/user-attachments/assets/e9f0e704-b059-43a2-ac2d-c29ae944ac0b)
 
-Copy the appropriate kube-controller-manager and kube-scheduler kubeconfig files to each master instance
+
+**Master**  Copy the appropriate kube-controller-manager and kube-scheduler kubeconfig files to each master instance
 ```
 for i in 0 1 2; do
 instance="${NAME}-master-${i}" \
@@ -1247,10 +1252,7 @@ instance="${NAME}-master-${i}" \
   kube-scheduler.kubeconfig kube-controller-manager.kubeconfig ubuntu@${external_ip}:~/;
 done
 ```
-
-
-![image](https://github.com/user-attachments/assets/44b71553-811d-4c80-a7aa-d1e29541efe0)
-
+![image](https://github.com/user-attachments/assets/0b51e163-1f0d-4b16-81d4-c8b78b389d08)
 
 ```
 for i in 0 1 2; do
@@ -1262,7 +1264,6 @@ instance="${NAME}-master-${i}" \
   admin.kubeconfig ubuntu@${external_ip}:~/;
 done
 ```
-![image](https://github.com/user-attachments/assets/f1fc8803-64bd-45ab-9a73-7bc6bf921622)
 
 ### Step 5 PREPARE THE `etcd` DATABASE FOR ENCRYPTION AT REST.
 
@@ -1284,7 +1285,8 @@ See the output that will be generated when called. Yours will be a different ran
 ```
 echo $ETCD_ENCRYPTION_KEY
 ```
-![image](https://github.com/user-attachments/assets/15c9f16e-c3a4-4828-afc2-41de930d1f20)
+![image](https://github.com/user-attachments/assets/7b693083-6df1-4654-8590-f8e7d06b4e80)
+
 
 
 **Create an encryption-config.yaml file as**  [documented officially by kubernetes](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#understanding-the-encryption-at-rest-configuration)
@@ -1305,8 +1307,9 @@ resources:
       - identity: {}
 EOF
 ```
+![image](https://github.com/user-attachments/assets/12c00571-211f-42da-a6aa-9de89b4fe5e5)
 
-Send the encryption file to the Controller nodes using scp and a for loop.
+Send the encryption file to the **Controller nodes** using scp and a for loop.
 
 ```
 for i in 0 1 2; do
@@ -1318,8 +1321,7 @@ for i in 0 1 2; do
     encryption-config.yaml ubuntu@${external_ip}:~/; \
 done
 ```
-![image](https://github.com/user-attachments/assets/f2d794cf-ce78-4d5f-ad6a-02fcd14ee48c)
-
+![image](https://github.com/user-attachments/assets/5cc367cd-ed8c-4b95-a69b-3e678523e89b)
 
 **Bootstrap `etcd` cluster**
 
@@ -1328,6 +1330,7 @@ work with multiple terminal sessions simultaneously. It will make your life easi
 nodes and run the same command across all nodes. Imagine repeating the same commands on 10 different nodes, and you don not intend
 to start automating with a configuration management tool like Ansible yet.
 
+
 The primary purpose of the `etcd` component is to store the state of the cluster. This is because Kubernetes itself is stateless.
 Therefore, all its stateful data will persist in etcd. Since Kubernetes is a distributed system – it needs a distributed storage
 to keep persistent data in it. etcd is a highly-available key value store that fits the purpose. All K8s cluster configurations
@@ -1335,7 +1338,7 @@ are stored in a form of key value pairs in etcd, it also stores the actual and d
 intelligent enough to watch for changes made on one instance and almost instantly replicate those changes to the rest of the
 instances, so all of them will be always reconciled.
 
-**NOTE:** Don not just copy and paste the commands, ensure that you go through each and understand exactly what they will do on your
+**NOTE:** Do not just copy and paste the commands, ensure that you go through each and understand exactly what they will do on your
 servers. Use tools like tmux to make it easy to run commands on multiple terminal screens at once.
 
 
@@ -1360,12 +1363,7 @@ tmux
 `Press Ctrl + b, then " `
 
 
-
-
-
 ![image](https://github.com/user-attachments/assets/f23b586b-2965-4068-af2d-aaa401739658)
-
-
 
 
 1. SSH into the controller server
@@ -1403,7 +1401,7 @@ You should have a a similar pane like below. You should be able to see all the f
 2. Download and install etcd
 
 ```
- wget -q --show-progress --https-only --timestamping \
+ sudo wget -q --show-progress --https-only --timestamping \
   "https://github.com/etcd-io/etcd/releases/download/v3.4.15/etcd-v3.4.15-linux-amd64.tar.gz"
 ```
 
@@ -1432,7 +1430,9 @@ sudo mv etcd-v3.4.15-linux-amd64/etcd* /usr/local/bin/
  ```
  export INTERNAL_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
  ```
- 
+ ```
+echo $INTERNAL_IP;
+ ```
  6. Each etcd member must have a unique name within an etcd cluster. Set the etcd name to node Private IP address so it will uniquely 
  identify the machine:
 
@@ -1759,6 +1759,7 @@ Kubernetes control plane is running at https://k8s-api-server.svc.total.io:6443
 
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
+![image](https://github.com/user-attachments/assets/6d581a25-7180-4ca5-892c-336fb8e72543)
 
 2. To get the current namespaces:
 
@@ -1766,7 +1767,7 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 kubectl get namespaces --kubeconfig admin.kubeconfig
 ```
 
-![7019](https://user-images.githubusercontent.com/85270361/210211191-7f775ab0-533f-40ec-aae0-2f2662eb2090.PNG)
+![image](https://github.com/user-attachments/assets/741f1311-d0c4-4cd7-b15b-dacafdd3657e)
 
 
 3. To reach the Kubernetes API Server publicly
@@ -1775,7 +1776,8 @@ kubectl get namespaces --kubeconfig admin.kubeconfig
 curl --cacert /var/lib/kubernetes/ca.pem https://$INTERNAL_IP:6443/version
 ```
 
-![7020](https://user-images.githubusercontent.com/85270361/210211357-537df061-762f-4180-8c08-bccefc37a566.PNG)
+![image](https://github.com/user-attachments/assets/e879eaac-4dd2-460d-bf5a-146de74aa86f)
+
 
 
 4. To get the status of each component:
@@ -1784,7 +1786,9 @@ curl --cacert /var/lib/kubernetes/ca.pem https://$INTERNAL_IP:6443/version
 kubectl get componentstatuses --kubeconfig admin.kubeconfig
 ```
 
-![7021](https://user-images.githubusercontent.com/85270361/210212939-8514d8c6-b276-45de-a682-9b7cde6cf588.PNG)
+![image](https://github.com/user-attachments/assets/7dc1eb46-cd17-4a25-8714-ce9879faf9b3)
+
+![image](https://github.com/user-attachments/assets/728f6dae-9b96-4320-9957-6c5e96af54eb)
 
 
 5. On one of the controller nodes, configure Role Based Access Control (RBAC) so that the api-server has necessary authorization for 
