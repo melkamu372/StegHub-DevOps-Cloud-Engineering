@@ -2492,6 +2492,7 @@ Now you should have the worker nodes joined to the cluster, and in a READY state
 ```
 kubectl get nodes --kubeconfig admin.kubeconfig -o wide
 ```
+![image](https://github.com/user-attachments/assets/fd16bf85-8d8b-4d84-b4f6-5ccb591ecff3)
 
 > **Troubleshooting Tips**: If you have issues at this point. Consider the below:
 
