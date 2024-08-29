@@ -347,7 +347,6 @@ EOF
 
 1. Specified the type of service (Nodeport)
 2. Specified the NodePort number to use.
-![image](https://github.com/user-attachments/assets/95b8a78a-0aa0-47d4-9a4a-52692d5200fe)
 ![image](https://github.com/user-attachments/assets/be00e468-3965-494b-ae1b-15c5e48482e8)
 
 **To access the service, you must**:
@@ -735,108 +734,46 @@ spec:
 ```
 kubectl apply -f deployment.yaml
 ```
+![image](https://github.com/user-attachments/assets/3908a9f2-2535-4960-8744-e23d6f630c97)
+
 **Run commands to get the following**
 
 1. Get the Deployment
 ```
-NAME               READY   UP-TO-DATE   AVAILABLE   AGE
-nginx-deployment   3/3     3            3           39s
+kubectl get deployments
 ```
+![image](https://github.com/user-attachments/assets/cf03cf47-cc52-4d64-8eaa-df4727840eb8)
+
 2. Get the ReplicaSet
 ```
-NAME                          DESIRED   CURRENT   READY   AGE
-nginx-deployment-56466d4948   3         3         3       24s
+kubectl get rs
 ```
 3. Get the Pods
 ```
-NAME                                READY   STATUS    RESTARTS   AGE
-nginx-deployment-56466d4948-5zdbx   1/1     Running   0          12s
-nginx-deployment-56466d4948-tg9j8   1/1     Running   0          12s
-nginx-deployment-56466d4948-ttn5t   1/1     Running   0          12s
+kubectl get pods
 ```
+![image](https://github.com/user-attachments/assets/9f0395b3-c6cc-4f57-ac80-3d823d732310)
+
 4. Scale the replicas in the Deployment to 15 Pods
 ```
-NAME                                READY   STATUS    RESTARTS   AGE
-nginx-deployment-56466d4948-58nqx   1/1     Running   0          6s
-nginx-deployment-56466d4948-5z4c2   1/1     Running   0          6s
-nginx-deployment-56466d4948-5zdbx   1/1     Running   0          17m
-nginx-deployment-56466d4948-78j9c   1/1     Running   0          6s
-nginx-deployment-56466d4948-gj4fd   1/1     Running   0          6s
-nginx-deployment-56466d4948-gsrpz   1/1     Running   0          6s
-nginx-deployment-56466d4948-kg9hp   1/1     Running   0          6s
-nginx-deployment-56466d4948-qs29b   1/1     Running   0          6s
-nginx-deployment-56466d4948-sfft6   1/1     Running   0          6s
-nginx-deployment-56466d4948-sg4np   1/1     Running   0          6s
-nginx-deployment-56466d4948-tg9j8   1/1     Running   0          17m
-nginx-deployment-56466d4948-ttn5t   1/1     Running   0          17m
-nginx-deployment-56466d4948-vfmjx   1/1     Running   0          6s
-nginx-deployment-56466d4948-vlgbs   1/1     Running   0          6s
-nginx-deployment-56466d4948-xctfh   1/1     Running   0          6s
+kubectl scale deployment/nginx-deployment --replicas=15
 ```
+```
+kubectl get pods
+
+```
+![image](https://github.com/user-attachments/assets/443fc89e-5b5d-42d6-b00e-e49782e2092f)
+
 5. Exec into one of the Pod's container to run Linux commands
 ```
-kubectl exec -it nginx-deployment-56466d4948-78j9c bash
+kubectl exec -it nginx-deployment-75b7745567-4tg6p -- bash
 ```
-List the files and folders in the Nginx directory
-```
-root@nginx-deployment-56466d4948-78j9c:/# ls -ltr /etc/nginx/
-total 24
--rw-r--r-- 1 root root  664 May 25 12:28 uwsgi_params
--rw-r--r-- 1 root root  636 May 25 12:28 scgi_params
--rw-r--r-- 1 root root 5290 May 25 12:28 mime.types
--rw-r--r-- 1 root root 1007 May 25 12:28 fastcgi_params
--rw-r--r-- 1 root root  648 May 25 13:01 nginx.conf
-lrwxrwxrwx 1 root root   22 May 25 13:01 modules -> /usr/lib/nginx/modules
-drwxr-xr-x 1 root root   26 Jun 18 22:08 conf.d
-```
-Check the content of the default Nginx configuration file
-```
-root@nginx-deployment-56466d4948-78j9c:/# cat  /etc/nginx/conf.d/default.conf 
-server {
-    listen       80;
-    listen  [::]:80;
-    server_name  localhost;
+List `ls -ltr /etc/nginx/` the files and folders in the Nginx directory
+![image](https://github.com/user-attachments/assets/2c0e6e3b-55c1-406f-80cf-19abb7f9f7b5)
 
-    #access_log  /var/log/nginx/host.access.log  main;
+Check the content of the default Nginx configuration file `cat  /etc/nginx/conf.d/default.conf `
+![image](https://github.com/user-attachments/assets/0737c7a7-1107-41a1-9641-4771513689e3)
 
-    location / {
-        root   /usr/share/nginx/html;
-        index  index.html index.htm;
-    }
-
-    #error_page  404              /404.html;
-
-    # redirect server error pages to the static page /50x.html
-    #
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   /usr/share/nginx/html;
-    }
-
-    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
-    #
-    #location ~ \.php$ {
-    #    proxy_pass   http://127.0.0.1;
-    #}
-
-    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-    #
-    #location ~ \.php$ {
-    #    root           html;
-    #    fastcgi_pass   127.0.0.1:9000;
-    #    fastcgi_index  index.php;
-    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
-    #    include        fastcgi_params;
-    #}
-
-    # deny access to .htaccess files, if Apache's document root
-    # concurs with nginx's one
-    #
-    #location ~ /\.ht {
-    #    deny  all;
-    #}
-}
-```
 Now, as we have got acquainted with most common Kubernetes workloads to deploy applications:
 ![image](https://github.com/user-attachments/assets/9e1567cc-8bd0-4092-acbd-f0555b6669b9)
 
@@ -852,31 +789,19 @@ Let us try that:
 
 1. Scale the Pods down to 1 replica
 ```
-NAME                                READY   STATUS        RESTARTS   AGE
-nginx-deployment-56466d4948-58nqx   0/1     Terminating   0          45m
-nginx-deployment-56466d4948-5z4c2   1/1     Terminating   0          45m
-nginx-deployment-56466d4948-5zdbx   0/1     Terminating   0          62m
-nginx-deployment-56466d4948-78j9c   1/1     Terminating   0          45m
-nginx-deployment-56466d4948-gj4fd   1/1     Terminating   0          45m
-nginx-deployment-56466d4948-gsrpz   0/1     Terminating   0          45m
-nginx-deployment-56466d4948-kg9hp   1/1     Terminating   0          45m
-nginx-deployment-56466d4948-qs29b   0/1     Terminating   0          45m
-nginx-deployment-56466d4948-sfft6   0/1     Terminating   0          45m
-nginx-deployment-56466d4948-sg4np   0/1     Terminating   0          45m
-nginx-deployment-56466d4948-tg9j8   1/1     Running       0          62m
-nginx-deployment-56466d4948-ttn5t   1/1     Terminating   0          62m
-nginx-deployment-56466d4948-vfmjx   0/1     Terminating   0          45m
-nginx-deployment-56466d4948-vlgbs   1/1     Terminating   0          45m
-nginx-deployment-56466d4948-xctfh   0/1     Terminating   0          45m
-NAME                                READY   STATUS    RESTARTS   AGE
-nginx-deployment-56466d4948-tg9j8   1/1     Running   0          64m
+kubectl scale deployment nginx-deployment --replicas=1
 ```
 2. Exec into the running container (figure out the command yourself)
+```
+kubectl exec -it nginx-deployment-75b7745567-mjqk2 -- bash
+```
 3. Install vim so that you can edit the file
 ```
 apt-get update
 apt-get install vim
 ```
+![image](https://github.com/user-attachments/assets/6d0aacfe-c7ed-4711-b9c6-cfb847585664)
+
 4. Update the content of the file and add the code below /usr/share/nginx/html/index.html
 ```
 <!DOCTYPE html>
@@ -904,14 +829,18 @@ for skills acquisition
 </body>
 </html>
 ```
+![image](https://github.com/user-attachments/assets/b014a960-d46b-443e-b843-bb1c02792e1b)
+
 5. Check the browser - You should see this
+![image](https://github.com/user-attachments/assets/eccfecdf-4ec1-47e0-9aed-7bbd0e4eeeae)
 
 6. Now, delete the only running Pod so that a new one is automatically recreated.
-```
- kubectl delete po nginx-deployment-56466d4948-tg9j8
-pod "nginx-deployment-56466d4948-tg9j8" deleted
-```
-7. Refresh the web page - You will see that the content you saved in the container is no longer there. That is because Pods do not store data when they are being recreated - that is why they are called ephemeral or stateless. (But not to worry, we will address this with persistent volumes in the next project)
+![image](https://github.com/user-attachments/assets/069f5996-6e85-4423-a542-64eff96316fd)
+
+7. Refresh the web page - You will see that the content you saved in the container is no longer there.
+![image](https://github.com/user-attachments/assets/784dc4b4-fc0b-4a18-8d29-243f171a7baf)
+
+ That is because Pods do not store data when they are being recreated - that is why they are called ephemeral or stateless. (But not to worry, we will address this with persistent volumes in the next project)
 
 Storage is a critical part of running containers, and Kubernetes offers some powerful primitives for managing it. Dynamic volume provisioning, a feature unique to Kubernetes, which allows storage volumes to be created on-demand. Without dynamic provisioning, DevOps engineers must manually make calls to the cloud or storage provider to create new storage volumes, and then create PersistentVolume objects to represent them in Kubernetes. The dynamic provisioning feature eliminates the need for DevOps to pre-provision storage. Instead, it automatically provisions storage when it is requested by users.
 
@@ -921,6 +850,7 @@ To make the data persist in case of a Pod's failure, you will need to configure 
 ```
 kubectl delete deployment nginx-deployment
 ```
+![image](https://github.com/user-attachments/assets/c1098c60-8e11-4056-9eb2-8f0705a8a700)
 
 ### The End of Project 22 Deploying Applications Into Kubernetes Cluster
 In the next project,
