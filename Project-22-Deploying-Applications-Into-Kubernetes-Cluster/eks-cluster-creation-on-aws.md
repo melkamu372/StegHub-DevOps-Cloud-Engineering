@@ -1,7 +1,7 @@
 ### EKS Cluster Creation on AWS Cloud
 
 This guide will walk you through the process of creating an EKS (Elastic Kubernetes Service) Cluster on AWS Cloud.
-
+> N.B for simpilicity you can use `eksctl`
  1. Access the EKS Console
 
 To start, navigate to the AWS EKS console to create a new cluster.
@@ -108,11 +108,62 @@ You will need to create an IAM role for your nodes. Follow these steps:
 ![image](https://github.com/user-attachments/assets/6498e6bf-c833-4c7e-9b90-60d99f6533df)
 ![image](https://github.com/user-attachments/assets/b1aafb19-1f5b-46da-9c05-0489b9bf544e)
 - Click **Create role**.
-4.3. Select Node Group Role
+
+4.3.  Select the Node Group Role During Node Group Creation
+
 - After the role is created, select it as your node group role.
+
+
+1. Go to the EKS service in the AWS Management Console.
+2. Select your cluster.
+3. Go to the Node Groups tab.
+4. Click on Create.
+5. In the Node Group Role dropdown, select your AmazonEKSNodeRole.
+6. Complete the configuration and create the node group.
+![image](https://github.com/user-attachments/assets/82fee4df-57c2-4a3a-a8bb-628e18b50db9)
+
+![image](https://github.com/user-attachments/assets/8d938bcd-7271-4922-99ca-135a663f3c3d)
 
  5. Connect to the Cluster
 
-To manage your cluster, connect to it using AWS CLI.
+To manage your cluster, connect to it using AWS CLI
+then 
+```
+aws configure
+
+```
+**Ensure AWS CLI is Configured Correctly**
+```
+aws sts get-caller-identity
+```
+**Verify aws-iam-authenticator Installation if not install**
+```
+aws-iam-authenticator version
+```
+
+
+To connect to your EKS cluster, you need to update your kubeconfig file, which is used by kubectl to interact with the cluster.
+
+Run the following command to update the kubeconfig file:
+```
+aws eks --region us-east-1  update-kubeconfig --name eks-deployment-cluster
+```
+![image](https://github.com/user-attachments/assets/0b570646-8d40-4fc5-9646-25b055f2dba9)
+
+**Verify the Connection**
+```
+kubectl get svc
+```
+![image](https://github.com/user-attachments/assets/31435dd5-3c67-41ad-a861-57cf329b92c6)
+
+**Access the Cluster**
+```
+kubectl get nodes
+
+```
+![image](https://github.com/user-attachments/assets/3d868d34-cdca-495e-8772-ac68bc9e6097)
+
+I use this video as reference [kubernetes tutorial | Create AWS EKS Cluster & access eks cluster from local machine using kubectl](https://www.youtube.com/watch?v=-HtOdQitp2Q)
+
 
 
