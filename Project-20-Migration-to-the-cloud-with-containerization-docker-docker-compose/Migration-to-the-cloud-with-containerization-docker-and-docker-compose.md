@@ -643,7 +643,12 @@ will be determined a stage failure.
 ![image](https://github.com/user-attachments/assets/feaba5c2-d314-4788-9e02-8946fc2ccfa4)
 
 ![image](https://github.com/user-attachments/assets/0e05c357-18fe-4273-9e7d-b6899d87c7de)
+**System login**
+![image](https://github.com/user-attachments/assets/1e79cb3f-0a3f-49bc-84a9-0dda4a674340)
 
+![image](https://github.com/user-attachments/assets/eca5f418-b784-46f5-82e8-bb813f124310)
+
+![image](https://github.com/user-attachments/assets/2bfec8e0-01ac-4348-aa1f-929b7edc6cd6)
 ## The End of Project 20
 In this project we have started our journey into migrating an application running on virtual machines into the Cloud with containerization.
 Now we know how to prepare a Dockerfile, build an image with Docker build and deploy it with Docker Compose!
