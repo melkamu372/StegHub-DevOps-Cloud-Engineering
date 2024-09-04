@@ -1,6 +1,49 @@
 # PERSISTING DATA IN KUBERNETES
 
 > NOTE: Create EKS cluster first before the below section
+1. Create an EKS Cluster
+Before proceeding with data persistence in Kubernetes, we need to set up an **Amazon Elastic Kubernetes Service (EKS)** cluster. 
+
+Step 1: Install `AWS CLI` and `eksctl` Ensure you have AWS CLI and eksctl installed and configured on your local machine.
+
+**Install AWS CLI**
+
+```
+sudo apt-get update && sudo apt-get install -y awscli
+```
+```
+aws --version
+```
+**Install eksctl**
+```
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/v0.125.0/eksctl_$(uname -s)_amd64.tar.gz" | sudo tar -xz -C /usr/local/bin
+```
+```
+eksctl version
+```
+![image](https://github.com/user-attachments/assets/61c5b8f1-6647-4b40-994c-ab897cf4e2d2)
+
+2: Create the EKS Cluster Use eksctl to create a new EKS cluster.
+
+```
+eksctl create cluster --name my-eks-cluster --region us-east-1 --nodes 2 --node-type t3.medium
+```
+**Check Cluster Status**
+```
+eksctl get cluster --region us-east-1
+```
+![image](https://github.com/user-attachments/assets/408da9e9-5ee4-439d-9c4d-b11cc4bbe5eb)
+
+**Verify EKS API Access**
+```
+kubectl get svc
+```
+![image](https://github.com/user-attachments/assets/d00f18eb-180d-492a-b364-8987e7b3b5b5)
+
+
+**In aws console**
+![image](https://github.com/user-attachments/assets/0f9f9686-20bb-48e2-853d-674744a87411)
+
 
 Now we know that containers are stateless by design, which means that data does not persist in the containers. Even when you run 
 the containers in kubernetes pods, they still remain stateless unless you ensure that your configuration supports statefulness.
@@ -36,7 +79,6 @@ persisted and the volume is only unmmounted when the pod crashes, or terminates.
 with data, and that data can be shared between pods.
 
 Lets see what it looks like for our Nginx pod to persist data using awsElasticBlockStore volume
-
 
 ```
 sudo cat <<EOF | sudo tee ./nginx-pod.yaml
@@ -77,7 +119,6 @@ Therefore, You must create an **EBS** volume by using aws ec2 create-volume comm
 
 Before you create a volume, lets run the nginx deployment into kubernetes without a volume.
 
-
 ```
 sudo cat <<EOF | sudo tee ./nginx-pod.yaml
 apiVersion: apps/v1
@@ -103,13 +144,41 @@ spec:
         - containerPort: 80
 EOF
 ```
+![image](https://github.com/user-attachments/assets/fa7ad984-7d58-4e62-82f4-c50fd883e631)
+
+```
+kubectl apply -f nginx-pod.yaml
+```
+![image](https://github.com/user-attachments/assets/c31fce72-a7dc-4556-9baf-dcef686a7936)
 
 **Tasks**
 
 - Verify that the pod is running
+```
+kubectl get pods
+```
+![image](https://github.com/user-attachments/assets/b9a101e4-c04d-42cc-abc4-b4c45d33282a)
+
 - Check the logs of the pod
+```
+POD_NAME=$(kubectl get pods -l tier=frontend -o jsonpath="{.items[0].metadata.name}")
+```
+```
+kubectl logs $POD_NAME
+```
+![image](https://github.com/user-attachments/assets/1e4ef8d7-a315-4756-8960-857a308973d5)
+
 - Exec into the pod and navigate to the nginx configuration file /etc/nginx/conf.d
+```
+kubectl exec -it $POD_NAME -- /bin/bash
+```
+```
+cd /etc/nginx/conf.d
+```
+![image](https://github.com/user-attachments/assets/015d9e8d-c210-4740-a216-2c533e9a55ff)
+
 - Open the config files to see the default configuration.
+![image](https://github.com/user-attachments/assets/e6ddfb47-0909-41d5-ae07-d6be5db60ba6)
 
 NOTE: There are some restrictions when using an awsElasticBlockStore volume:
 
@@ -123,8 +192,9 @@ Now that we have the pod running without a volume, Lets now create a volume from
 2. Click on Volumes
 3. At the top right, click on Create Volume
 
+![image](https://github.com/user-attachments/assets/2a75fd92-ed2c-42b6-8038-c3fdf87333ee)
 
-![7037](https://user-images.githubusercontent.com/85270361/210249210-c7d8b090-c45d-435a-ae15-78535bf6ead8.PNG)
+![image](https://github.com/user-attachments/assets/0a3e2faa-96c1-4461-988b-0d6b48fb9aae)
 
 
 Part of the requirements is to ensure that the volume exists in the same region and availability zone as the EC2 instance running 
@@ -133,28 +203,22 @@ the pod. Hence, we need to find out
 - Which node is running the pod (replace the pod name with yours)
 
 ```
-kubectl get po nginx-deployment-6fdcffd8fc-thcfp -o wide
+kubectl get po nginx-deployment-75b7745567-4k6tl  -o wide
 ```
-
-
 **Output:**
-```
-NAME                                READY   STATUS    RESTARTS   AGE   IP           NODE                                       NOMINATED NODE   READINESS GATES
-nginx-deployment-6fdcffd8fc-thcfp   1/1     Running   0          64m   10.0.3.159   ip-10-0-3-233.eu-west-2.compute.internal   <none>           <none>
-```
+![image](https://github.com/user-attachments/assets/68d49c17-0cec-446f-85d1-77d3698e9e0f)
 
 The NODE column shows the node the pode is running on
 
 - In which Availability Zone the node is running.
 
 ```
-kubectl describe node ip-10-0-3-233.eu-west-2.compute.internal 
+kubectl describe node ip-192-168-35-203.ec2.internal 
 ```
 
 The information is written in the labels section of the descibe command.
 
-
-![7038](https://user-images.githubusercontent.com/85270361/210250681-38c07c29-9ff7-471e-b121-213c2d5940f3.PNG)
+![image](https://github.com/user-attachments/assets/f7ce0888-a26f-40a1-a0f7-8885a3b90260)
 
 
 So, in the case above, we know the AZ for the node is in eu-west-2c hence, the volume must be created in the same AZ. Choose the 
@@ -162,15 +226,16 @@ size of the required volume.
 
 The create volume selection should be like:
 
-
-![7039](https://user-images.githubusercontent.com/85270361/210250976-f2fa6644-b225-4669-8662-f40edd17e171.PNG)
-
+![image](https://github.com/user-attachments/assets/49f34a7d-dd0b-4e9b-98a5-894c6c42e5ef)
 
 5. Copy the VolumeID
 
 
-![7040](https://user-images.githubusercontent.com/85270361/210251775-3492571a-4f5f-42ef-b52c-576d27110534.PNG)
+![image](https://github.com/user-attachments/assets/5c4ef8d7-bf60-4fc1-b148-0027fe308601)
 
+```
+vol-0713e59b77ed741ff
+```
 
 6. Update the deployment configuration with the volume spec.
 
@@ -201,19 +266,38 @@ spec:
       - name: nginx-volume
         # This AWS EBS volume must already exist.
         awsElasticBlockStore:
-          volumeID: "vol-0e194e56f1b5302ee"
+          volumeID: "vol-0713e59b77ed741ff"
           fsType: ext4
 EOF
 ```
+![image](https://github.com/user-attachments/assets/167077b9-df15-4ef9-912f-3b9eb6f125e1)
+
 
 Apply the new configuration and check the pod. As you can see, the old pod is being terminated while the updated one is up and running.
 
+```
+kubectl apply -f nginx-pod.yaml
+```
 
-![7041](https://user-images.githubusercontent.com/85270361/210252124-4b42d5c3-b728-4964-990a-a3fad4d0df09.PNG)
+```
+kubectl get pods
+
+```
+![image](https://github.com/user-attachments/assets/c347a441-49ac-4358-9a48-49eeddfcd51f)
 
 
 Now, the new pod has a volume attached to it, and can be used to run a container for statefuleness. Go ahead and explore the 
 running pod. Run describe on both the pod and deployment
+
+```
+kubectl describe pod nginx-deployment-75b7745567-rz9vb
+```
+![image](https://github.com/user-attachments/assets/dc731c50-69d4-48a8-9071-8659c94bbd3f)
+
+```
+kubectl describe deployment nginx-deployment
+```
+![image](https://github.com/user-attachments/assets/a5f30467-ad12-49f9-b1c7-9f3428819202)
 
 At this point, even though the pod can be used for a stateful application, the configuration is not yet complete. This is because, 
 the volume is not yet mounted onto any specific filesystem inside the container. The directory /usr/share/nginx/html which holds 
@@ -257,10 +341,11 @@ spec:
       - name: nginx-volume
         # This AWS EBS volume must already exist.
         awsElasticBlockStore:
-          volumeID: "  vol-07b537651bbe68be0"
+          volumeID: "vol-0713e59b77ed741ff"
           fsType: ext4
 EOF
 ```
+![image](https://github.com/user-attachments/assets/33823fbc-4b07-49e9-9149-aafd3b215106)
 
 Notice the newly added section:
 
@@ -274,14 +359,24 @@ Notice the newly added section:
 - The value provided to name in volumeMounts must be the same value used in the volumes section. It basically means mount the 
 volume with the name provided, to the provided mountpath
 
+```
+ kubectl apply -f nginx-pod.yaml
+```
 In as much as we now have a way to persist data, we also have new problems.
 
 1. If you port forward the service and try to reach the endpoint, you will get a 403 error. This is because mounting a volume on a
  filesystem that already contains data will automatically erase all the existing data. This strategy for statefulness is preferred
  if the mounted volume already contains the data which you want to be made available to the container
- 
- 
-![7042](https://user-images.githubusercontent.com/85270361/210252594-005fa78b-ec52-4274-9db6-c1b2a00efefc.PNG)
+
+**Get the Pod Name**
+```
+kubectl get pods
+```
+**Port Forward the Pod**
+```
+kubectl port-forward pod/<pod-name> 8099:80
+```
+![image](https://github.com/user-attachments/assets/561c5b30-c489-48ac-9950-96b6a1cbc2c8)
 
 2. It is still a manual process to create a volume, manually ensure that the volume created is in the same Avaioability zone in
  which the pod is running, and then update the manifest file to use the volume ID. All of these is against DevOps principles because
