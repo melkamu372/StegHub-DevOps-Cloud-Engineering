@@ -612,28 +612,26 @@ one gets replaced.
 ```
 kubectl get pvc
 ```
+![image](https://github.com/user-attachments/assets/55e6d490-4641-44f6-ae59-dde3d5b8091a)
 
 ```
 kubectl get pv
 ```
+![image](https://github.com/user-attachments/assets/89d304c3-3191-4db3-8784-01960b909d07)
 
 
+you can copy the PV Name and search in the AWS console. You will notice that the volum has been dynamically created there.
 
-```
-ou can copy the PV Name and search in the AWS console. You will notice that the volum has been dynamically created there.
+![image](https://github.com/user-attachments/assets/5c24077f-18e4-43d1-9954-376145d54f7e)
 
-![](https://www.darey.io/wp-content/uploads/2022/04/PV-volume.png)
-
-Approach 2 (Attempt this on your own). [See an example here](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-volume-claim-templates.html)
+**Approach 2 (Attempt this on your own).** [See an example here](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-volume-claim-templates.html)
 
 1. Create a volumeClaimTemplate within the Pod spec. This approach is simply adding the manifest for PVC right within the Pod spec of the deployment.
 2. Then use the PVC name just as Approach 1 above.
 
 So rather than have 2 manifest files, you will define everything within the deployment manifest.
-```
 
-
- # CONFIGMAP
+ ### ConfigMap
 
 Using configMaps for persistence is not something you would consider for data storage. Rather it is a way to manage configuration 
 files and ensure they are not lost as a result of Pod replacement.
@@ -656,19 +654,17 @@ kubectl exec -it nginx-deployment-79d8c764bc-j6sp9 -- bash
 ```
  cat /usr/share/nginx/html/index.html 
 ```
-
-![7043](https://user-images.githubusercontent.com/85270361/210257580-f5d5e89e-3480-4415-bc2b-1924306683bc.PNG)
-
+![image](https://github.com/user-attachments/assets/41a93259-14ca-45e3-91d5-72ce52ddf025)
 
 4. Copy the output and save the file on your local pc because we will need it to create a configmap.
 
-Persisting configuration data with [configMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+**Persisting configuration data with** [configMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+
 According to the official documentation of configMaps, A ConfigMap is an API object used to store non-confidential data in key-value
 pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.
 
 In our own use case here, We will use configMap to create a file in a volume.
-
-The manifest file we look like:
+Create a new file named nginx-configmap.yaml and past this
 
 ```
 cat <<EOF | tee ./nginx-configmap.yaml
@@ -704,16 +700,16 @@ data:
     </html>
 EOF
 ```
+![image](https://github.com/user-attachments/assets/094bc32a-f0c6-4626-919d-15f7e12999e7)
 
 - Apply the new manifest file
 
 ```
 kubectl apply -f nginx-configmap.yaml 
 ```
+![image](https://github.com/user-attachments/assets/91f0774d-cb7b-46d8-bee4-6f0b17ce91d6)
 
 - Update the deployment file to use the configmap in the volumeMounts section
-
-
 ```
 cat <<EOF | tee ./nginx-pod-with-cm.yaml
 apiVersion: apps/v1
@@ -751,6 +747,10 @@ spec:
 EOF
 ```
 
+```
+kubectl apply -f nginx-pod-with-cm.yaml
+```
+
 - Now the index.html file is no longer ephemeral because it is using a configMap that has been mounted onto the filesystem. This is 
 now evident when you exec into the pod and list the /usr/share/nginx/html directory
 
@@ -759,6 +759,7 @@ now evident when you exec into the pod and list the /usr/share/nginx/html direct
 root@nginx-deployment-84b799b888-fqzwk:/# ls -ltr  /usr/share/nginx/html
   lrwxrwxrwx 1 root root 17 Feb 19 16:16 index.html -> ..data/index.html
 ```
+![image](https://github.com/user-attachments/assets/21103308-740a-49f6-bddc-b86bee32078a)
 
 You can now see that the index.html is now a soft link to ../data
 
@@ -770,16 +771,12 @@ Lets try that;
 
 - List the available configmaps. You can either use kubectl get configmap or kubectl get cm
 
-
 ```
 kubectl get cm
-NAME                 DATA   AGE
-kube-root-ca.crt     1      17d
-website-index-file   1      46m
 ```
+![image](https://github.com/user-attachments/assets/5dc2d737-7667-4adb-b118-2a8ef22eca23)
 
 We are interested in the website-index-file configmap
-
 - Update the configmap. You can either update the manifest file, or the kubernetes object directly. Lets use the latter approach 
 this time.
 
@@ -809,7 +806,7 @@ data:
     <!DOCTYPE html>
     <html>
     <head>
-    <title>Welcome to TOTAL!</title>
+    <title>Welcome to STEGHUB.COM!</title>
     <style>
     html { color-scheme: light dark; }
     body { width: 35em; margin: 0 auto;
@@ -817,21 +814,29 @@ data:
     </style>
     </head>
     <body>
-    <h1>Welcome to TOTAL!</h1>
+    <h1>Welcome to STEGHUB.COM!</h1>
     <p>If you see this page, It means you have successfully updated the configMap data in Kubernetes.</p>
 
     <p>For online documentation and support please refer to
-    <a href="http://TOTAL/">TOTAL</a>.<br/>
+    <a href="http://STEGHUB.COM/">STEGHUB.COM</a>.<br/>
     Commercial support is available at
-    <a href="http://TOTAL/">TOTAL</a>.</p>
+    <a href="http://STEGHUB.COM/">STEGHUB.COM</a>.</p>
 
-    <p><em>Thank you and make sure you are on Darey's Masterclass Program.</em></p>
+    <p><em>Thank you and WELCOME TO THE LIFE CHANGING PROGRAM.</em></p>
     </body>
     </html>
 ```
+**Verify the Deployment**
+```
+kubectl get pods
+```
+```
+kubectl port-forward deployment/nginx-deployment 8088:80
 
+```
+![image](https://github.com/user-attachments/assets/2439a792-00d1-4d39-983e-18bf75b6c0a8)
 Without restarting the pod, your site should be loaded automatically.
-
+![image](https://github.com/user-attachments/assets/84b923a5-8ced-4f44-862e-b0cdb1986bac)
 
 
 If you wish to restart the deployment for any reason, simply use the command
