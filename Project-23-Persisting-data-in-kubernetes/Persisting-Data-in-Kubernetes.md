@@ -390,21 +390,21 @@ look at the different options available.
 1. Persistent Volume (PV) and Persistent Volume Claim (PVC)
 2. configMap
 
-# MANAGING VOLUMES DYNAMICALLY WITH PVS AND PVCS
+### Managing Volumes Dynamically With PVS and PVCS
 
-Kubernetes provides API objects for storage management such that, the lower level details of volume provisioning, storage allocation,
-access management etc are all abstracted away from the user, and all you have to do is present manifest files that describes what you
+**Kubernetes** provides API objects for storage management such that, the lower level details of volume provisioning, storage allocation,
+access management etc are all abstracted away from the user, and all you have to do is present **manifest** files that describes what you
 want to get done.
 
-PVs are volume plugins that have a lifecycle completely independent of any individual Pod that uses the PV. This means that even when
-a pod dies, the PV remains. A PV is a piece of storage in the cluster that is either provisioned by an administrator through a manifest
+**PVs**  are volume plugins that have a lifecycle completely independent of any individual Pod that uses the PV. This means that even when
+a pod dies, the **PV remains**. A PV is a piece of storage in the cluster that is either provisioned by an administrator through a manifest
 file, or it can be dynamically created if a storage class has been pre-configured.
 
-Creating a PV manually is like what we have done previously where with creating the volume from the console. As much as possible, we
-should allow PVs to be created automatically just be adding it to the container spec iin deployments. But without a storageclass 
+**Creating a PV manually** is like what we have done previously where with creating the volume from the console. As much as possible, we
+should allow PVs to be created automatically just be adding it to the container spec in deployments. But without a storageclass 
 present in the cluster, PVs cannot be automatically created.
 
-If your infrastructure relies on a storage system such as NFS, iSCSI or a cloud provider-specific storage system such as EBS on AWS,
+If your infrastructure relies on a storage system such as **NFS**, **iSCSI** or a **cloud provider-specific storage system**  such as EBS on AWS,
 then you can dynamically create a PV which will create a volume that a Pod can then use. This means that there must be a storageClass
 resource in the cluster before a PV can be provisioned.
 
@@ -417,15 +417,14 @@ Run the command below to check if you already have a storageclass in your cluste
 
 ```
 kubectl get storageclass
-  NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
-  gp2 (default)   kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   false                  18d
 ```
+![image](https://github.com/user-attachments/assets/3b67c2fe-5653-4749-9b1a-a3cd49d784f0)
+
 
 Of course, if the cluster is not EKS, then the storage class will be different. For example if the cluster is based on Google’s GKE 
 or Azure’s AKS, then the storage class will be different.
 
 If there is no storage class in your cluster, below manifest is an example of how one would be created
-
 
 ```
  kind: StorageClass
@@ -441,16 +440,16 @@ If there is no storage class in your cluster, below manifest is an example of ho
 ```
 
 
-A PersistentVolumeClaim (PVC) on the other hand is a request for storage. Just as Pods consume node resources, PVCs consume PV 
-resources. Pods can request specific levels of resources (CPU and Memory). Claims can request specific size and access modes (e.g.,
+**A PersistentVolumeClaim (PVC)**  on the other hand is a request for storage. Just as Pods consume node resources, PVCs consume PV 
+resources. Pods can request specific levels of resources (CPU and Memory). **Claims** can request specific size and access modes (e.g.,
 they can be mounted ReadWriteOnce, ReadOnlyMany or ReadWriteMany, see [AccessModes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)).
 
-Lifecycle of a PV and PVC
+**Lifecycle of a PV and PVC**
 
-PVs are resources in the cluster. PVCs are requests for those resources and also act as claim checks to the resource. The interaction
+**PVs** are resources in the cluster. PVCs are requests for those resources and also act as claim checks to the resource. The interaction
 between PVs and PVCs follows this lifecycle:
 
-1. Provisioning: There are two ways PVs may be provisioned: statically or dynamically.
+1.**Provisioning**: There are two ways PVs may be provisioned: statically or dynamically.
 
 - Static/Manual Provisioning: A cluster administrator creates a number of PVs using a manifest file which will contain all the details
 of the real storage. PVs are not scoped to namespaces, they a clusterwide wide resource, therefore the PV will be available for use
@@ -459,15 +458,16 @@ when requested. PVCs on the other hand are namespace scoped.
 - Dynamic: When there is no PV matching a PVC’s request, then based on the available StorageClass, a dynamic PV will be created for use
 by the PVC. If there is not StorageClass, then the request for a PV by the PVC will fail.
 
-2. Binding: PVCs are bound to specifiv PVs. This binding is exclusive. A PVC to PV binding is a one-to-one mapping. Claims will remain
+2. **Binding**: PVCs are bound to specifiv PVs. This binding is exclusive. A PVC to PV binding is a one-to-one mapping. Claims will remain
 unbound indefinitely if a matching volume does not exist. Claims will be bound as matching volumes become available. For example, a
 cluster provisioned with many 50Gi PVs would not match a PVC requesting 100Gi. The PVC can be bound when a 100Gi PV is added to the
 cluster.
-3. Using: Pods use claims as volumes. The cluster inspects the claim to find the bound volume and mounts that volume for a Pod. For
+
+3. **Using**: Pods use claims as volumes. The cluster inspects the claim to find the bound volume and mounts that volume for a Pod. For
 volumes that support multiple access modes, the user specifies which mode is desired when using their claim as a volume in a Pod.
 Once a user has a claim and that claim is bound, the bound PV belongs to the user for as long as they need it. Users schedule Pods 
 and access their claimed PVs by including a persistentVolumeClaim section in a Pod’s volumes block
-4. Storage Object in Use Protection: The purpose of the Storage Object in Use Protection feature is to ensure that PersistentVolumeClaims
+4. **Storage Object in Use Protection**: The purpose of the Storage Object in Use Protection feature is to ensure that PersistentVolumeClaims
 (PVCs) in active use by a Pod and PersistentVolume (PVs) that are bound to PVCs are not removed from the system, as this may result
 in data loss.
 Note: PVC is in active use by a Pod when a Pod object exists that is using the PVC. If a user deletes a PVC in active use by a Pod,
@@ -475,7 +475,7 @@ the PVC is not removed immediately. PVC removal is postponed until the PVC is no
 deletes a PV that is bound to a PVC, the PV is not removed immediately. PV removal is postponed until the PV is no longer bound to 
 a PVC.
 
-5. Reclaiming: When a user is done with their volume, they can delete the PVC objects from the API that allows reclamation of the 
+5. **Reclaiming**: When a user is done with their volume, they can delete the PVC objects from the API that allows reclamation of the 
 resource. The reclaim policy for a PersistentVolume tells the cluster what to do with the volume after it has been released of its
 claim. Currently, volumes can either be Retained, Recycled, or Deleted.
 
@@ -488,7 +488,7 @@ claim. Currently, volumes can either be Retained, Recycled, or Deleted.
  provisioned inherit the reclaim policy of their StorageClass, which defaults to Delete
  
  
-NOTES:
+**NOTES:**
 
 1. When PVCs are created with a specific size, it cannot be expanded except the storageClass is configured to allow expansion with 
 the allowVolumeExpansion field is set to true in the manifest YAML file. This is "unset" by default in EKS.
@@ -508,6 +508,7 @@ Approach 1
 
 1. Create a manifest file for a PVC, and based on the gp2 storageClass a PV will be dynamically created
 
+nginx-pvc.yaml
 ```
 apiVersion: v1
     kind: PersistentVolumeClaim
@@ -521,67 +522,50 @@ apiVersion: v1
           storage: 2Gi
       storageClassName: gp2
 ```
+![image](https://github.com/user-attachments/assets/8adf8e74-5143-4a45-bddd-bfe1a37435e0)
 
 Apply the manifest file and you will get an output like below
+```
+kubectl apply -f nginx-pvc.yaml
+```
+![image](https://github.com/user-attachments/assets/cf66d72b-cd0e-4fde-8be8-ca3beea99bc2)
 
-persistentvolumeclaim/nginx-volume-claim created
+**Run get on the pvc and you will notice that it is in pending state. **
 
 ```
-Run get on the pvc and you will notice that it is in pending state. 
-```
-
 kubectl get pvc
-NAME STATUS VOLUME CAPACITY ACCESS MODES STORAGECLASS AGE
-nginx-volume-claim Pending gp2 61s
+```
+![image](https://github.com/user-attachments/assets/2a442c83-2c6d-4b71-9f90-ba39e975abd9)
 
 To troubleshoot this, simply run a describe on the pvc. Then you will see in the Message section that this pvc is waiting for the 
 first consumer to be created before binding the PV to a PV
-
+```
+kubectl describe pvc nginx-volume-claim
 
 ```
-Name: nginx-volume-claim
-Namespace: default
-StorageClass: gp2
-Status: Pending
-Volume:
-Labels:
-Annotations:
-Finalizers: [kubernetes.io/pvc-protection]
-Capacity:
-Access Modes:
-VolumeMode: Filesystem
-Used By:
-Events:
-Type Reason Age From Message
-```
+![image](https://github.com/user-attachments/assets/1b97d0b4-9ab3-4190-832f-26594764e08a)
 
-Normal WaitForFirstConsumer 7s (x11 over 2m24s) persistentvolume-controller waiting for first consumer to be created before binding
+If you run `kubectl get pv` you will see that no PV is created yet. 
+![image](https://github.com/user-attachments/assets/adc86851-fa83-4215-b422-415d26898030)
 
-
-If you run `kubectl get pv` you will see that no PV is created yet. The *waiting for first consumer to be created before binding* is
+The *waiting for first consumer to be created before binding* is
 a configuration setting from the storageClass. See the `VolumeBindingMode` section below.
-
 
 ```
 kubectl describe storageclass gp2
-Name: gp2
-IsDefaultClass: Yes
-Annotations: kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"true"},"name":"gp2"},"parameters":{"fsType":"ext4","type":"gp2"},"provisioner":"kubernetes.io/aws-ebs","volumeBindingMode":"WaitForFirstConsumer"}
-,storageclass.kubernetes.io/is-default-class=true
-Provisioner: kubernetes.io/aws-ebs
-Parameters: fsType=ext4,type=gp2
-AllowVolumeExpansion:
-MountOptions:
-ReclaimPolicy: Delete
-VolumeBindingMode: WaitForFirstConsumer
-Events:
-```
 
+```
+![image](https://github.com/user-attachments/assets/0cf225d8-d7a8-42fd-96b9-4f321ae83d0e)
 
 To proceed, simply apply the new deployment configuration below.
 
 2. Then configure the Pod spec to use the PVC
+Create a YAML file named nginx-deployment.yaml and add the following content to the file:
 
+> Note, starting from EKS 1.23, you are required to **install an additional Amaon EBS driver before you can attach volumes to your pods**. 
+```
+kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-1.34"
+```
 
 ```
 apiVersion: apps/v1
@@ -613,18 +597,26 @@ spec:
         persistentVolumeClaim:
           claimName: nginx-volume-claim
 ```
+![image](https://github.com/user-attachments/assets/5be73f44-798f-4006-95e6-b433b0555f51)
 
+**Apply the Deployment Manifest:**
+```
+kubectl apply -f nginx-deployment.yaml
+```
 
-Notice that the volumes section nnow has a `persistentVolumeClaim`. With the new deployment manifest, the `/tmp/dare` directory will 
+> **Notice** that the volumes section now has a `persistentVolumeClaim`. With the new deployment manifest, the `/tmp/dare` directory will 
 be persisted, and any data written in there will be sotred permanetly on the volume, which can be used by another Pod if the current 
 one gets replaced.
 
-Now lets check the dynamically created PV
+**Now lets check the dynamically created PV**
+```
+kubectl get pvc
+```
 
-
+```
 kubectl get pv
-NAME CAPACITY ACCESS MODES RECLAIM POLICY STATUS CLAIM STORAGECLASS REASON AGE
-pvc-89ba00d9-68f4-4039-b19e-a6471aad6a1e 2Gi RWO Delete Bound default/nginx-volume-claim gp2 7s
+```
+
 
 
 ```
