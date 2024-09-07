@@ -9,13 +9,34 @@ steps from number 1
 > Note: Use Terraform version v1.0.2 and kubectl version v1.23.6
 
 1. Open up a new directory on your laptop, and name it eks
+
+```
+mkdir Terraform_EKS_Cluster
+```
+```
+cd Terraform_EKS_Cluster
+```
+
 2. Use AWS CLI to create an S3 bucket
+
+```
+aws s3 mb s3://melkamu-terraform-eks --region us-east-1
+```
+![image](https://github.com/user-attachments/assets/8e55e7e8-5535-4450-850f-f8a0ec6dcb15)
+
 3. Create a file – backend.tf Task for you, ensure the backend is configured for remote state in S3
 
 ```
 terraform {
+  backend "s3" {
+    bucket         = "melkamu-terraform-eks"
+    key            = "eks/terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+  }
 }
 ```
+![image](https://github.com/user-attachments/assets/d45bc183-58d2-45cf-97fe-2e10cd3c91e0)
 
 4. Create a file – network.tf and provision Elastic IP for Nat Gateway, VPC, Private and public subnets.
 
@@ -84,6 +105,7 @@ iac_environment                             = var.iac_environment_tag
 }
 }
 ```
+![image](https://github.com/user-attachments/assets/c12e3fdb-1bfd-417b-8609-683cc5622c00)
 
 
 **Note:** The tags added to the subnets is very important. The Kubernetes Cloud Controller Manager (cloud-controller-manager) and
@@ -142,6 +164,9 @@ type        = number
 description = "CIDR block bits extension offset to calculate Public subnets, avoiding collisions with Private subnets."
 }
 ```
+![image](https://github.com/user-attachments/assets/063a7ac0-4067-4dd7-b409-b4193fd80058)
+
+
 
 6. Create a file – data.tf – This will pull the available AZs for use.
 
@@ -152,6 +177,7 @@ state = "available"
 }
 data "aws_caller_identity" "current" {} # used for accesing Account ID and ARN
 ```
+![image](https://github.com/user-attachments/assets/e29b6b5d-9282-4109-a08f-d055b2901625)
 
 7. Create a file – `eks.tf` and provision EKS cluster (Create the file only if you are not using your existing Terraform code. Otherwise
 you can simply append it to the main.tf from your existing code) Read more about this module from the official documentation 
@@ -186,6 +212,7 @@ module "eks_cluster" {
   }
 }
 ```
+![image](https://github.com/user-attachments/assets/722e62ed-74ed-4059-8963-bab5f114063b)
 
 8. Create a file – `locals.tf` to create local variables. Terraform does not allow assigning variable to variables. There is good reasons 
 for that to avoid repeating your code unecessarily. So a terraform way to achieve this would be to use locals so that your code can 
@@ -246,6 +273,8 @@ locals {
   }
 }
 ```
+![image](https://github.com/user-attachments/assets/a15c9b70-6f1b-46a8-b3a5-bd362fe7034b)
+
 
 9. Add more variables to the variables.tf file
 
@@ -296,12 +325,13 @@ autoscaling_maximum_size_by_az = 10
 
 ```
 provider "aws" {
-  region = "us-west-1"
+  region = "us-east-1"
 }
 
 provider "random" {
 }
 ```
+![image](https://github.com/user-attachments/assets/11be4c3a-62c6-4a44-a394-25be0bb4d01d)
 
  update a file – variables.tfvars to set values for variables.
 
@@ -324,15 +354,26 @@ autoscaling_average_cpu                  = 30
 
 12. Run terraform init
 
+Initialize the working directory:
+```
+terraform init
+```
+![image](https://github.com/user-attachments/assets/a390197a-becd-40bc-9a84-dc5eb5c7f9c9)
+
 13. Run Terraform plan – Your plan should have an output
 
 ```
-Plan: 41 to add, 0 to change, 0 to destroy.
+terraform plan
 ```
-
+![image](https://github.com/user-attachments/assets/8718e1a5-d41f-472a-a869-8de64e7c12b6)
 
 15. Run Terraform apply
 This will begin to create cloud resources, and fail at some point with the error
+
+```
+terraform apply
+
+```
 
 ```
 ╷
@@ -342,6 +383,8 @@ This will begin to create cloud resources, and fail at some point with the error
 │   on .terraform/modules/eks-cluster/aws_auth.tf line 63, in resource "kubernetes_config_map" "aws_auth":
 │   63: resource "kubernetes_config_map" "aws_auth" {
 ```
+![image](https://github.com/user-attachments/assets/f8893250-6033-4483-9cca-c1ba6673d51e)
+
 
 That is because for us to connect to the cluster using the kubeconfig, Terraform needs to be able to connect and set the credentials
 correctly.
@@ -363,6 +406,7 @@ data "aws_eks_cluster_auth" "cluster" {
   name = module.eks_cluster.cluster_id
 }
 ```
+![image](https://github.com/user-attachments/assets/83881512-a5c9-4a70-89f3-64cb501aa9af)
 
 - Append to the file provider.tf
 
@@ -374,57 +418,10 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
 ```
+![image](https://github.com/user-attachments/assets/c841dbc9-6a83-4c0a-b69c-8c7993991248)
 
 - Run the init and plan again – This time you will see
-
-```
- # module.eks-cluster.kubernetes_config_map.aws_auth[0] will be created
-  + resource "kubernetes_config_map" "aws_auth" {
-      + data = {
-          + "mapAccounts" = jsonencode([])
-          + "mapRoles"    = <<-EOT
-                - "groups":
-                  - "system:bootstrappers"
-                  - "system:nodes"
-                  "rolearn": "arn:aws:iam::696742900004:role/tooling-app-eks20210718113602300300000009"
-                  "username": "system:node:{{EC2PrivateDNSName}}"
-            EOT
-          + "mapUsers"    = <<-EOT
-                - "groups":
-                  - "system:masters"
-                  "userarn": "arn:aws:iam::696742900004:user/dare"
-                  "username": "dare"
-                - "groups":
-                  - "system:masters"
-                  "userarn": "arn:aws:iam::696742900004:user/solomon"
-                  "username": "solomon"
-                - "groups":
-                  - "darey-io-eks-developers"
-                  "userarn": "arn:aws:iam::696742900004:user/leke"
-                  "username": "leke"
-                - "groups":
-                  - "darey-io-eks-developers"
-                  "userarn": "arn:aws:iam::696742900004:user/david"
-                  "username": "david"
-            EOT
-        }
-      + id   = (known after apply)
-
-      + metadata {
-          + generation       = (known after apply)
-          + labels           = {
-              + "app.kubernetes.io/managed-by" = "Terraform"
-              + "terraform.io/module"          = "terraform-aws-modules.eks.aws"
-            }
-          + name             = "aws-auth"
-          + namespace        = "kube-system"
-          + resource_version = (known after apply)
-          + uid              = (known after apply)
-        }
-    }
-
-Plan: 1 to add, 0 to change, 0 to destroy.
-```
+![image](https://github.com/user-attachments/assets/25df68b9-ceaf-4e5c-aad3-99174bc6feeb)
 
 15. Create kubeconfig file using awscli.
 
