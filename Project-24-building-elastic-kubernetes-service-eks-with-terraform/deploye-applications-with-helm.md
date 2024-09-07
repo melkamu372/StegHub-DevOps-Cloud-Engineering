@@ -5,14 +5,35 @@ Kubernetes cluster. Here, you will do the same thing except that it will not be 
 the most popular tool used to deploy resources into kubernetes. That is because it has a rich set of features that allows deployments
 to be packaged as a unit. Rather than have multiple YAML files managed individually – which can quickly become messy.
 
+
 A Helm chart is a definition of the resources that are required to run an application in Kubernetes. Instead of having to think 
 about all of the various deployments/services/volumes/configmaps/ etc that make up your application, you can use a command like
+
+**1: Install Helm**
+
+Helm is a package manager for Kubernetes that simplifies the deployment of applications. Follow these steps to install Helm:
+
+
+```
+curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+
+sudo apt-get install apt-transport-https --yes
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+
+sudo apt-get update
+sudo apt-get install helm
+```
+![image](https://github.com/user-attachments/assets/a7db3cee-71f7-4593-9a68-23d32a2ea52d)
+
+![image](https://github.com/user-attachments/assets/5860a7cc-291b-4bb6-aa02-6d0ad2af032b)
 
 ```
 helm install stable/mysql
 ```
 
-and Helm will make sure all the required resources are installed. In addition you will be able to tweak helm configuration by
+
+Helm will make sure all the required resources are installed. In addition you will be able to tweak helm configuration by
 setting a single variable to a particular value and more or less resources will be deployed. For example, enabling slave for MySQL
 so that it can have read only replicas.
 
