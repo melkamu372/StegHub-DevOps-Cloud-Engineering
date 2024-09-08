@@ -7,6 +7,7 @@ One of the amazing things about helm is the fact that you can deploy application
 1. Visit [Artifact Hub](https://artifacthub.io/packages/search) to find packaged applications as Helm Charts
 
 2. Search for Jenkins
+![image](https://github.com/user-attachments/assets/67c7d788-9472-40a4-8db1-39ec52cafaa1)
 
 3. Add the repository to helm so that you can easily download and deploy
 
@@ -19,73 +20,43 @@ helm repo add jenkins https://charts.jenkins.io
 ```
 helm repo update 
 ```
+![image](https://github.com/user-attachments/assets/f55cff49-0355-4fb2-af72-610aaa98939d)
+
 
 5. Install the chart
 
 ```
 helm install [RELEASE_NAME] jenkins/jenkins --kubeconfig [kubeconfig file]
 ```
-
+```
+helm install jenkins-server jenkins/jenkins --kubeconfig kubeconfig
+```
 You should see an output like this
 
-```
-NAME: jenkins
-LAST DEPLOYED: Sun Aug  1 12:38:53 2021
-NAMESPACE: default
-STATUS: deployed
-REVISION: 1
-NOTES:
-1. Get your 'admin' user password by running:
-  kubectl exec --namespace default -it svc/jenkins -c jenkins -- /bin/cat /run/secrets/chart-admin-password && echo
-2. Get the Jenkins URL to visit by running these commands in the same shell:
-  echo http://127.0.0.1:8080
-  kubectl --namespace default port-forward svc/jenkins 8080:8080
-
-3. Login with the password from step 1 and the username: admin
-4. Configure security realm and authorization strategy
-5. Use Jenkins Configuration as Code by specifying configScripts in your values.yaml file, see documentation: http:///configuration-as-code and examples: https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos
-
-For more information on running Jenkins on Kubernetes, visit:
-https://cloud.google.com/solutions/jenkins-on-container-engine
-
-For more information about Jenkins Configuration as Code, visit:
-https://jenkins.io/projects/jcasc/
-
-NOTE: Consider using a custom image with pre-installed plugins
-```
+![image](https://github.com/user-attachments/assets/57174a7c-486d-4ef8-8be1-f301d0fa6d9a)
 
 6. Check the Helm deployment
 
 ```
 helm ls --kubeconfig [kubeconfig file]
 ```
-
-**Output:**
-
-```
-NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
-jenkins default         1               2021-08-01 12:38:53.429471 +0100 BST    deployed        jenkins-3.5.9   2.289.3 
-```
+![image](https://github.com/user-attachments/assets/39590312-0660-485a-9a65-cdaa7ec74148)
 
 7. Check the pods
 
 ```
 kubectl get pods --kubeconfigo [kubeconfig file]
 ```
-
 **Output:**
-
-```
-NAME        READY   STATUS    RESTARTS   AGE
-jenkins-0   2/2     Running   0          6m14s
-```
+![image](https://github.com/user-attachments/assets/5c010885-fb42-43a6-9b75-82a21ada9777)
 
 8. Describe the running pod (review the output and try to understand what you see)
 
 ```
 kubectl describe pod jenkins-0 --kubeconfig [kubeconfig file]
 ```
-
+![image](https://github.com/user-attachments/assets/b9c26b3e-fb15-44ea-b6ac-2b55827187b4)
+![image](https://github.com/user-attachments/assets/fb16cbf6-6c09-419f-9ec9-2e6cd8996a22)
 9. Check the logs of the running pod
 
 ```
@@ -143,6 +114,8 @@ kubectl config use-context [name of EKS cluster]
 ```
 kubectl get po
 ```
+
+
 
 **Output:**
 ```
