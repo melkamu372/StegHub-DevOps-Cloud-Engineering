@@ -20,7 +20,8 @@ helm repo add jenkins https://charts.jenkins.io
 ```
 helm repo update 
 ```
-![image](https://github.com/user-attachments/assets/f55cff49-0355-4fb2-af72-610aaa98939d)
+![image](https://github.com/user-attachments/assets/29b557cf-fe76-4ba5-a772-0a312e6d8c05)
+
 
 
 5. Install the chart
@@ -33,42 +34,43 @@ helm install jenkins-server jenkins/jenkins --kubeconfig kubeconfig
 ```
 You should see an output like this
 
-![image](https://github.com/user-attachments/assets/57174a7c-486d-4ef8-8be1-f301d0fa6d9a)
+![image](https://github.com/user-attachments/assets/13112322-02f5-4390-8f56-0b1a06f30a20)
 
 6. Check the Helm deployment
 
 ```
 helm ls --kubeconfig [kubeconfig file]
 ```
-![image](https://github.com/user-attachments/assets/39590312-0660-485a-9a65-cdaa7ec74148)
+![image](https://github.com/user-attachments/assets/abac61cf-2ab8-4d22-95a9-6cc2df4b2d9e)
+
 
 7. Check the pods
 
 ```
-kubectl get pods --kubeconfigo [kubeconfig file]
+kubectl get pods --kubeconfigo kubeconfig
 ```
 **Output:**
-![image](https://github.com/user-attachments/assets/5c010885-fb42-43a6-9b75-82a21ada9777)
+
+![image](https://github.com/user-attachments/assets/3e97529b-dc73-4511-8c48-77cb2d94ab5f)
 
 8. Describe the running pod (review the output and try to understand what you see)
 
 ```
-kubectl describe pod jenkins-0 --kubeconfig [kubeconfig file]
+kubectl describe pod jenkins-server-0 --kubeconfig kubeconfig 
 ```
-![image](https://github.com/user-attachments/assets/b9c26b3e-fb15-44ea-b6ac-2b55827187b4)
-![image](https://github.com/user-attachments/assets/fb16cbf6-6c09-419f-9ec9-2e6cd8996a22)
+![image](https://github.com/user-attachments/assets/e8f2ad6e-b2a5-44d8-8cfd-6dcc18a5ea94)
+
+![image](https://github.com/user-attachments/assets/364de1a4-fb4a-4e13-8ad2-2c57ccc9ddad)
+
 9. Check the logs of the running pod
 
 ```
-kubectl logs jenkins-0 --kubeconfig [kubeconfig file]
+kubectl logs jenkins-server-0 --kubeconfig kubeconfig
 ```
+
+![image](https://github.com/user-attachments/assets/7a956819-339b-4b47-a23f-5d88c8c64e7f)
 
 You will notice an output with an error
-
-```
-error: a container name must be specified for pod jenkins-0, choose one of: [jenkins config-reload] or one of the init containers: [init]
-```
-
 This is because the pod has a [Sidecar container](https://www.weave.works/blog/container-design-patterns-for-kubernetes/) alongside
 with the Jenkins container. As you can see fromt he error output, there is a list of containers inside the pod [jenkins config-reload] i.e jenkins and config-reload containers. The job of the config-reload is mainly to help Jenkins to reload its configuration without recreating the pod.
 
@@ -83,18 +85,42 @@ Now lets avoid calling the [kubeconfig file] everytime. Kubectl expects to find 
 and select whichever one you need to be active.
 
 1. Install a package manager for kubectl called [krew](https://krew.sigs.k8s.io/docs/user-guide/setup/install/) so that it will enable you to install plugins to extend the functionality of kubectl. Read more about it [Here](https://github.com/kubernetes-sigs/krew)
- 
+
+ Krew is a plugin manager for kubectl. First, you need to install it. Open a terminal and run the following command:
+
+```
+(
+  set -o errexit
+  set -o nounset
+  cd "$(mktemp -d)"
+  OS="$(uname | tr '[:upper:]' '[:lower:]')"
+  ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/' -e 's/arm.*/arm/')" 
+  KREW="krew-${OS}_${ARCH}"
+  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
+  tar zxvf "${KREW}.tar.gz"
+  ./"${KREW}" install krew
+)
+
+```
+ ![image](https://github.com/user-attachments/assets/ef86adaa-7bb6-4495-9a6f-c52ce488a6f9)
+
+**Update Your Shell Configuration**
+```
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+```
 
  2. Install the [konfig plugin](https://github.com/corneliusweig/konfig)
  
  ```
  kubectl krew install konfig
  ```
- 
+ ![image](https://github.com/user-attachments/assets/4358c085-4723-4a2e-96fa-fe1aaf73f1e4)
+
  3. Import the kubeconfig into the default kubeconfig file. Ensure to accept the prompt to overide.
 
 ```
-sudo kubectl konfig import --save  [kubeconfig file]
+sudo kubectl konfig import --save  kubeconfig
 ```
 
 4. Show all the contexts – Meaning all the clusters configured in your kubeconfig. If you have more than 1 Kubernetes clusters configured, you will see them all in the output.
@@ -102,11 +128,12 @@ sudo kubectl konfig import --save  [kubeconfig file]
 ```
  kubectl config get-contexts
 ```
+![image](https://github.com/user-attachments/assets/4a898c2e-dc4f-4e23-8de8-a3f9392f2c36)
 
 5. Set the current context to use for all kubectl and helm commands
 
 ```
-kubectl config use-context [name of EKS cluster]
+kubectl config use-context arn:aws:eks:us-east-1:736498736845:cluster/tooling-app-eks
 ```
 
 6. Test that it is working without specifying the --kubeconfig flag
@@ -114,20 +141,15 @@ kubectl config use-context [name of EKS cluster]
 ```
 kubectl get po
 ```
-
-
-
 **Output:**
-```
-NAME        READY   STATUS    RESTARTS   AGE
-  jenkins-0   2/2     Running   0          84m
-```
+![image](https://github.com/user-attachments/assets/3a876550-e93f-4e46-a0af-c2c6842987af)
 
 7. Display the current context. This will let you know the context in which you are using to interact with Kubernetes.
 
 ```
  kubectl config current-context
 ```
+![image](https://github.com/user-attachments/assets/ca11820a-0fe7-4858-bdee-93558289a903)
 
 
  Now that we can use kubectl without the --kubeconfig flag, Lets get access to the Jenkins UI. (In later projects we will further configure Jenkins. For now, it is to set up all the tools we need)
@@ -135,15 +157,18 @@ NAME        READY   STATUS    RESTARTS   AGE
  1. There are some commands that was provided on the screen when Jenkins was installed with Helm. See number 5 above. Get the password to the admin user
  
  ```
- kubectl exec --namespace default -it svc/jenkins -c jenkins -- /bin/cat /run/secrets/chart-admin-password && echo
+kubectl exec --namespace default -it svc/jenkins-server -c jenkins -- /bin/cat /run/secrets/additional/chart-admin-password && echo
  ```
- 
+ ![image](https://github.com/user-attachments/assets/1b121b70-20b3-45b6-92d3-ce28ed130da9)
+
  2. Use port forwarding to access Jenkins from the UI
 
 ```
-kubectl --namespace default port-forward svc/jenkins 8080:8080
+kubectl --namespace default port-forward svc/jenkins-server 8082:8080
 ```
+![image](https://github.com/user-attachments/assets/96b04fb4-5094-4a3d-85b6-2e22506072dd)
 
 
-3. Go to the browser localhost:8080 and authenticate with the username and password from number 1 above
+3. Go to the browser localhost:8082 and authenticate with the username and password from number 1 above
+![image](https://github.com/user-attachments/assets/967c116d-837f-41cc-802a-34ca66b368fb)
 
