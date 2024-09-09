@@ -428,3 +428,4 @@ provider "kubernetes" {
 ```
 aws eks update-kubecofig --name <cluster_name> --region <cluster_region> --kubeconfig kubeconfig
 ```
+![image](https://github.com/user-attachments/assets/a4be03bd-9175-4c57-95ba-3f2f6741dab8)
