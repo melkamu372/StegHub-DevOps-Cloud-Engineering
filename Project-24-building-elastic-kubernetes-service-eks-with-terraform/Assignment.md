@@ -50,24 +50,25 @@ HashiCorp Vault is a tool for managing secrets and protecting sensitive data.
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm repo update
 ```
-
-
 ![image](https://github.com/user-attachments/assets/e0893031-7479-4e98-a67e-ee99013afeaf)
+
+Create a Namespace for Vault
+```
+kubectl create namespace vault
+```
 
 Step 2: Install Vault
 ```
-helm install vault hashicorp/vault --namespace vault --create-namespace
+helm install vault hashicorp/vault --namespace vault
 ```
-![image](https://github.com/user-attachments/assets/53b79657-85c7-436f-9e82-a58236d29d1e)
-
-
+![image](https://github.com/user-attachments/assets/0bb0f94a-1823-42a4-b64e-83da1dcc96fc)
 
 Step 3: Verify Installation
 Check the status of the Vault deployment:
 ```
-helm status vault --namespace vault
-
+kubectl get pods --namespace vault
 ```
+![image](https://github.com/user-attachments/assets/caeb3b7f-e8f2-496f-96d3-5b92649f6999)
 
 
 3. **Prometheus**
@@ -114,7 +115,8 @@ http://localhost:9090
 
 4. Grafana
 Grafana is a popular tool for creating monitoring dashboards using metrics collected by systems like Prometheus.
- 1.  Add Grafana Helm Repository
+
+    1.Add Grafana Helm Repository
 First, add the Grafana Helm chart repository:
 
 ```
@@ -164,22 +166,20 @@ kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-passwor
 
 ![image](https://github.com/user-attachments/assets/47f65de7-947d-46cd-8e90-28788d91a2e2)
 
-5. Installing Elasticsearch ELK using ECK (Elastic Cloud on Kubernetes)
-ECK (Elastic Cloud on Kubernetes) is the official Kubernetes Operator for deploying and managing the Elastic Stack (Elasticsearch, Logstash, and Kibana).
 
-1. Install the Elastic ECK Operator
-Elastic provides an operator for managing the full ELK stack (Elasticsearch, Logstash, and Kibana) on Kubernetes.
+ 5. **Installing Elasticsearch ELK using ECK([Elastic Cloud on Kubernetes](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-install-helm.html))**
 
-**install the ECK operator:**
-```
-kubectl apply -f https://download.elastic.co/downloads/eck/2.10.0/crds.yaml
-```
-![image](https://github.com/user-attachments/assets/a5a396a1-336a-49b7-b26d-ec94c2ea8766)
+    1.Install ECK using the Helm chart
 
 ```
-kubectl apply -f https://download.elastic.co/downloads/eck/2.10.0/operator.yaml
+helm repo add elastic https://helm.elastic.co
+helm repo update
 ```
-![image](https://github.com/user-attachments/assets/b1de1c76-543a-4c56-9365-8345b22def38)
+**Install**
+
+```
+helm install elastic-operator elastic/eck-operator -n elastic-system --create-namespace
+```
 
 **Verify the ECK Operator Installation**
 ```
@@ -187,52 +187,77 @@ kubectl get pods -n elastic-system
 ```
 ![image](https://github.com/user-attachments/assets/a1425e80-ff6d-4a4b-b7a8-7d5108f1efba)
 
-Deploy Elasticsearch, Kibana, and Logstash Using ECK
+**Verify the ECK Operator Installation**
+```
+kubectl logs -n elastic-system sts/elastic-operator
+```
+![image](https://github.com/user-attachments/assets/50d54e8b-a315-4dbf-ac45-7977f54b89ba)
+
+
+**Deploy Elasticsearch**
+
 Once the ECK operator is running, follow the steps to deploy the ELK stack (Elasticsearch, Kibana, Logstash).
 
 **Deploy Elasticsearch**
-Create a YAML file for Elasticsearch, for example, elasticsearch.yaml:
+Create a namespace for Elasticsearch
+```
+kubectl create namespace elastic
+```
 
-Add the following content
+Create an Elasticsearch cluster using a custom resource: Save the following YAML as elasticsearch.yaml
+
+
 ```
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
-  name: my-elasticsearch
+  name: quickstart
+  namespace: elastic
 spec:
-  version: 7.10.0
+  version: 8.9.1
   nodeSets:
   - name: default
     count: 1
     config:
       node.store.allow_mmap: false
-    podTemplate:
-      spec:
-        containers:
-        - name: elasticsearch
-          resources:
-            limits:
-              memory: 2Gi
-              cpu: "1"
-            requests:
-              memory: 1Gi
-              cpu: "500m"
-
-
 ```
-This configuration creates a single-node Elasticsearch cluster. Now apply this configuration:
+**Apply the Elasticsearch deployment:**
+
 ```
 kubectl apply -f elasticsearch.yaml
 ```
 ![image](https://github.com/user-attachments/assets/38eaf447-d15d-4ccd-9401-6485c3bf0cfc)
 
-**Check the Status of Elasticsearch**
-After deploying Elasticsearch, you can check the status of the pods:
+**Check Elasticsearch Pods: Verify that the Elasticsearch pods are running:**
 ```
-kubectl get pods
+kubectl get pods -n elastic
 ```
-Look for the Elasticsearch pod, which will have a name like quickstart-es-<some-id>. Wait for it to reach the Running status.
-![image](https://github.com/user-attachments/assets/2a0fba84-f77f-4b09-a309-7e3df07562ec)
+![image](https://github.com/user-attachments/assets/f0c16c2e-a415-43c9-be6b-3c05834cf506)
+
+**Access Elasticsearch: You can access the Elasticsearch service within the Kubernetes cluster:**
+
+```
+kubectl get service quickstart-es-http -n elastic
+```
+
+**Forward the service port to your local machine:**
+
+```
+kubectl port-forward service/quickstart-es-http 9200 -n elastic
+```
+![image](https://github.com/user-attachments/assets/cf369d06-314b-4dba-a6d6-6b17635b2417)
+
+**Then, test it locally:**
+You can retrieve the password with the following command:
+```
+kubectl get secret quickstart-es-elastic-user -o=jsonpath='{.data.elastic}' -n elastic | base64 --decode
+```
+![image](https://github.com/user-attachments/assets/45b6f772-fb58-4088-aa56-ff2f5680c98f)
+
+```
+curl -u "elastic:y3E42y5b8ep9sbOQ0C4z8zk2" -k "https://localhost:9200"
+```
+![image](https://github.com/user-attachments/assets/6aaffe87-cd7c-4f7f-9731-08c6d15bcbda)
 
 **Deploy Kibana**
 Once Elasticsearch is running, let's deploy Kibana.
@@ -242,25 +267,13 @@ Create a YAML file for Kibana, for example, kibana.yaml:
 apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
 metadata:
-  name: quickstart
-  namespace: default
+  name: kibana
+  namespace: elastic
 spec:
-  version: "7.10.0"  # Downgraded Kibana version to match Elasticsearch
+  version: 8.9.1
   count: 1
   elasticsearchRef:
-    name: my-elasticsearch-es-http  # Update this line to match the correct Elasticsearch service
-  podTemplate:
-    spec:
-      containers:
-        - name: kibana
-          resources:
-            requests:
-              memory: "512Mi"
-              cpu: "250m"
-            limits:
-              memory: "1Gi"
-              cpu: "500m"
-
+    name: quickstart
 
 ```
 
@@ -272,39 +285,100 @@ kubectl apply -f kibana.yaml
 ```
 ![image](https://github.com/user-attachments/assets/01bb431e-106d-4030-bb5e-0979971ff345)
 
-4. Check the Status of Kibana
+**Check the Status of Kibana**
+
 You can check the status of the Kibana pod by running:
 ```
-kubectl get pods
+kubectl get pods -n elastic
 ```
 
 Wait for Kibana to reach the Running status.
-![image](https://github.com/user-attachments/assets/1c7d2b5c-88f8-4fe1-ac74-2c6893ce003e)
+![image](https://github.com/user-attachments/assets/01b30070-4421-460c-9552-a04c0c0de992)
 
-5. Access Kibana
+
+ **Access Kibana**
+
 Once the Kibana pod is running, you can access Kibana through port forwarding.
 Run this command to forward port 5601 from the Kibana pod to your local machine:
 ```
-kubectl port-forward service/quickstart-kb-http 5601
+kubectl port-forward service/kibana-kb-http 5601 -n elastic
 ```
-![image](https://github.com/user-attachments/assets/3af2c3cf-fc5e-458d-ba16-9d0a445348d1)
+![image](https://github.com/user-attachments/assets/4934cbdc-7fc7-4de4-a30d-59aa105aca05)
+
 
 **Now, you can open your browser and access Kibana at:**
 ```
 http://localhost:5601
 ```
 **Deploy Logstash**
-If you also need Logstash, create a YAML file for it, for example, logstash.yaml:
+
+Create a Logstash ConfigMap
+First, you need to create a ConfigMap that contains the Logstash configuration (logstash.conf).
+
+Create the following ConfigMap YAML (logstash-config.yaml):
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+  namespace: elastic
+data:
+  logstash.conf: |
+    input {
+      beats {
+        port => 5044
+      }
+    }
+    filter {
+      grok {
+        match => { "message" => "%{COMBINEDAPACHELOG}" }
+      }
+    }
+    output {
+      elasticsearch {
+        hosts => ["https://quickstart-es-http.elastic:9200"]
+        user => "elastic"
+        password => "<your_elastic_password>"
+        ssl => true
+        cacert => '/usr/share/logstash/config/certs/ca.crt'
+      }
+      stdout { codec => rubydebug }
+    }
+
+```
+Replace <your_elastic_password> with the password you retrieved for the Elasticsearch elastic user.
+
+Apply the ConfigMap:
+
+```
+kubectl apply -f logstash-config.yaml
+
+```
+Create the Logstash manifest: Save this as logstash.yaml
 
 Add the following content:
 ```
-apiVersion: logstash.k8s.elastic.co/v1
+apiVersion: logstash.k8s.elastic.co/v1alpha1
 kind: Logstash
 metadata:
-  name: quickstart
+  name: logstash
+  namespace: elastic
 spec:
-  version: 8.10.0
+  version: 8.9.1
   count: 1
+  elasticsearchRef:
+    name: quickstart
+  config:
+    log.level: info
+  podTemplate:
+    spec:
+      containers:
+        - name: logstash
+          resources:
+            limits:
+              memory: 2Gi
+              cpu: 1
+
 ```
 Apply the configuration:
 ```
@@ -312,22 +386,24 @@ kubectl apply -f logstash.yaml
 ```
 Check the status of Logstash with:
 ```
-kubectl get pods
+kubectl get pods -n elastic
 ```
+![image](https://github.com/user-attachments/assets/7fac42ac-63af-4ede-9137-03b61f89f73f)
 
-7.**Retrieve Elasticsearch Password**
-To get the password for the elastic user, run:
+
+**Monitor and Manage**
+
+To ensure everything is working correctly, you can monitor the Elastic Stack resources using standard Kubernetes commands:
+
+Check all Elastic resources: Our ELK stack (Elasticsearch, Kibana) is up and running on your Kubernetes cluster using the ECK operator
 ```
-kubectl get secret quickstart-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode
+kubectl get elasticsearch,kibana,logstash -n elastic
 ```
-
-Use this password when accessing Elasticsearch or Kibana.
-
-By following these steps, you should now have Elasticsearch, Kibana, and optionally Logstash
+![image](https://github.com/user-attachments/assets/6e61f5bc-5065-4b0b-8d60-ab41f8019c28)
 
 
 
-### The End of Project 24 
+### The End of Project 24 Assignment
  In the next project,
 
 1. You will write custom Helm charts
