@@ -31,6 +31,8 @@ Check the status of the Artifactory deployment:
 ```
 helm status artifactory --namespace artifactory
 ```
+![image](https://github.com/user-attachments/assets/63dbf3db-e035-4191-ab4f-35332ddc7993)
+
 **Step 4: Access Artifactory**
 
 Find the service URL:
@@ -42,6 +44,7 @@ kubectl get svc --namespace artifactory
 2. Hashicorp Vault
 
 HashiCorp Vault is a tool for managing secrets and protecting sensitive data.
+
 **Step 1: Add the HashiCorp Helm Repository**
 ```
 helm repo add hashicorp https://helm.releases.hashicorp.com
@@ -67,7 +70,8 @@ helm status vault --namespace vault
 ```
 
 
-3. Prometheus
+3. **Prometheus**
+
 **Prometheus is a monitoring and alerting toolkit.**
 
 Step 1: Add the Prometheus Community Helm Repository
