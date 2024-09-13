@@ -18,18 +18,12 @@ helm repo update
 ```
 ![image](https://github.com/user-attachments/assets/de407e25-32f5-47dc-8ed1-66a3aa59aa63)
 
-
-![image](https://github.com/user-attachments/assets/8139a915-0088-4dab-8303-bab1b70fa97e)
-
-
 **Step 2 install the chart with the release name artifactory**
 
 ```
 helm upgrade --install artifactory --namespace default jfrog/artifactory
 ```
-
-![image](https://github.com/user-attachments/assets/f9d05414-ecb8-4ad8-b32e-3324e553261b)
-
+![image](https://github.com/user-attachments/assets/f918c7cd-447c-4f8c-8b66-620f76042048)
 
 **Step 3: Verify Installation**
 
@@ -48,6 +42,7 @@ kubectl get svc --namespace artifactory
 ```
 
 ![image](https://github.com/user-attachments/assets/35f1ec6a-5ee8-460e-ab05-adc18e029825)
+
 
 2. Hashicorp Vault
 
