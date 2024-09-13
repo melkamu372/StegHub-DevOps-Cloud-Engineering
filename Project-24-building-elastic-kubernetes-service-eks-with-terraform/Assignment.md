@@ -16,6 +16,7 @@ helm repo add jfrog https://charts.jfrog.io
 ```
 helm repo update
 ```
+![image](https://github.com/user-attachments/assets/de407e25-32f5-47dc-8ed1-66a3aa59aa63)
 
 
 ![image](https://github.com/user-attachments/assets/8139a915-0088-4dab-8303-bab1b70fa97e)
