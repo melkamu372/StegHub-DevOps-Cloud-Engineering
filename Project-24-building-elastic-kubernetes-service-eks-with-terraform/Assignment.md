@@ -17,17 +17,23 @@ helm repo add jfrog https://charts.jfrog.io
 helm repo update
 ```
 
+
 ![image](https://github.com/user-attachments/assets/8139a915-0088-4dab-8303-bab1b70fa97e)
+
 
 **Step 2 install the chart with the release name artifactory**
 
 ```
 helm upgrade --install artifactory --namespace default jfrog/artifactory
 ```
+
 ![image](https://github.com/user-attachments/assets/f9d05414-ecb8-4ad8-b32e-3324e553261b)
 
+
 **Step 3: Verify Installation**
+
 Check the status of the Artifactory deployment:
+
 ```
 helm status artifactory --namespace artifactory
 ```
@@ -39,6 +45,7 @@ Find the service URL:
 ```
 kubectl get svc --namespace artifactory
 ```
+
 ![image](https://github.com/user-attachments/assets/35f1ec6a-5ee8-460e-ab05-adc18e029825)
 
 2. Hashicorp Vault
@@ -50,6 +57,7 @@ HashiCorp Vault is a tool for managing secrets and protecting sensitive data.
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm repo update
 ```
+
 ![image](https://github.com/user-attachments/assets/e0893031-7479-4e98-a67e-ee99013afeaf)
 
 Create a Namespace for Vault
@@ -61,6 +69,7 @@ Step 2: Install Vault
 ```
 helm install vault hashicorp/vault --namespace vault
 ```
+
 ![image](https://github.com/user-attachments/assets/0bb0f94a-1823-42a4-b64e-83da1dcc96fc)
 
 Step 3: Verify Installation
@@ -68,6 +77,7 @@ Check the status of the Vault deployment:
 ```
 kubectl get pods --namespace vault
 ```
+
 ![image](https://github.com/user-attachments/assets/caeb3b7f-e8f2-496f-96d3-5b92649f6999)
 
 
@@ -80,6 +90,7 @@ Step 1: Add the Prometheus Community Helm Repository
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 ```
+
 ![image](https://github.com/user-attachments/assets/47de3cfb-b653-4726-bb41-f85b153df3be)
 
 
@@ -87,6 +98,7 @@ Step 2: Install Prometheus
 ```
 helm install prometheus prometheus-community/prometheus
 ```
+
 ![image](https://github.com/user-attachments/assets/342a6951-6da3-4f68-b4dd-d811515c3e8f)
 
 ![image](https://github.com/user-attachments/assets/2554e334-c053-46cf-9af3-d9f7a01970ae)
@@ -96,6 +108,7 @@ To see if the Prometheus service is running:
 ```
 kubectl get svc
 ```
+
 ![image](https://github.com/user-attachments/assets/a4c8fc2b-1e4d-480a-baed-6578e2c9b04e)
 
 
@@ -104,6 +117,7 @@ To access the Prometheus UI locally, you can use kubectl port-forward
 ```
 kubectl port-forward svc/prometheus-server 9090:80
 ```
+
 ![image](https://github.com/user-attachments/assets/0da51123-679f-4743-ad42-a537c096a956)
 
 Use this URL to access the Prometheus UI.
