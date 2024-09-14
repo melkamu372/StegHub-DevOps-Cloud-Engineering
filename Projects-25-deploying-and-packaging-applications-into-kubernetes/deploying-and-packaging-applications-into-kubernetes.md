@@ -1,4 +1,8 @@
-# DEPLOYING AND PACKAGING APPLICATIONS INTO KUBERNETES WITH HELM
+### Deploying and Packaging Applications in to kubernetes 101
+
+
+_DEPLOYING AND PACKAGING APPLICATIONS INTO KUBERNETES WITH HELM_
+
 
 In the previous project, you started experiencing helm as a tool used to deploy an application into Kubernetes. You probably also 
 tried installing more tools apart from Jenkins.
@@ -8,7 +12,7 @@ deployments and how to fix them. You will learn how to tweak helm values files t
 you deploy. Finally, once you have most of the DevOps tools deployed, you will experience using them and relate with the DevOps 
 cycle and how they fit into the entire ecosystem.
 
-Our focus will be on the following tools.
+**Our focus will be on the following tools.**
 
 1. Artifactory
 2. Hashicorp Vault
@@ -20,7 +24,9 @@ Our focus will be on the following tools.
 For the tools that require paid license, don’t worry, you will also learn how to get the license for free and have true experience
 exactly how they are used in the real world.
 
-Lets start first with Artifactory. What is it exactly?
+**Lets start first with Artifactory.**
+
+ _What is it exactly?_
 
 Artifactory is part of a suit of products from a company called [Jfrog](https://jfrog.com/). Jfrog started out as an artifact repository
 where software binaries in different formats are stored. Today, Jfrog has transitioned from an artifact repository to a DevOps 
@@ -45,27 +51,25 @@ The best approach to easily get Artifactory into kubernetes is to use helm.
 
 1. Search for an official helm chart for Artifactory on [Artifact Hub](https://artifacthub.io/)
 
-![8000](https://user-images.githubusercontent.com/85270361/210272917-d5dc3ab5-d4a5-4a8a-8315-b65f963af3d3.PNG)
+![image](https://github.com/user-attachments/assets/c4fa6c89-ef67-4a96-8791-bb47715ae24b)
 
 
 2. Click on See all results
 3. Use the filter checkbox on the left to limit the return data. As you can see in the image below, "Helm" is selected. In some cases, 
 you might select "Official". Then click on the first option from the result.
 
-
-![8001](https://user-images.githubusercontent.com/85270361/210273215-3ca5db39-4e60-4c03-b38c-9ea5c60b0e1a.PNG)
-
+![image](https://github.com/user-attachments/assets/8f66f90d-7202-4343-ab3a-e583d7768d47)
 
 
 4. Review the Artifactory page
 
-![8002](https://user-images.githubusercontent.com/85270361/210273335-882cb43c-7da2-465e-8cf5-68821de578b2.PNG)
-
+![image](https://github.com/user-attachments/assets/b56a2d93-e542-4ca8-a0fd-77357ad2732d)
 
 
 5. Click on the install menu on the right to see the installation commands.
 
-![8003](https://user-images.githubusercontent.com/85270361/210273502-4e15fbbd-9016-4e7c-8e9a-0d01386eb33e.PNG)
+![image](https://github.com/user-attachments/assets/6c8144d4-e8c3-4af4-bc37-d4ea081e5409)
+
 
 
 6. Add the jfrog remote repository on your laptop/computer
@@ -90,32 +94,12 @@ helm repo update
 9. Install artifactory
 
 ```
-helm upgrade --install artifactory jfrog/artifactory --version 107.38.10 -n tools
+helm upgrade --install artifactory jfrog/artifactory --version 107.90.10 -n tools
 ```
+![image](https://github.com/user-attachments/assets/74fa20b4-b405-4035-b43b-4bc7e67268e2)
 
-```
-Release "artifactory" does not exist. Installing it now.
-NAME: artifactory
-LAST DEPLOYED: Sat May 28 09:26:08 2022
-NAMESPACE: tools
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-NOTES:
-Congratulations. You have just deployed JFrog Artifactory!
+![image](https://github.com/user-attachments/assets/90eba64c-5ad3-4b37-a306-c670563557ce)
 
-1. Get the Artifactory URL by running these commands:
-
-   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-         You can watch the status of the service by running 'kubectl get svc --namespace tools -w artifactory-artifactory-nginx'
-   export SERVICE_IP=$(kubectl get svc --namespace tools artifactory-artifactory-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-   echo http://$SERVICE_IP/
-
-2. Open Artifactory in your browser
-   Default credential for Artifactory:
-   user: admin
-   password: password
-```
 
 
 **NOTE:**
@@ -128,12 +112,9 @@ determine if an upgrade or fresh installation is required.
 - The helm chart version to install is very important to specify. So, the version at the time of writing may be different from what 
 you will see from Artifact Hub. So, replace the version number to the desired. You can see all the versions by clicking on "see all"
 as shown in the image below.
+![image](https://github.com/user-attachments/assets/ac625e1a-f59d-42c2-8074-34948956c654)
 
-
-![8004](https://user-images.githubusercontent.com/85270361/210274176-5e792691-dcd5-4a32-926e-490222de24ad.PNG)
-
-
-![8006](https://user-images.githubusercontent.com/85270361/210274201-bcc314c8-c89d-4fed-a60b-8f55d76c7279.PNG)
+![image](https://github.com/user-attachments/assets/7c4dee32-2d0b-447e-9389-18687d8f3c61)
 
 
 The output from the installation already gives some Next step directives.
@@ -145,13 +126,18 @@ Lets break down the first Next Step.
 to configure routes to the different capabilities of Artifactory. Getting the pods after some time, you should see something like 
 the below.
 
-
-![8007](https://user-images.githubusercontent.com/85270361/210274370-89e91c40-d367-4cb7-84dd-51e691e01fca.PNG)
+```
+kubectl get po -n tools
+```
+![image](https://github.com/user-attachments/assets/db0d563e-8633-4d3e-9a1c-21c7cb6d2034)
 
 
 2. Each of the deployed application have their respective services. This is how you will be able to reach either of them.
 
-![8008](https://user-images.githubusercontent.com/85270361/210274474-722de4fb-b507-4743-aa50-ff282cb5c036.PNG)
+```
+kubectl get svc -n tools
+```
+![image](https://github.com/user-attachments/assets/f45f4133-8305-484d-ab70-eaa87f4e6f3f)
 
 
 3. Notice that, the Nginx Proxy has been configured to use the service type of LoadBalancer. Therefore, to reach Artifactory, we will
