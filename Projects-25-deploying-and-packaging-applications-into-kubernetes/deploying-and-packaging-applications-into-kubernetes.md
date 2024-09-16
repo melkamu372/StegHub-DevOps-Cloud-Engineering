@@ -168,40 +168,48 @@ get started with an off the shelve chart from artifacthub.io is to get familiar 
 
 - click on the DEFAULT VALUES section on Artifact hub
 
-![8011](https://user-images.githubusercontent.com/85270361/210274889-be0526a8-656f-421a-ab3f-c1276cc4099b.PNG)
+![image](https://github.com/user-attachments/assets/f461b5e5-2064-4a38-8ab2-c963038d098f)
+
 
 - Here you can search for key and value pairs
 
-![8012](https://user-images.githubusercontent.com/85270361/210274984-2f56c719-ae18-4f22-95da-ee9c2815706f.PNG)
+![image](https://github.com/user-attachments/assets/834570da-d500-4410-89d7-e4660a654f71)
+
 
 - For example, when you type nginx in the search bar, it shows all the configured options for the nginx proxy.
 
 
-![8013](https://user-images.githubusercontent.com/85270361/210275282-cf8c991f-e8ee-4485-8cbb-e8868b434981.PNG)
+![image](https://github.com/user-attachments/assets/3ef1576e-cd25-454b-980e-6f43d77a80ee)
+
 
 
 - selecting nginx.enabled from the list will take you directly to the configuration in the YAML file.
 
 
-![8014](https://user-images.githubusercontent.com/85270361/210275574-44b15341-4676-48ce-a793-d6c161143ecd.PNG)
+![image](https://github.com/user-attachments/assets/d8b776be-04e6-4186-b62d-fbab61db5ec1)
+
 
 - Search for nginx.service and select nginx.service.type
 
-![8015](https://user-images.githubusercontent.com/85270361/210275729-209f149e-8b9d-42f7-aa8f-d9447e646844.PNG)
+![image](https://github.com/user-attachments/assets/ce7afa97-d502-4638-af9d-dcae88672574)
+
 
 
 - You will see the confired type of Kubernetes service for Nginx. As you can see, it is LoadBalancer by default
 
 
-![8016](https://user-images.githubusercontent.com/85270361/210275886-4ad33f36-c24b-4f66-96e3-ea662172fe6b.PNG)
+![image](https://github.com/user-attachments/assets/69baa45d-f915-4317-a4fb-daaab2b6669f)
+
 
 - To work directly with the values.yaml file, you can download the file locally by clicking on the download icon.
 
 
-![8017](https://user-images.githubusercontent.com/85270361/210276075-3b0cea7a-1ebb-466d-9258-831350d916e2.PNG)
+![image](https://github.com/user-attachments/assets/c53d7936-210c-413b-951a-2339b3bfc182)
 
 
-Is the Load Balancer Service type the Ideal configuration option to use in the Real World?
+
+**Is the Load Balancer Service type the Ideal configuration option to use in the Real World?**
+
 
 Setting the service type to Load Balancer is the easiest way to get started with exposing applications running in kubernetes
 externally. But provissioning load balancers for each application can become very expensive over time, and more difficult to manage.
@@ -228,7 +236,7 @@ Here is a simple example where an Ingress sends all its traffic to one Service:
 
 ![9000](https://user-images.githubusercontent.com/85270361/210277374-d600cbfd-fd4b-4f23-accd-73e74e03544e.PNG)
 
-image credit: kubernetes.io
+image credit  `kubernetes.io`
 
 An ingress resource for Artifactory would like like below
 
