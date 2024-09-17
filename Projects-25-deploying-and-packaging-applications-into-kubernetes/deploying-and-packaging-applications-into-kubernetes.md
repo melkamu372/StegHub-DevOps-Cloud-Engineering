@@ -451,17 +451,20 @@ load balancer.
 The sandbox.svc.total.com part of the domain is the configured HOSTED ZONE in AWS. So you will need to configure Hosted Zone in 
 AWS console or as part of your infrastructure as code using terraform.
 
-![9001](https://user-images.githubusercontent.com/85270361/210280152-5e184b4a-5ce7-4057-b383-2338667e4a45.PNG)
+![image](https://github.com/user-attachments/assets/e0c7e2e1-e2da-4b57-970a-b67eb68f27c5)
+
 
 
 If you purchased the domain directly from AWS, the hosted zone will be automatically configured for you. But if your domain is registered with a different provider
 such as freenon or namechaep, you will have to create the hosted zone and update the name servers.
 
 **Create Route53 record**
+
 Within the hosted zone is where all the necessary DNS records will be created. Since we are working on Artifactory, lets create the
 record to point to the ingress controller’s loadbalancer. There are 2 options. You can either use the CNAME or AWS Alias
 
 **CNAME Method**
+
 1. Select the HOSTED ZONE you wish to use, and click on the create record button
 
 
