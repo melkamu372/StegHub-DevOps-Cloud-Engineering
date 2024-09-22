@@ -129,7 +129,8 @@ the below.
 ```
 kubectl get po -n tools
 ```
-![image](https://github.com/user-attachments/assets/db0d563e-8633-4d3e-9a1c-21c7cb6d2034)
+![image](https://github.com/user-attachments/assets/3fd4e6e5-0f5e-4590-8a20-8d9872befe5f)
+
 
 
 2. Each of the deployed application have their respective services. This is how you will be able to reach either of them.
@@ -137,18 +138,22 @@ kubectl get po -n tools
 ```
 kubectl get svc -n tools
 ```
-![image](https://github.com/user-attachments/assets/f45f4133-8305-484d-ab70-eaa87f4e6f3f)
+![image](https://github.com/user-attachments/assets/67340e60-039b-44b1-9224-6b4ff69dc454)
+
 
 
 3. Notice that, the Nginx Proxy has been configured to use the service type of LoadBalancer. Therefore, to reach Artifactory, we will
 need to go through the Nginx proxy’s service. Which happens to be a load balancer created in the cloud provider. Run the kubectl
 command to retrieve the Load Balancer URL.
-
+```
  kubectl get svc artifactory-artifactory-nginx -n tools
- 
+ ```
+![image](https://github.com/user-attachments/assets/94723f0a-87cf-4b28-af80-2b297e40f189)
+
  4. Copy the URL and paste in the browser
 
-![8009](https://user-images.githubusercontent.com/85270361/210274613-2d4d5f5b-4d80-4b3b-9676-4f007cd08359.PNG)
+![image](https://github.com/user-attachments/assets/526d8dc9-cdb9-4587-ba81-d4c10a421aa2)
+
 
 
 5. The default username is admin
@@ -156,7 +161,8 @@ command to retrieve the Load Balancer URL.
 6. The default password is password
 
 
-![8010](https://user-images.githubusercontent.com/85270361/210274729-cb6aed80-e30c-4eff-a00c-aaa27f8c0f95.PNG)
+![image](https://github.com/user-attachments/assets/efebdc87-9453-4b6b-9d53-537c7909468e)
+
 
 
 ## How the Nginx URL for Artifactory is configured in Kubernetes
@@ -322,6 +328,7 @@ helm upgrade --install ingress-nginx ingress-nginx \
 --repo https://kubernetes.github.io/ingress-nginx \
 --namespace ingress-nginx --create-namespace
 ```
+![image](https://github.com/user-attachments/assets/4d6db2ee-ca33-4501-bf48-e02f9e340322)
 
 
 Notice:
@@ -343,6 +350,7 @@ method you are already familiar with. Ensure NOT to use the flag --repo
 ```
 kubectl get pods --namespace=ingress-nginx
 ```
+![image](https://github.com/user-attachments/assets/3b0bd45f-f872-467c-b4ae-39d9cd458e65)
 
 3. After a while, they should all be running. The following command will wait for the ingress controller pod to be up, running, 
 and ready:
@@ -360,14 +368,8 @@ kubectl wait --namespace ingress-nginx \
 ```
 kubectl get service -n ingress-nginx
 ```
+![image](https://github.com/user-attachments/assets/29559dc7-1d18-4c23-a4ea-e9031590bd70)
 
-**Output:**
-
-```
-NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP                                                              PORT(S)                      AGE
-ingress-nginx-controller             LoadBalancer   172.16.11.35    a38db84e7d2104dc4b743ee6df1e667b-954094141.eu-west-2.elb.amazonaws.com   80:32516/TCP,443:31942/TCP   50s
-ingress-nginx-controller-admission   ClusterIP      172.16.94.137   <none>                                                                   443/TCP                      50s
-```
 
 
 The ingress-nginx-controller service that was created is of the type LoadBalancer. That will be the load balancer to be used by all
@@ -376,6 +378,7 @@ applications which require external access, and is using this ingress controller
 If you go ahead to AWS console, copy the address in the **EXTERNAL-IP** column, and search for the loadbalancer, you will see an 
 output like below.
 
+![image](https://github.com/user-attachments/assets/8e7e4d19-9bbd-4110-b803-bb669ce04885)
 
 5. Check the IngressClass that identifies this ingress controller.
 
@@ -383,14 +386,8 @@ output like below.
 kubectl get ingressclass -n ingress-nginx
 ```
 
-
-
 **Output:**
-
-```
-NAME    CONTROLLER             PARAMETERS   AGE
-nginx   k8s.io/ingress-nginx   <none>       105s
-```
+![image](https://github.com/user-attachments/assets/6c8dcc31-d93c-4f7f-84b0-d0aa5a9cf30a)
 
 
 ## Deploy Artifactory Ingress
@@ -401,6 +398,7 @@ Notice the spec section with the configuration that selects the ingress controll
 
 
 ```
+cat <<EOF > myartifactory.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -408,7 +406,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "tooling.artifactory.sandbox.svc.darey.io"
+  - host: "tooling-artifactory-melkamu.dns-dynamic.net"
     http:
       paths:
       - path: /
@@ -418,20 +416,21 @@ spec:
             name: artifactory
             port:
               number: 8082
+EOF
 ```
 
 
 ```
-kubectl apply -f <filename.yaml> -n tools
+kubectl apply -f myartifactory.yaml -n tools
 ```
-
+```
+kubectl get ingress -n tools
+```
 
 **OUTPUT:**
 
-```
-NAME          CLASS   HOSTS                                   ADDRESS                                                                  PORTS   AGE
-artifactory   nginx   tooling.artifactory.sandbox.svc.darey.io   a38db84e7d2104dc4b743ee6df1e667b-954094141.eu-west-2.elb.amazonaws.com   80      5s
-```
+![image](https://github.com/user-attachments/assets/d7a647cb-6b23-41e8-b500-36754282bac6)
+
 
 
 Now, take note of
