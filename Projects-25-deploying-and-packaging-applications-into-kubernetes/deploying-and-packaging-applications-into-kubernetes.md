@@ -450,9 +450,7 @@ load balancer.
 The sandbox.svc.total.com part of the domain is the configured HOSTED ZONE in AWS. So you will need to configure Hosted Zone in 
 AWS console or as part of your infrastructure as code using terraform.
 
-![image](https://github.com/user-attachments/assets/e0c7e2e1-e2da-4b57-970a-b67eb68f27c5)
-
-
+![image](https://github.com/user-attachments/assets/659b5283-2332-4af1-944b-28b1946090c2)
 
 If you purchased the domain directly from AWS, the hosted zone will be automatically configured for you. But if your domain is registered with a different provider
 such as freenon or namechaep, you will have to create the hosted zone and update the name servers.
