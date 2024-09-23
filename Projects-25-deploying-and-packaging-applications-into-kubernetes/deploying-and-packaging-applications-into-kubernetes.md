@@ -431,8 +431,6 @@ kubectl get ingress -n tools
 
 ![image](https://github.com/user-attachments/assets/d7a647cb-6b23-41e8-b500-36754282bac6)
 
-
-
 Now, take note of
 
 - CLASS – The nginx controller class name nginx
