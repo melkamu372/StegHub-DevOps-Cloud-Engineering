@@ -24,9 +24,17 @@ cycle and how they fit into the entire ecosystem.
 For the tools that require paid license, don’t worry, you will also learn how to get the license for free and have true experience
 exactly how they are used in the real world.
 
-**Lets start first with Artifactory.**
+>  **_Important Notes to Consider_**
+- If your are using **EKS 1.23 or later** Ensure to install the **Amazon EBS CSI driver** for attaching volumes to pods.
+- **OIDC provider** must be associated with the EKS cluster for IAM roles.
+- Install the **Amazon EBS CSI driver** via Helm to enable volume scheduling, resizing, and snapshot capabilities.
+- Configure your **storage class** as the default for persistent volumes.
+- To access your UI, use a **VPN** and the **Firefox browser**.
 
- _What is it exactly?_
+
+
+
+**Lets start first with Artifactory.**  _What is it exactly?_
 
 Artifactory is part of a suit of products from a company called [Jfrog](https://jfrog.com/). Jfrog started out as an artifact repository
 where software binaries in different formats are stored. Today, Jfrog has transitioned from an artifact repository to a DevOps 
@@ -331,7 +339,7 @@ helm upgrade --install ingress-nginx ingress-nginx \
 ![image](https://github.com/user-attachments/assets/4d6db2ee-ca33-4501-bf48-e02f9e340322)
 
 
-Notice:
+**Notice:**
 
 This command is idempotent:
 
@@ -340,9 +348,7 @@ This command is idempotent:
 - if the ingress controller is already installed, it will upgrade it.
 
 - Self Challenge Task – Delete the installation after running above command. Then try to re-install it using a slightly different 
-method you are already familiar with. Ensure NOT to use the flag --repo
-
-- Hint – Run the helm repo add command before installation
+method you are already familiar with. Ensure NOT to use the flag --repo   `Hint` – Run the helm repo add command before installation
 
 
 2. A few pods should start in the ingress-nginx namespace:
@@ -369,8 +375,6 @@ kubectl wait --namespace ingress-nginx \
 kubectl get service -n ingress-nginx
 ```
 ![image](https://github.com/user-attachments/assets/29559dc7-1d18-4c23-a4ea-e9031590bd70)
-
-
 
 The ingress-nginx-controller service that was created is of the type LoadBalancer. That will be the load balancer to be used by all
 applications which require external access, and is using this ingress controller.
@@ -429,7 +433,8 @@ kubectl get ingress -n tools
 
 **OUTPUT:**
 
-![image](https://github.com/user-attachments/assets/d7a647cb-6b23-41e8-b500-36754282bac6)
+![t5](https://github.com/user-attachments/assets/9d7602e4-be07-4586-a4b3-07938bd19a79)
+
 
 Now, take note of
 
@@ -450,8 +455,9 @@ AWS console or as part of your infrastructure as code using terraform.
 
 ![image](https://github.com/user-attachments/assets/659b5283-2332-4af1-944b-28b1946090c2)
 
-If you purchased the domain directly from AWS, the hosted zone will be automatically configured for you. But if your domain is registered with a different provider
-such as freenon or namechaep, you will have to create the hosted zone and update the name servers.
+If you purchased the domain directly from AWS, the hosted zone will be automatically configured for you.
+
+But my domain is registered from cloud provider called  cloudns.net I create the hosted zone and update the name servers. and choos one option
 
 **Create Route53 record**
 
@@ -471,7 +477,6 @@ record to point to the ingress controller’s loadbalancer. There are 2 options.
  The search should return green ticks for each of the locations on the left.
 
 
-
 **AWS Alias Method**
 
 1. In the create record section, type in the record name, and toggle the alias button to enable an alias. An alias is of the A DNS record type which basically 
@@ -482,6 +487,9 @@ routes directly to the load balancer. In the choose endpoint bar, select Alias t
 
 
 For detailed read on selecting between CNAME and Alias based records, read the [official documentation](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html)
+
+![9](https://github.com/user-attachments/assets/e670428c-faf2-4629-9856-6b57ac9bc162)
+
 
 ## Visiting the application from the browser
 
@@ -499,27 +507,12 @@ that browsers are not aware of.
 To confirm this,
 
 
-1. Click on the Not Secure part of the browser.
-
-![9003](https://user-images.githubusercontent.com/85270361/210280903-7ec693a0-1935-48f5-94e6-e99d49364bad.PNG)
-
-
-2. Select the Certificate is not valid menu
-
-![9004](https://user-images.githubusercontent.com/85270361/210280896-1ce01c51-05eb-422a-bd80-5cd82b7d7f2e.PNG)
-
-
-3. You will see the details of the certificate. There you can confirm that yes indeed there is encryption configured for the 
+1. Click on the Not Secure part of the browser and it  show Certificate is not valid menu  and you will see the details of the certificate. There you can confirm that yes indeed there is encryption configured for the 
 traffic, the browser is just not cool with it.
 
-![9005](https://user-images.githubusercontent.com/85270361/210281128-cb3b6a5d-2024-4089-adb5-1da35c6e2952.PNG)
-
+![t](https://github.com/user-attachments/assets/0a04ffc4-9d2e-4e28-987a-7fffea1882f3)
 
 Now try another browser. For example Internet explorer or Safari
-
-
-![9006](https://user-images.githubusercontent.com/85270361/210281333-fedf21b1-11bb-42ec-b8e4-0c77985906ed.PNG)
-
 
 ## Explore Artifactory Web UI
 
@@ -531,50 +524,26 @@ make it a lot more secure and access our web application on any browser.
 ```
 helm test artifactory -n tools
 ```
-
-
 **Output:**
 
-```
-NAME: artifactory
-LAST DEPLOYED: Sat May 28 09:26:08 2022
-NAMESPACE: tools
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-NOTES:
-Congratulations. You have just deployed JFrog Artifactory!
 
-1. Get the Artifactory URL by running these commands:
 
-   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-         You can watch the status of the service by running 'kubectl get svc --namespace tools -w artifactory-artifactory-nginx'
-   export SERVICE_IP=$(kubectl get svc --namespace tools artifactory-artifactory-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-   echo http://$SERVICE_IP/
-
-2. Open Artifactory in your browser
-   Default credential for Artifactory:
-   user: admin
-   password: password
-```
-
+![t8](https://github.com/user-attachments/assets/0a0fa206-d6ad-473a-9e9c-85adc3c83270)
 
 2. Insert the username and password to load the Get Started page
 
 
-![9010](https://user-images.githubusercontent.com/85270361/210281586-c88bcee2-b153-4341-a565-d1e10c36d55d.PNG)
+![1](https://github.com/user-attachments/assets/4db84b5b-50c7-4df5-9985-cefed618e780)
 
+
+![2](https://github.com/user-attachments/assets/6f9eb219-abf7-4b3b-acc9-b95c0f0c5aa3)
 
 3. Reset the admin password
 
 
-![9011](https://user-images.githubusercontent.com/85270361/210281683-c5871e66-35b5-4cfb-b389-85c30a3e87fb.PNG)
-
+![3](https://github.com/user-attachments/assets/7ab6d1be-5478-430e-841f-83623b73a1aa)
 
 4. Activate the Artifactory License. You will need to purchase a license to use Artifactory enterprise features.
-
-
-![9012](https://user-images.githubusercontent.com/85270361/210281798-41cfe86c-fa33-4d75-b3a3-21dee0aaff5f.PNG)
 
 5. For learning purposes, you can apply for a free trial license. Simply fill the form [here](https://jfrog.com/start-free/) and 
 a license key will be delivered to your email in few minutes.
@@ -583,35 +552,30 @@ a license key will be delivered to your email in few minutes.
 
 ![9014](https://user-images.githubusercontent.com/85270361/210282029-fcb0857d-cdef-48b1-837b-0f490ffcb1ab.PNG)
 
-
 6. In exactly 1 minute, the license key had arrived. Simply copy the key and apply to the console.
 
+![image](https://github.com/user-attachments/assets/08ca124f-d2d0-47c4-b455-a43612b096b3)
 
-![9015](https://user-images.githubusercontent.com/85270361/210282185-d34c2056-d801-4d43-bf52-311d9bed3309.PNG)
+![4](https://github.com/user-attachments/assets/dc91cff6-a411-44a8-8e10-04edbb311624)
 
 7. Set the Base URL. Ensure to use https
 
- 
-![9016](https://user-images.githubusercontent.com/85270361/210282433-13c086bf-6cf0-46a2-9891-75db24df596f.PNG)
- 
+![5](https://github.com/user-attachments/assets/39262ebb-c226-4144-bb9b-b96ab048936c)
+
    
 8. Skip the Proxy setting
-   
-   
-![9017](https://user-images.githubusercontent.com/85270361/210282457-f7abe704-96be-4c8e-82b6-e87e228e534d.PNG)
-  
-   
+   ![6](https://github.com/user-attachments/assets/460a4950-29da-481b-ab8a-8c7dc3891287)
+
 9. Skip creation of repositories for now. You will create them yourself later on.
    
    
-![9018](https://user-images.githubusercontent.com/85270361/210282492-0b6a1466-1944-4780-a6a2-1c04c2945b70.PNG)
- 
+ ![7](https://github.com/user-attachments/assets/49884470-dee8-4541-8969-691f81607bbd)
+
    
 10. finish the setup
    
-![9019](https://user-images.githubusercontent.com/85270361/210282528-b8364875-390c-41dd-a1a4-a8aeb2bf07b0.PNG)
- 
-![9020](https://user-images.githubusercontent.com/85270361/210282537-47a447d8-089f-4524-9e7a-49a0003bffd6.PNG)
-  
-   
+![8](https://github.com/user-attachments/assets/1aea2e4d-5fb9-4cab-a53f-544e9425e0da)
+
+ ![9](https://github.com/user-attachments/assets/c2ed360d-59d3-40f9-bd6a-890ba5a0a11d)
+
  Next, its time to fix the TLS/SSL configuration so that we will have a trusted HTTPS URL
